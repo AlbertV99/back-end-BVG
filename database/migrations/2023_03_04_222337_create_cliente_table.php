@@ -28,7 +28,7 @@ class CreateClienteTable extends Migration
             $table->string('observaciones');
             $table->unsignedBigInteger('estado_civil');
             $table->foreign('estado_civil')->references('id')->on('estado_civil');
-
+            $table->timestamps();
             // $table->foreign('barrio')->references('id')->on('barrio');
         });
     }
