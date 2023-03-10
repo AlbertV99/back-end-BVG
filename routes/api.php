@@ -15,12 +15,14 @@ use App\Http\Controllers\ClienteController;
 |
 */
 
+Route::middleware(['cors'])->group(function () {
+    Route::get('/cliente/{pag?}',[ClienteController::class, 'index']);
+    Route::get('/cliente/u/{id}',[ClienteController::class, 'show']);
+    Route::post('/cliente/',[ClienteController::class, 'store']);
+    Route::put('/cliente/{id}',[ClienteController::class, 'update']);
+    Route::delete('/cliente/{id}',[ClienteController::class, 'destroy']);
+});
 // Route::apiResource('cliente', ClienteController::class);
-Route::get('/cliente/{pag?}',[ClienteController::class, 'index']);
-Route::get('/cliente/u/{id}',[ClienteController::class, 'show']);
-Route::post('/cliente/',[ClienteController::class, 'store']);
-Route::put('/cliente/{id}',[ClienteController::class, 'update']);
-Route::delete('/cliente/{id}',[ClienteController::class, 'destroy']);
 
 
 
