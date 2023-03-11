@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\BarrioController;
 use App\Http\Controllers\EstadoCivilController;
+use App\Http\Controllers\EstadoSolicitudController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,7 +29,17 @@ Route::middleware(['cors'])->group(function () {
     # ESTADO CIVIL
     Route::get('/estadoCivil/{pag?}',[EstadoCivilController::class, 'index']);
 
+    # ESTADOS SOLICITUD
+    Route::get('/estadoSolicitud/{id}',[EstadoSolicitudController::class, 'index']);
+
     # BARRIO
+    Route::get('/barrio/{pag?}',[BarrioController::class, 'index']);
+    Route::get('/barrio/u/{id}',[BarrioController::class, 'show']);
+    Route::post('/barrio/',[BarrioController::class, 'store']);
+    Route::put('/barrio/{id}',[BarrioController::class, 'update']);
+    Route::delete('/barrio/{id}',[BarrioController::class, 'destroy']);
+
+    #TIPOS PLAZOS
     Route::get('/barrio/{pag?}',[BarrioController::class, 'index']);
     Route::get('/barrio/u/{id}',[BarrioController::class, 'show']);
     Route::post('/barrio/',[BarrioController::class, 'store']);
