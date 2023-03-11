@@ -15,7 +15,7 @@ class CreateEstadoSolicitudTable extends Migration
     {
         Schema::create('estado_solicitud', function (Blueprint $table) {
             $table->id();
-            $table->descripcion();
+            $table->string('descripcion');
         });
     }
 
