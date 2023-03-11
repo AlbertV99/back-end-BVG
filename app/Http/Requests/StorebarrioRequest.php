@@ -13,7 +13,7 @@ class StorebarrioRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**

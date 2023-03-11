@@ -145,8 +145,8 @@ class ClienteController extends Controller{
      */
     public function destroy($id){
         try {
-            $usuario = Cliente::where("id",$id);
-            $usuario->delete();
+            $cliente = Cliente::where("id",$id);
+            $cliente->delete();
 
             return ["cod"=>"00","msg"=>"todo correcto"];
         } catch (\Exception $e) {
