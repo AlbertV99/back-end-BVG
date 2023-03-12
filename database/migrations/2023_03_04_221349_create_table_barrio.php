@@ -16,7 +16,7 @@ class CreateTableBarrio extends Migration
         Schema::create('barrio', function (Blueprint $table) {
             $table->id();
             $table->string("nombre");
-            $table->string("observacion");
+            $table->string("observacion")->nullable();
         });
     }
 

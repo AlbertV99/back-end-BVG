@@ -25,7 +25,7 @@ class CreateClienteTable extends Migration
             $table->string('correo');
             $table->string('direccion');
             $table->string('sexo');
-            $table->string('observaciones');
+            $table->string('observaciones')->nullable();
             $table->unsignedBigInteger('estado_civil');
             $table->foreign('estado_civil')->references('id')->on('estado_civil');
             $table->timestamps();

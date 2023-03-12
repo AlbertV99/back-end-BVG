@@ -24,7 +24,7 @@ class CreateSolicitudTable extends Migration
             $table->integer('interes_moratorio');
             $table->unsignedBigInteger('tipo_plazo');
             $table->foreign('tipo_plazo')->references('id')->on('tipo_plazo');
-            $table->string('observacion');
+            $table->string('observacion')->nullable();
             $table->unsignedBigInteger('usuario_id');
             $table->foreign('usuario_id')->references('id')->on('usuario');
             $table->date('fecha_retiro')->nullable();

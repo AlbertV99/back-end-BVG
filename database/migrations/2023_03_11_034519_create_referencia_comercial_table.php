@@ -19,9 +19,9 @@ class CreateReferenciaComercialTable extends Migration
             // $table->foreign('solicitud_id')->references('id')->on('estado_civil'); referenciar a la solicitud
             $table->string('entidad');
             $table->string('estado');
-            $table->integer('monto_cuota');
-            $table->integer('cuotas_pendientes');
-            $table->integer('cuotas_totales');
+            $table->integer('monto_cuota')->nullable();
+            $table->integer('cuotas_pendientes')->nullable();
+            $table->integer('cuotas_totales')->nullable();
             $table->timestamps();
         });
     }
