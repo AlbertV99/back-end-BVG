@@ -6,6 +6,7 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\BarrioController;
 use App\Http\Controllers\EstadoCivilController;
 use App\Http\Controllers\EstadoSolicitudController;
+use App\Http\Controllers\TipoPlazoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,11 +41,11 @@ Route::middleware(['cors'])->group(function () {
     Route::delete('/barrio/{id}',[BarrioController::class, 'destroy']);
 
     #TIPOS PLAZOS
-    Route::get('/barrio/{pag?}',[BarrioController::class, 'index']);
-    Route::get('/barrio/u/{id}',[BarrioController::class, 'show']);
-    Route::post('/barrio/',[BarrioController::class, 'store']);
-    Route::put('/barrio/{id}',[BarrioController::class, 'update']);
-    Route::delete('/barrio/{id}',[BarrioController::class, 'destroy']);
+    Route::get('/tipoPlazo/{pag?}',[TipoPlazoController::class, 'index']);
+    Route::get('/tipoPlazo/u/{id}',[TipoPlazoController::class, 'show']);
+    Route::post('/tipoPlazo/',[TipoPlazoController::class, 'store']);
+    Route::put('/tipoPlazo/{id}',[TipoPlazoController::class, 'update']);
+    Route::delete('/tipoPlazo/{id}',[TipoPlazoController::class, 'destroy']);
 });
 // Route::apiResource('cliente', ClienteController::class);
 

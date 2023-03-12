@@ -11,9 +11,9 @@ class TipoPlazo extends Model
     public $timestamps = false;
     protected $table = 'tipo_plazo';
     protected $fillable = [
-        'descripcion'
-        'factor_divisor'
-        'dias_vencimiento'
-        'interes'
+        'descripcion',
+        'factor_divisor',
+        'dias_vencimiento',
+        'interes',
     ];
 }
