@@ -4,6 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
+use App\Models\EstadoSolicitud as EstadoSolicitudModel;
+
+
 class EstadoSolicitud extends Seeder
 {
     /**
@@ -22,6 +25,11 @@ class EstadoSolicitud extends Seeder
             ["Cancelado"], # CUANDO EL CLIENTE CIERRA ANTES DE LLEGAR A APROBAR/RECHAZAR LA SOLICITUD
             ["Finalizado"], # CUANDO SE TERMINAN DE PAGAR TODAS LAS CUOTAS [INACTIVO]
         ];
+        foreach ($lista as $key => $value) {
+            EstadoSolicitudModel::create([
+                'descripcion' => $value[0],
+            ]);
+        }
 
     }
 }

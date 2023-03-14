@@ -4,6 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
+use App\Models\TipoPlazo as TipoPlazoModel;
+
+
 class TipoPlazo extends Seeder
 {
     /**
@@ -19,5 +22,14 @@ class TipoPlazo extends Seeder
             ["Quincenal","24","15","12"],
             ["Mensual","12","30","8"],
         ];
+
+        foreach ($lista as $key => $value) {
+            TipoPlazoModel::create([
+                'descripcion' => $value[0],
+                'factor_divisor' => $value[1],
+                'dias_vencimiento' => $value[2],
+                'interes' => $value[3],
+            ]);
+        }
     }
 }
