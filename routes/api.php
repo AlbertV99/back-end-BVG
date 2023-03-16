@@ -7,6 +7,7 @@ use App\Http\Controllers\BarrioController;
 use App\Http\Controllers\EstadoCivilController;
 use App\Http\Controllers\EstadoSolicitudController;
 use App\Http\Controllers\TipoPlazoController;
+use App\Http\Controllers\SolicitudController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,6 +47,14 @@ Route::middleware(['cors'])->group(function () {
     Route::post('/tipoPlazo/',[TipoPlazoController::class, 'store']);
     Route::put('/tipoPlazo/{id}',[TipoPlazoController::class, 'update']);
     Route::delete('/tipoPlazo/{id}',[TipoPlazoController::class, 'destroy']);
+
+    #SOLICITUDES
+    Route::get('/solicitud/{estado}/{pag?}/',[SolicitudController::class, 'index']);
+    Route::get('/solicitud/u/{id}',[SolicitudController::class, 'show']);
+    Route::post('/solicitud/',[SolicitudController::class, 'store']);
+    Route::put('/solicitud/{id}',[SolicitudController::class, 'update']);
+    Route::delete('/solicitud/{id}',[SolicitudController::class, 'destroy']);
+
 });
 // Route::apiResource('cliente', ClienteController::class);
 
