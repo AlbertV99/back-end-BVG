@@ -23,4 +23,20 @@ class Solicitud extends Model
         'vencimiento_retiro'
 
     ];
+
+    public function referenciaPersonal(): HasMany{
+        return $this->hasMany(ReferenciaPersonal::class);
+    }
+    public function referenciaComercial(): HasMany{
+        return $this->hasMany(ReferenciaComercial::class);
+    }
+    public function historialEstado(): HasMany{
+        return $this->hasMany(HistorialEstado::class);
+    }
+
+    public function estado(): HasManyThrough{
+        return $this->hasManyThrough(EstadoSolicitud::class, HistorialEstado::class);
+    }
+
+
 }

@@ -13,4 +13,7 @@ class TelefonoCliente extends Model{
         'id_cliente',
         'telefono'
     ];
+    public function solicitud(): BelongsTo{
+        return $this->belongsTo(Cliente::class);
+    }
 }

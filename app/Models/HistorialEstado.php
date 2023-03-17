@@ -14,4 +14,8 @@ class HistorialEstado extends Model
         'estado_id',
         'observacion_cambio'
     ];
+    public function solicitud(): BelongsTo{
+        return $this->belongsTo(Solicitud::class);
+    }
+    
 }

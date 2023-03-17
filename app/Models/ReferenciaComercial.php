@@ -17,4 +17,8 @@ class ReferenciaComercial extends Model
         'cuotas_pendientes',
         'cuotas_totales',
     ];
+
+    public function solicitud(): BelongsTo{
+        return $this->belongsTo(Solicitud::class);
+    }
 }
