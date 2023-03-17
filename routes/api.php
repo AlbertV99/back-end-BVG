@@ -6,6 +6,7 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\BarrioController;
 use App\Http\Controllers\EstadoCivilController;
 use App\Http\Controllers\EstadoSolicitudController;
+use App\Http\Controllers\TipoDocumentoController;
 use App\Http\Controllers\TipoPlazoController;
 use App\Http\Controllers\SolicitudController;
 
@@ -32,7 +33,10 @@ Route::middleware(['cors'])->group(function () {
     Route::get('/estadoCivil/{pag?}',[EstadoCivilController::class, 'index']);
 
     # ESTADOS SOLICITUD
-    Route::get('/estadoSolicitud/{id}',[EstadoSolicitudController::class, 'index']);
+    Route::get('/estadoSolicitud',[EstadoSolicitudController::class, 'index']);
+
+    # ESTADOS SOLICITUD
+    Route::get('/tipoDocumento',[TipoDocumentoController::class, 'index']);
 
     # BARRIO
     Route::get('/barrio/{pag?}',[BarrioController::class, 'index']);
