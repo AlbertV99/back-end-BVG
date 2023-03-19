@@ -52,14 +52,14 @@ class ClienteController extends Controller{
             $campos = $this->validate($request,[
                 'barrio'=>'required|string',
                 'documento'=>'required|string',
-                'tipo_documento'=>'required|integer',
+                'tipo_documento'=>'required|string',
                 'nombre'=>'required|string',
                 'apellido'=>'required|string',
                 'f_nacimiento'=>'date',
                 'correo'=>'required|string',
                 'direccion'=>'string',
                 'sexo'=>'required|string',
-                'observaciones'=>'required|string',
+                'observaciones'=>'string',
                 'estado_civil'=>'required|integer',
             ]);
 
