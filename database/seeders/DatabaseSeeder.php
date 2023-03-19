@@ -16,6 +16,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             BarrioSemilla::class,
             EstadoCivilSemilla::class,
+            EstadoSolicitud::class,
+            TipoDocumentoCliente::class,
+            TipoPlazo::class
         ]);
     }
 }
