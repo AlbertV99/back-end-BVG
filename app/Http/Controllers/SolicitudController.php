@@ -24,7 +24,7 @@ class SolicitudController extends Controller{
         $c_paginas = ceil(Solicitud::count()/$this->c_reg_panel);
         $salto = $pag*$this->c_reg_panel;
 
-        $query=Solicitud::select("cliente.id","cliente.documento","cliente.nombre","cliente.apellido","cliente.tipo_documento","solicitud.ingresos_actuales","solicitud.monto_credito","solicitud.interes","solicitud.tipo_plazo",)
+        $query=Solicitud::select("solicitud.id","cliente.documento","cliente.nombre","cliente.apellido","cliente.tipo_documento","solicitud.ingresos_actuales","solicitud.monto_credito","solicitud.interes","solicitud.tipo_plazo",)
         ->join("cliente", "cliente.id", "solicitud.cliente_id","estado_solicitud.descripcion")
         ->join("tipo_plazo", "tipo_plazo.id", "solicitud.tipo_plazo")
         // ->leftJoin('historial_estado', function($query) {
