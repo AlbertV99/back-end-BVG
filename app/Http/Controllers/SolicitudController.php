@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreSolicitudRequest;
 use App\Http\Requests\UpdateSolicitudRequest;
 use App\Models\Solicitud;
+use App\Models\ReferenciaPersonal;
+use App\Models\ReferenciaComercial;
+use App\Models\EstadoSolicitud;
+use App\Models\HistorialEstado;
 
 class SolicitudController extends Controller{
     private $c_reg_panel = 25;
@@ -52,6 +56,11 @@ class SolicitudController extends Controller{
      */
     public function store(StoreSolicitudRequest $request){
         try {
+
+            // return ["cod"=>"00","msg"=>"todo correcto","datos"=>$pendiente[0]->id,];
+
+            if( count($request->input('ref_personales'))<1 ){throw  \Illuminate\Validation\ValidationException::withMessages([
+   'Referencia Personal' => ['Debe completar al menos una referencia personal']]);}
             $campos = $this->validate($request,[
                 'cliente_id'=>'required|string',
                 'ingresos_actuales'=>'required|string',
@@ -65,7 +74,28 @@ class SolicitudController extends Controller{
                 'vencimiento_retiro'=>'date',
             ]);
 
-            $usuario = Solicitud::create($campos);
+            $solicitud = Solicitud::create($campos);
+            foreach ($request->input('ref_personales') as $key => $value) {
+                $camposRef = ['cliente_id'=>$value['id_cliente'],     'relacion_cliente'=>$value['relacion']];
+                $refPersTemp = new ReferenciaPersonal($camposRef);
+                $solicitud->referenciaPersonal()->save($refPersTemp);
+            }
+
+            if(count($request->input('ref_comerciales'))>0 ){
+                foreach ($request->input('ref_comerciales') as $key => $value) {
+                    $camposRef = ['entidad'=>$value['entidad'],'monto_cuota'=>$value['monto_cuota'],
+                    'estado'=>$value['estado'],'cuotas_pendientes'=>$value['cuotas_pendientes'],
+                    'cuotas_totales'=>$value['cuotas_totales']];
+                    $refPersTemp = new ReferenciaComercial($camposRef);
+                    $solicitud->referenciaComercial()->save($refPersTemp);
+                }
+            }
+            $pendiente = EstadoSolicitud::where("descripcion","Pendiente")->get();
+            $historial = new HistorialEstado(["estado_id"=>$pendiente[0]->id,"observacion_cambio"=>"Creacion de Solicitud"]);
+
+            $solicitud->historialEstado()->save($historial);
+
+
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             return ["cod"=>"06","msg"=>"Error al insertar los datos","errores"=>[$e->errors() ]];

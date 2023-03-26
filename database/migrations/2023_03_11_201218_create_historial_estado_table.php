@@ -19,7 +19,7 @@ class CreateHistorialEstadoTable extends Migration
             $table->foreign('solicitud_id')->references('id')->on('solicitud');
             $table->unsignedBigInteger('estado_id');
             $table->foreign('estado_id')->references('id')->on('estado_solicitud');
-            $table->unsignedBigInteger('observacion_cambio');
+            $table->string('observacion_cambio');
             $table->timestamps();
         });
     }

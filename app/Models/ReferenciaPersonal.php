@@ -5,8 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ReferenciaPersonal extends Model
-{
+class ReferenciaPersonal extends Model{
     use HasFactory;
     protected $table = 'referencia_personal';
     protected $fillable = [
@@ -15,7 +14,7 @@ class ReferenciaPersonal extends Model
         'relacion_cliente',
 
     ];
-    
+
     public function solicitud(): BelongsTo{
         return $this->belongsTo(Solicitud::class);
     }

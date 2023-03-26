@@ -5,8 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Solicitud extends Model
-{
+class Solicitud extends Model{
     use HasFactory;
     protected $table = 'solicitud';
     protected $fillable = [
@@ -24,17 +23,17 @@ class Solicitud extends Model
 
     ];
 
-    public function referenciaPersonal(): HasMany{
+    public function referenciaPersonal(){
         return $this->hasMany(ReferenciaPersonal::class);
     }
-    public function referenciaComercial(): HasMany{
+    public function referenciaComercial(){
         return $this->hasMany(ReferenciaComercial::class);
     }
-    public function historialEstado(): HasMany{
+    public function historialEstado(){
         return $this->hasMany(HistorialEstado::class);
     }
 
-    public function estado(): HasManyThrough{
+    public function estado(){
         return $this->hasManyThrough(EstadoSolicitud::class, HistorialEstado::class);
     }
 
