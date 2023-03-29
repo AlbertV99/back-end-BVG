@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreClienteRequest;
 use App\Http\Requests\UpdateClienteRequest;
 use App\Models\Cliente;
+use App\Models\PerfilCliente;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Carbon as BaseCarbon;
 
 class ClienteController extends Controller{
     private $c_reg_panel = 25;
@@ -152,5 +154,69 @@ class ClienteController extends Controller{
         } catch (\Exception $e) {
             return ["cod"=>"08","msg"=>"Error al eliminar el registro","errores"=>[$e->getMessage() ]];
         }
+    }
+
+    public static function obtenerPerfil($id){
+        try {
+            //OBTECION DE CLIENTE A EVALUAR
+            $cliente = Cliente::findOrfail($id);
+
+            $tempFecha = BaseCarbon::parse($cliente->f_nacimiento);
+            $edad = BaseCarbon::now()->diffInYears($tempFecha);
+            $max = 0;
+
+            //OBTENCION DE TODOS LOS PARAMETROS Y LOS RANGOS PARA ASIGNACION DE PUNTOS
+            $parametrosCrudo = PerfilCliente::all();
+            foreach ($parametrosCrudo as $value) {
+                $value->parametros ;
+                $max += $value->parametros->max('punto');
+            }
+
+
+
+            // EVALUACION DE EDAD
+            $parametroEdad = $parametrosCrudo->find(1);
+            $resEdad =$parametroEdad->parametros->filter(function ($value,$key) use ($edad) {
+                return ($value->rango_inf <= intval($edad) && $value->rango_sup >= intval($edad) );
+            });
+
+            $pos = key(reset($resEdad));
+
+
+
+            // EVALUACION DE PROMEDIO DE ATRASOS DE CUOTAS
+            // $parametroEdad = $parametrosCrudo->find(1);
+            // $resEdad = $parametroEdad->parametros->filter(function ($value,$key){
+            //     return ($value->rango_inf <20 && $value->rango_sup > 20 );
+            // });
+
+            // EVALUACION DE MAXIMO ATRASO DE PAGOS
+            // $parametroEdad = $parametrosCrudo->find(1);
+            // $resEdad = $parametroEdad->parametros->filter(function ($value,$key){
+            //     return ($value->rango_inf <20 && $value->rango_sup > 20 );
+            // });
+
+
+            // ESTRUCTURA PARA RETORNO DE RESULTADOS
+            $clientePerfil = [
+                "cliente"=>$cliente,
+                "edad"=>$edad,
+                "maximo_alcanzable"=>$max,
+                "perfil"=>[
+                    "total_puntos"=>$resEdad[$pos]->punto + 6,//SE SUMA CON LOS DEMAS PARAMETROS [6 por defecto temporal]
+                    "edad"=>$resEdad[$pos]->punto,
+                    "promedio_atraso"=>3,
+                    "maximo_atraso"=>3
+                ],
+                "parametros"=>$parametrosCrudo
+            ] ;
+            return ["cod"=>"00","msg"=>"todo correcto","datos"=>$clientePerfil];
+
+        } catch( ModelNotFoundException $e){
+            return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
+        } catch (\Exception $e) {
+            return ["cod"=>"99","msg"=>"Error general","error"=>$e->getMessage()];
+        }
+
     }
 }

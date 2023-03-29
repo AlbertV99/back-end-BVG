@@ -29,6 +29,10 @@ Route::middleware(['cors'])->group(function () {
     Route::put('/cliente/{id}',[ClienteController::class, 'update']);
     Route::delete('/cliente/{id}',[ClienteController::class, 'destroy']);
 
+    # PERFIL CLIENTE
+
+    Route::get('/perfilCliente/{id}',[ClienteController::class, 'obtenerPerfil']);
+
     # ESTADO CIVIL
     Route::get('/estadoCivil/{pag?}',[EstadoCivilController::class, 'index']);
 
