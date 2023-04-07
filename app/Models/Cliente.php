@@ -25,4 +25,8 @@ class Cliente extends Model
     public function referenciaPersonal(): HasMany{
         return $this->hasMany(TelefonoCliente::class);
     }
+    public function solicitud(): HasMany{
+        return $this->hasMany(Solicitud::class,'cliente_id');
+    }
+
 }

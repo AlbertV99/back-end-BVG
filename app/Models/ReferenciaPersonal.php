@@ -16,6 +16,6 @@ class ReferenciaPersonal extends Model{
     ];
 
     public function solicitud(): BelongsTo{
-        return $this->belongsTo(Solicitud::class);
+        return $this->belongsTo(Solicitud::class,"id","solicitud_id");
     }
 }

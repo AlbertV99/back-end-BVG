@@ -24,18 +24,21 @@ class Solicitud extends Model{
     ];
 
     public function referenciaPersonal(){
-        return $this->hasMany(ReferenciaPersonal::class);
+        return $this->hasMany(ReferenciaPersonal::class,"solicitud_id");
     }
     public function referenciaComercial(){
-        return $this->hasMany(ReferenciaComercial::class);
+        return $this->hasMany(ReferenciaComercial::class,"solicitud_id");
     }
     public function historialEstado(){
         return $this->hasMany(HistorialEstado::class);
     }
 
-    public function estado(){
-        return $this->hasManyThrough(EstadoSolicitud::class, HistorialEstado::class);
+    public function tipoPlazo(){
+        return $this->belongsTo(TipoPlazo::class,'tipo_plazo');
     }
 
+    public function cliente(){
+        return $this->belongsTo(Cliente::class,"cliente_id");
+    }
 
 }

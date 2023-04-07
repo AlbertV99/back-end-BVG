@@ -13,5 +13,7 @@ class EstadoSolicitud extends Model
     protected $fillable = [
         'descripcion'
     ];
-
+    public function historiales(){
+        return $this->hasMany(HistorialEstado::class,"estado_id");
+    }
 }

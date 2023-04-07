@@ -16,4 +16,8 @@ class TipoPlazo extends Model
         'dias_vencimiento',
         'interes',
     ];
+
+    public function solicitud(){
+        return $this->hasMany(Solicitud::class);
+    }
 }
