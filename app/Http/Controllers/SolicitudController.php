@@ -34,7 +34,7 @@ class SolicitudController extends Controller{
         // ->leftJoin("estado_solicitud","estado_solicitud.id","historial_estado.estado_id")
         ;
 
-        $query = $query->skip($salto)->take($this->c_reg_panel)->orderBy("cliente.documento");
+        $query = $query->orderBy("cliente.documento");
 
         return ["cod"=>"00","msg"=>"todo correcto","pagina_actual"=>$pag,"cantidad_paginas"=>$c_paginas,"datos"=>$query->get()];
     }
@@ -59,8 +59,7 @@ class SolicitudController extends Controller{
 
             // return ["cod"=>"00","msg"=>"todo correcto","datos"=>$pendiente[0]->id,];
 
-            if( count($request->input('ref_personales'))<1 ){throw  \Illuminate\Validation\ValidationException::withMessages([
-   'Referencia Personal' => ['Debe completar al menos una referencia personal']]);}
+            if( count($request->input('ref_personales'))<1 ){throw  \Illuminate\Validation\ValidationException::withMessages(['Referencia Personal' => ['Debe completar al menos una referencia personal']]);}
             $campos = $this->validate($request,[
                 'cliente_id'=>'required|string',
                 'ingresos_actuales'=>'required|string',
@@ -112,8 +111,25 @@ class SolicitudController extends Controller{
      * @param  \App\Models\Solicitud  $solicitud
      * @return \Illuminate\Http\Response
      */
-    public function show(Solicitud $solicitud){
-        //
+    public function show( $id){
+        try {
+            $solicitud = Solicitud::findOrfail($id);
+            $solicitud->cliente;
+            $solicitud->tipoPlazo;
+            $solicitud->historialEstado;
+            $solicitud->referenciaPersonal;
+            $solicitud->referenciaComercial;
+
+            $analisis = $this->calculosAnalisis($id);
+
+            // $solicitud->put('analisis', $analisis);
+
+            return ["cod"=>"00","msg"=>"todo correcto","analisis"=>$analisis,"datos"=>$solicitud];
+        } catch( ModelNotFoundException $e){
+            return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
+        } catch (\Exception $e) {
+            return ["cod"=>"99","msg"=>"Error general","error"=>$e->getMessage()];
+        }
     }
 
     /**
@@ -146,4 +162,42 @@ class SolicitudController extends Controller{
     public function destroy(Solicitud $solicitud){
         //
     }
+
+    public function historial($id){
+        try {
+            $solicitud = Solicitud::findOrfail($id);
+            return ["cod"=>"00","msg"=>"todo correcto","datos"=>$solicitud];
+        } catch( ModelNotFoundException $e){
+            return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
+        } catch (\Exception $e) {
+            return ["cod"=>"99","msg"=>"Error general","error"=>$e->getMessage()];
+        }
+    }
+
+    public function calculosAnalisis($idSolicitud){
+        $solicitud = Solicitud::findOrfail($idSolicitud);
+        $solicitud->referenciaComercial;
+        $total_cuotas= $solicitud->referenciaComercial->sum(function ($ref) {
+                    return (($ref['estado']=="ACTIVO")?$ref["monto_cuota"]:0);
+                });
+        $calculoCuotas = 0;
+        $calculos = [];
+        for ($mes=0; $mes < 3 ; $mes++) {
+            $calculoCuotas = $solicitud->referenciaComercial->sum(function ($ref) use ($mes){
+                return (($ref['cuotas_pendientes']>=($mes+1))?$ref['monto_cuota']:0);
+            });
+            $calculos[$mes]=[
+                "mes"=>$mes+1,
+                "ingresos"=>$solicitud->ingresos_actuales,
+                "costos"=>$calculoCuotas,
+                "restante"=>$solicitud->ingresos_actuales-$calculoCuotas,
+                "cuotaN"=>50000,
+                "total"=>$total_cuotas,
+            ];
+
+        }
+        return $calculos;
+
+    }
+
 }
