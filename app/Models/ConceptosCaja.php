@@ -5,17 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class EstadoCuota extends Model
+class ConceptosCaja extends Model
 {
     use HasFactory;
     public $timestamps = false;
     
-    protected $table = 'estado_cuota';
+    protected $table = 'conceptos_caja';
     protected $fillable = [
+        'tipo',
         'descripcion'
     ];
 
-    /*public function EstadosCuotas(){
-        return $this->hasMany(Cuotas::class);
+    /*public function ConceptosCajas(){
+        return $this->hasMany(Operacion::class);
     }*/
 }

@@ -9,6 +9,8 @@ use App\Http\Controllers\EstadoSolicitudController;
 use App\Http\Controllers\TipoDocumentoController;
 use App\Http\Controllers\TipoPlazoController;
 use App\Http\Controllers\SolicitudController;
+use App\Http\Controllers\ConceptosCajaController;
+use App\Http\Controllers\EstadoCuotaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,7 +44,7 @@ Route::middleware(['cors'])->group(function () {
     Route::get('/tipoDocumento',[TipoDocumentoController::class, 'index']);
 
     #ESTADOS CUOTA
-    Route::get('/tipoDocumento',[EstadoCuotaController::class, 'index']);
+    Route::get('/estadoCuota',[EstadoCuotaController::class, 'index']);
 
     # BARRIO
     Route::get('/barrio/{pag?}',[BarrioController::class, 'index']);
@@ -64,6 +66,13 @@ Route::middleware(['cors'])->group(function () {
     Route::post('/solicitud/',[SolicitudController::class, 'store']);
     Route::put('/solicitud/{id}',[SolicitudController::class, 'update']);
     Route::delete('/solicitud/{id}',[SolicitudController::class, 'destroy']);
+
+    #CONCEPTO CAJA
+    Route::get('/conceptoCaja',[ConceptosCajaController::class, 'index']);
+    Route::get('/conceptoCaja/u/{id}',[ConceptosCajaController::class, 'show']);
+    Route::post('/conceptoCaja/',[ConceptosCajaController::class, 'store']);
+    Route::put('/conceptoCaja/{id}',[ConceptosCajaController::class, 'update']);
+    Route::delete('/conceptoCaja/{id}',[ConceptosCajaController::class, 'destroy']);
 
 });
 // Route::apiResource('cliente', ClienteController::class);

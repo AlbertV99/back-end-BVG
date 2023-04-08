@@ -19,7 +19,9 @@ class DatabaseSeeder extends Seeder
             EstadoSolicitud::class,
             TipoDocumentoCliente::class,
             TipoPlazo::class,
-            PerfilClienteParametros::class
+            PerfilClienteParametros::class,
+            EstadoCuota::class,
+            ConceptosCaja::class
         ]);
     }
 }

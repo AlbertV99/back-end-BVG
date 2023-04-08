@@ -3,9 +3,9 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\EstadoCuota as EstadoCuotaModel;
+use App\Models\ConceptosCaja as ConceptosCajaModel;
 
-class EstadoCuota extends Seeder
+class ConceptosCaja extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,13 +15,13 @@ class EstadoCuota extends Seeder
     public function run()
     {
         $lista = [
-            "Pendiente",
-            "Pagado",
-            "Vencido",
+            ["Entrada","Pago Cuota"],
+            ["Salida", "Desembolso"]
         ];
         foreach ($lista as $key => $value) {
-            EstadoCuotaModel::create([
-                'descripcion' => $value,
+            ConceptosCajaModel::create([
+                'tipo' => $value[0],
+                'descripcion' => $value[1]
             ]);
         }
     }
