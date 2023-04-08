@@ -30,7 +30,6 @@ Route::middleware(['cors'])->group(function () {
     Route::delete('/cliente/{id}',[ClienteController::class, 'destroy']);
 
     # PERFIL CLIENTE
-
     Route::get('/perfilCliente/{id}',[ClienteController::class, 'obtenerPerfil']);
 
     # ESTADO CIVIL
@@ -41,6 +40,9 @@ Route::middleware(['cors'])->group(function () {
 
     # ESTADOS SOLICITUD
     Route::get('/tipoDocumento',[TipoDocumentoController::class, 'index']);
+
+    #ESTADOS CUOTA
+    Route::get('/tipoDocumento',[EstadoCuotaController::class, 'index']);
 
     # BARRIO
     Route::get('/barrio/{pag?}',[BarrioController::class, 'index']);

@@ -28,7 +28,7 @@ class ClienteController extends Controller{
         // if($busqueda !=""){
         //     $query = $query->where("usuario.nombre_usuario","like",$busqueda)->orWhere("usuario.nombre","like",$busqueda)->orWhere("usuario.apellido","like",$busqueda)->orWhere("usuario.apellido","like",$busqueda);
         // }
-        $query = $query->skip($salto)->take($this->c_reg_panel)->orderBy("cliente.documento");
+        $query = $query->orderBy("cliente.documento");
 
         return ["cod"=>"00","msg"=>"todo correcto","pagina_actual"=>$pag,"cantidad_paginas"=>$c_paginas,"datos"=>$query->get()];
     }
