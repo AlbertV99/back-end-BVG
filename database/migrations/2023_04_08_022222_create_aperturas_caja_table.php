@@ -20,9 +20,9 @@ class CreateAperturasCajaTable extends Migration
             $table->unsignedBigInteger('usuario_id');
             $table->foreign('usuario_id')->references('id')->on('usuario');
             $table->integer('saldo_apertura');
-            $table->integer('saldo_cierre');
+            $table->integer('saldo_cierre')->nullable();
             $table->date('fecha_apertura');
-            $table->date('fecha_cierre');
+            $table->date('fecha_cierre')->nullable();
             $table->integer('estado');
             $table->timestamps();
         });
