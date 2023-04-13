@@ -126,13 +126,16 @@ class CajaController extends Controller{
     public function abrirCaja(UpdateCajaRequest $request,$id){
         try {
             \date_default_timezone_set('Australia/Melbourne');
-            $date = \date('m/d/Y h:i:s a', \time());
+            $date = \date('Y-m-d h:i:s a', \time());
             $caja = Caja::findOrfail($id);
             // $caja->estadoCaja;
-            $estado = $caja->estadoCaja->max('id');
-            if($estado!= null  && $estado->estado ){
-                return ["cod"=>"11","msg"=>"Caja ya abierta"];
+            $estado = $caja->estadoCaja->last();
+
+            if($estado!= null  && $caja->estadoCaja->last()->estado ){
+                return ["cod"=>"11","msg"=>"Caja ya abierta","ultimo"=>$estado];
+
             }
+
 
             $campos = $this->validate($request,[
                 "saldo"=>"required|integer",
@@ -143,11 +146,12 @@ class CajaController extends Controller{
             //     return ["cod"=>"12","msg"=>"Pin incorrecto para la caja"];
             // }
             $aperturaData = [
-                'usuario_id'=>'1',
+                'usuario_id'=>'2',
                 'saldo_apertura'=>$campos['saldo'],
                 'fecha_apertura'=>$date,
                 'estado'=>1
             ];
+            $caja->update(['saldo_actual'=>$campos['saldo']]);
             $apertura = new AperturaCaja($aperturaData);
             $caja->estadoCaja()->save($apertura);
             // realizar la apertura de la caja ->create )
@@ -160,21 +164,29 @@ class CajaController extends Controller{
             return ["cod"=>"99","msg"=>"Error general","error"=>$e->getMessage()];
         }
     }
-    public function cerrarCaja($id,$request){
+    public function cerrarCaja(UpdateCajaRequest $request,$id){
         try {
             $caja = Caja::findOrfail($id);
-            // $caja->estadoCaja;
-            // $estado = $caja->estadoCaja->max('id');
-            // if($estado->estado){
-            //     return ["cod"=>"11","msg"=>"Caja ya abierta"];
-            // }
+            $date = \date('Y-m-d h:i:s a', \time());
+            $caja->estadoCaja;
+            $estado = $caja->estadoCaja->max('id');
+            if(!$caja->estadoCaja->last()->estado){
+                return ["cod"=>"11","msg"=>"Caja ya cerrada"];
+            }
             // validar pin
             // if($request->input('pin') == 'xx'){
             //     return ["cod"=>"12","msg"=>"Pin incorrecto para la caja"];
             // }
             // realizar la apertura de la caja ->create )
             // actualizar el saldo $caja->update(['saldo_caja'=>$request->input('saldo')])
+            $caja->estadoCaja->last()->usuario_id='2';
+            $caja->estadoCaja->last()->saldo_cierre=$caja->saldo_actual;
+            $caja->estadoCaja->last()->fecha_cierre=$date;
+            $caja->estadoCaja->last()->estado=0;
+            $caja->estadoCaja->last()->save();
+            $caja->update(['saldo_caja'=>0]);
 
+            return ["cod"=>"11","msg"=>"Caja cerrada"];
         } catch( ModelNotFoundException $e){
             return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
         } catch (\Exception $e) {
