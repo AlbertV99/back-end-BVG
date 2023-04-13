@@ -68,7 +68,7 @@ Route::middleware(['cors'])->group(function () {
     Route::delete('/solicitud/{id}',[SolicitudController::class, 'destroy']);
 
     #CONCEPTO CAJA
-    Route::get('/conceptoCaja',[ConceptosCajaController::class, 'index']);
+    Route::get('/conceptoCaja/{pag?}',[ConceptosCajaController::class, 'index']);
     Route::get('/conceptoCaja/u/{id}',[ConceptosCajaController::class, 'show']);
     Route::post('/conceptoCaja/',[ConceptosCajaController::class, 'store']);
     Route::put('/conceptoCaja/{id}',[ConceptosCajaController::class, 'update']);
