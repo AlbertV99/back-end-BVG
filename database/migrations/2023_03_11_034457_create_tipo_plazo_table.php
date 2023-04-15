@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTableBarrio extends Migration
+class CreateTipoPlazoTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,12 @@ class CreateTableBarrio extends Migration
      */
     public function up()
     {
-        Schema::create('barrio', function (Blueprint $table) {
+        Schema::create('tipo_plazo', function (Blueprint $table) {
             $table->id();
-            $table->string("nombre");
-            $table->string("observacion")->nullable();
+            $table->string('descripcion');
+            $table->integer('factor_divisor');
+            $table->integer('dias_vencimiento');
+            $table->decimal('interes');
         });
     }
 
@@ -27,6 +29,6 @@ class CreateTableBarrio extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('barrio');
+        Schema::dropIfExists('tipo_plazo');
     }
 }

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StorebarrioRequest;
-use App\Http\Requests\UpdatebarrioRequest;
-use App\Models\barrio;
+use App\Http\Requests\StoreTipoPlazoRequest;
+use App\Http\Requests\UpdateTipoPlazoRequest;
+use App\Models\TipoPlazo;
 
-class BarrioController extends Controller{
+class TipoPlazoController extends Controller{
     private $c_reg_panel = 25;
     private $c_reg_lista = 10;
     /**
@@ -15,17 +15,14 @@ class BarrioController extends Controller{
      * @return \Illuminate\Http\Response
      */
     public function index($pag=0){
-        $c_paginas = ceil(barrio::count()/$this->c_reg_panel);
+        $c_paginas = ceil(TipoPlazo::count()/$this->c_reg_panel);
         $salto = $pag*$this->c_reg_panel;
 
-        $query = barrio::select("id","nombre","observacion");
-        // if($busqueda !=""){
-        //     $query = $query->where("usuario.nombre_usuario","like",$busqueda)->orWhere("usuario.nombre","like",$busqueda)->orWhere("usuario.apellido","like",$busqueda)->orWhere("usuario.apellido","like",$busqueda);
-        // }
-        $query = $query->orderBy("nombre");
+        $query = TipoPlazo::select("id","descripcion","factor_divisor","dias_vencimiento","interes");
+
+        $query = $query->orderBy("dias_vencimiento");
 
         return ["cod"=>"00","msg"=>"todo correcto","pagina_actual"=>$pag,"cantidad_paginas"=>$c_paginas,"datos"=>$query->get()];
-
     }
 
     /**
@@ -34,22 +31,25 @@ class BarrioController extends Controller{
      * @return \Illuminate\Http\Response
      */
     public function create(){
+        //
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StorebarrioRequest  $request
+     * @param  \App\Http\Requests\StoreTipoPlazoRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StorebarrioRequest $request){
+    public function store(StoreTipoPlazoRequest $request){
         try {
             $campos = $this->validate($request,[
-                "nombre"=>"required|string",
-                "observacion"=>"string"
+                "descripcion"=>"required|string",
+                "factor_divisor"=>"required|integer",
+                "dias_vencimiento"=>"required|integer",
+                "interes"=>"required|numeric"
             ]);
 
-            $barrio = barrio::create($campos);
+            $tipoPlazo = TipoPlazo::create($campos);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             return ["cod"=>"06","msg"=>"Error al insertar los datos","errores"=>[$e->errors() ]];
@@ -63,47 +63,49 @@ class BarrioController extends Controller{
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\barrio  $barrio
+     * @param  \App\Models\TipoPlazo  $tipoPlazo
      * @return \Illuminate\Http\Response
      */
     public function show($id){
         try {
-            $barrio = barrio::findOrfail($id);
-            return ["cod"=>"00","msg"=>"todo correcto","datos"=>[$barrio]];
+            $tipoPlazo = TipoPlazo::findOrfail($id);
+            return ["cod"=>"00","msg"=>"todo correcto","datos"=>[$tipoPlazo]];
         } catch( ModelNotFoundException $e){
             return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
         } catch (\Exception $e) {
             return ["cod"=>"99","msg"=>"Error general","error"=>$e->getMessage()];
         }
+
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\barrio  $barrio
+     * @param  \App\Models\TipoPlazo  $tipoPlazo
      * @return \Illuminate\Http\Response
      */
-    public function edit(barrio $barrio)
-    {
+    public function edit(TipoPlazo $tipoPlazo){
         //
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdatebarrioRequest  $request
-     * @param  \App\Models\barrio  $barrio
+     * @param  \App\Http\Requests\UpdateTipoPlazoRequest  $request
+     * @param  \App\Models\TipoPlazo  $tipoPlazo
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdatebarrioRequest $request, $id){
+    public function update(UpdateTipoPlazoRequest $request, $id){
         try {
-            $barrio = barrio::findOrfail($id);
+            $tipoPlazo = TipoPlazo::findOrfail($id);
             $campos = $this->validate($request,[
-                "nombre"=>"required|string",
-                "observacion"=>"string"
+                "descripcion"=>"required|string",
+                "factor_divisor"=>"required|integer",
+                "dias_vencimiento"=>"required|integer",
+                "interes"=>"required|numeric"
             ]);
 
-            $barrio->update($campos);
+            $tipoPlazo->update($campos);
             return ["cod"=>"00","msg"=>"todo correcto"];
 
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -117,12 +119,12 @@ class BarrioController extends Controller{
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\barrio  $barrio
+     * @param  \App\Models\TipoPlazo  $tipoPlazo
      * @return \Illuminate\Http\Response
      */
     public function destroy($id){
         try {
-            $barrio = barrio::where("id",$id);
+            $barrio = TipoPlazo::where("id",$id);
             $barrio->delete();
 
             return ["cod"=>"00","msg"=>"todo correcto"];

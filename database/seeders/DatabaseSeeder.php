@@ -11,8 +11,17 @@ class DatabaseSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
-    {
+    public function run(){
         // \App\Models\User::factory(10)->create();
+        $this->call([
+            BarrioSemilla::class,
+            EstadoCivilSemilla::class,
+            EstadoSolicitud::class,
+            TipoDocumentoCliente::class,
+            TipoPlazo::class,
+            PerfilClienteParametros::class,
+            EstadoCuota::class,
+            ConceptosCaja::class
+        ]);
     }
 }

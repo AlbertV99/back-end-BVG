@@ -2,29 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StorebarrioRequest;
-use App\Http\Requests\UpdatebarrioRequest;
-use App\Models\barrio;
+use App\Models\ConceptosCaja;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreConceptosCajaRequest;
+use App\Http\Requests\UpdateConceptosCajaRequest;
 
-class BarrioController extends Controller{
-    private $c_reg_panel = 25;
-    private $c_reg_lista = 10;
+class ConceptosCajaController extends Controller
+{
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($pag=0){
-        $c_paginas = ceil(barrio::count()/$this->c_reg_panel);
-        $salto = $pag*$this->c_reg_panel;
+    public function index($pag=0)
+    {
 
-        $query = barrio::select("id","nombre","observacion");
+        $query = ConceptosCaja::select("id","tipo","descripcion");
         // if($busqueda !=""){
         //     $query = $query->where("usuario.nombre_usuario","like",$busqueda)->orWhere("usuario.nombre","like",$busqueda)->orWhere("usuario.apellido","like",$busqueda)->orWhere("usuario.apellido","like",$busqueda);
         // }
-        $query = $query->orderBy("nombre");
+        $query = $query->orderBy("descripcion");
 
-        return ["cod"=>"00","msg"=>"todo correcto","pagina_actual"=>$pag,"cantidad_paginas"=>$c_paginas,"datos"=>$query->get()];
+        return ["cod"=>"00","msg"=>"todo correcto","datos"=>$query->get()];
 
     }
 
@@ -33,23 +32,31 @@ class BarrioController extends Controller{
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(){
+    public function create()
+    {
+        //
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StorebarrioRequest  $request
+     * @param  \App\Http\Requests\StoreConceptosCajaRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StorebarrioRequest $request){
+    public function store(StoreConceptosCajaRequest $request)
+    {
         try {
-            $campos = $this->validate($request,[
-                "nombre"=>"required|string",
-                "observacion"=>"string"
+            // $campos = $this->validate($request,[
+            //     "tipo"=>"required|string",
+            //     "descripcion"=> "required|string|regex:/(ENTRADA)"
+            // ]);
+
+            $campos = $request->validate([
+                "tipo"=>['required','string' , 'regex:/ENTRADA|SALIDA/'],
+                "descripcion"=> "required|string"
             ]);
 
-            $barrio = barrio::create($campos);
+            $ConceptosCaja = ConceptosCaja::create($campos);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             return ["cod"=>"06","msg"=>"Error al insertar los datos","errores"=>[$e->errors() ]];
@@ -63,13 +70,14 @@ class BarrioController extends Controller{
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\barrio  $barrio
+     * @param  \App\Models\ConceptosCaja  $conceptosCaja
      * @return \Illuminate\Http\Response
      */
-    public function show($id){
+    public function show($id)
+    {
         try {
-            $barrio = barrio::findOrfail($id);
-            return ["cod"=>"00","msg"=>"todo correcto","datos"=>[$barrio]];
+            $ConceptosCaja = ConceptosCaja::findOrfail($id);
+            return ["cod"=>"00","msg"=>"todo correcto","datos"=>[$ConceptosCaja]];
         } catch( ModelNotFoundException $e){
             return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
         } catch (\Exception $e) {
@@ -80,10 +88,10 @@ class BarrioController extends Controller{
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\barrio  $barrio
+     * @param  \App\Models\ConceptosCaja  $conceptosCaja
      * @return \Illuminate\Http\Response
      */
-    public function edit(barrio $barrio)
+    public function edit(ConceptosCaja $conceptosCaja)
     {
         //
     }
@@ -91,19 +99,20 @@ class BarrioController extends Controller{
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdatebarrioRequest  $request
-     * @param  \App\Models\barrio  $barrio
+     * @param  \App\Http\Requests\UpdateConceptosCajaRequest  $request
+     * @param  \App\Models\ConceptosCaja  $conceptosCaja
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdatebarrioRequest $request, $id){
+    public function update(UpdateConceptosCajaRequest $request, $id)
+    {
         try {
-            $barrio = barrio::findOrfail($id);
+            $ConceptosCaja = ConceptosCaja::findOrfail($id);
             $campos = $this->validate($request,[
-                "nombre"=>"required|string",
-                "observacion"=>"string"
+                "tipo"=>"required|string",
+                "descripcion"=>"required|string"
             ]);
 
-            $barrio->update($campos);
+            $ConceptosCaja->update($campos);
             return ["cod"=>"00","msg"=>"todo correcto"];
 
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -117,13 +126,14 @@ class BarrioController extends Controller{
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\barrio  $barrio
+     * @param  \App\Models\ConceptosCaja  $conceptosCaja
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id){
+    public function destroy($id)
+    {
         try {
-            $barrio = barrio::where("id",$id);
-            $barrio->delete();
+            $ConceptosCaja = ConceptosCaja::where("id",$id);
+            $ConceptosCaja->delete();
 
             return ["cod"=>"00","msg"=>"todo correcto"];
         } catch (\Exception $e) {
