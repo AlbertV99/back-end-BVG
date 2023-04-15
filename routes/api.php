@@ -10,6 +10,9 @@ use App\Http\Controllers\TipoDocumentoController;
 use App\Http\Controllers\TipoPlazoController;
 use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\CajaController;
+use App\Http\Controllers\ConceptosCajaController;
+use App\Http\Controllers\EstadoCuotaController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -30,7 +33,6 @@ Route::middleware(['cors'])->group(function () {
     Route::delete('/cliente/{id}',[ClienteController::class, 'destroy']);
 
     # PERFIL CLIENTE
-
     Route::get('/perfilCliente/{id}',[ClienteController::class, 'obtenerPerfil']);
 
     # ESTADO CIVIL
@@ -41,6 +43,9 @@ Route::middleware(['cors'])->group(function () {
 
     # ESTADOS SOLICITUD
     Route::get('/tipoDocumento',[TipoDocumentoController::class, 'index']);
+
+    #ESTADOS CUOTA
+    Route::get('/estadoCuota',[EstadoCuotaController::class, 'index']);
 
     # BARRIO
     Route::get('/barrio/{pag?}',[BarrioController::class, 'index']);
@@ -63,6 +68,12 @@ Route::middleware(['cors'])->group(function () {
     Route::put('/solicitud/{id}',[SolicitudController::class, 'update']);
     Route::delete('/solicitud/{id}',[SolicitudController::class, 'destroy']);
 
+    #CONCEPTO CAJA
+    Route::get('/conceptoCaja/{pag?}',[ConceptosCajaController::class, 'index']);
+    Route::get('/conceptoCaja/u/{id}',[ConceptosCajaController::class, 'show']);
+    Route::post('/conceptoCaja/',[ConceptosCajaController::class, 'store']);
+    Route::put('/conceptoCaja/{id}',[ConceptosCajaController::class, 'update']);
+    Route::delete('/conceptoCaja/{id}',[ConceptosCajaController::class, 'destroy']);
 
     #CAJA
     Route::get('/caja/{pag?}',[CajaController::class, 'index']);
@@ -73,6 +84,7 @@ Route::middleware(['cors'])->group(function () {
     Route::post('/cierre/caja/{id}',[CajaController::class, 'cerrarCaja']);
     Route::put('/caja/{id}',[CajaController::class, 'update']);
     Route::delete('/caja/{id}',[CajaController::class, 'destroy']);
+
 });
 // Route::apiResource('cliente', ClienteController::class);
 

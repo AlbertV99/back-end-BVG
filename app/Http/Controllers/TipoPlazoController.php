@@ -20,7 +20,7 @@ class TipoPlazoController extends Controller{
 
         $query = TipoPlazo::select("id","descripcion","factor_divisor","dias_vencimiento","interes");
 
-        $query = $query->skip($salto)->take($this->c_reg_panel)->orderBy("dias_vencimiento");
+        $query = $query->orderBy("dias_vencimiento");
 
         return ["cod"=>"00","msg"=>"todo correcto","pagina_actual"=>$pag,"cantidad_paginas"=>$c_paginas,"datos"=>$query->get()];
     }
