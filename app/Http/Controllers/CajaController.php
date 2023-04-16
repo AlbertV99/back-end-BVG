@@ -157,7 +157,7 @@ class CajaController extends Controller{
             // realizar la apertura de la caja ->create )
             // actualizar el saldo
             $caja->update(['saldo_caja'=>$request->input('saldo')]);
-            return ["cod"=>"00","msg"=>"Caja abierta Correctamente"];
+            return ["cod"=>"00","msg"=>"Caja abierta Correctamente","datos"=>["id"=>$caja->id,"descripcion"=>$caja->descripcion]];
         } catch( ModelNotFoundException $e){
             return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
         } catch (\Exception $e) {
@@ -186,7 +186,7 @@ class CajaController extends Controller{
             $caja->estadoCaja->last()->save();
             $caja->update(['saldo_caja'=>0]);
 
-            return ["cod"=>"11","msg"=>"Caja cerrada"];
+            return ["cod"=>"00","msg"=>"Caja cerrada"];
         } catch( ModelNotFoundException $e){
             return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
         } catch (\Exception $e) {
