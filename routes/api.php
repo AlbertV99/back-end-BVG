@@ -9,6 +9,7 @@ use App\Http\Controllers\EstadoSolicitudController;
 use App\Http\Controllers\TipoDocumentoController;
 use App\Http\Controllers\TipoPlazoController;
 use App\Http\Controllers\SolicitudController;
+use App\Http\Controllers\CajaController;
 use App\Http\Controllers\ConceptosCajaController;
 use App\Http\Controllers\EstadoCuotaController;
 use App\Http\Controllers\OperacionesController;
@@ -80,6 +81,16 @@ Route::middleware(['cors'])->group(function () {
     Route::get('/operaciones/u/{id}',[OperacionesController::class, 'show']);
     Route::post('/operaciones/',[OperacionesController::class, 'store']);
     
+    #CAJA
+    Route::get('/caja/{pag?}',[CajaController::class, 'index']);
+    Route::get('/caja/u/{id}',[CajaController::class, 'show']);
+    Route::post('/caja/',[CajaController::class, 'store']);
+    Route::get('/estado/caja/{id}/{uid}',[CajaController::class, 'estadoCaja']);
+    Route::post('/apertura/caja/{id}',[CajaController::class, 'abrirCaja']);
+    Route::post('/cierre/caja/{id}',[CajaController::class, 'cerrarCaja']);
+    Route::put('/caja/{id}',[CajaController::class, 'update']);
+    Route::delete('/caja/{id}',[CajaController::class, 'destroy']);
+
 });
 // Route::apiResource('cliente', ClienteController::class);
 

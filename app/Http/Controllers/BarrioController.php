@@ -122,10 +122,12 @@ class BarrioController extends Controller{
      */
     public function destroy($id){
         try {
-            $barrio = barrio::where("id",$id);
+            $barrio = barrio::findOrfail($id);
             $barrio->delete();
 
             return ["cod"=>"00","msg"=>"todo correcto"];
+        } catch( ModelNotFoundException $e){
+            return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
         } catch (\Exception $e) {
             return ["cod"=>"08","msg"=>"Error al eliminar el registro","errores"=>[$e->getMessage() ]];
         }
