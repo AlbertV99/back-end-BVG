@@ -66,7 +66,7 @@ Route::middleware(['cors'])->group(function () {
     Route::get('/solicitud/{estado}/{pag?}/',[SolicitudController::class, 'index']);
     Route::get('/solicitudUnico/{id}',[SolicitudController::class, 'show']);
     Route::post('/solicitud/',[SolicitudController::class, 'store']);
-    Route::put('/solicitud/{id}',[SolicitudController::class, 'update']);
+    Route::put('/solicitud/{id}',[SolicitudController::class, 'actualizarReferencias']);
     Route::delete('/solicitud/{id}',[SolicitudController::class, 'destroy']);
 
     #CONCEPTO CAJA

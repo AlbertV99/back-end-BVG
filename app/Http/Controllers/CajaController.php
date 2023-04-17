@@ -125,7 +125,7 @@ class CajaController extends Controller{
 
     public function abrirCaja(UpdateCajaRequest $request,$id){
         try {
-            \date_default_timezone_set('Australia/Melbourne');
+            \date_default_timezone_set('America/Santiago');
             $date = \date('Y-m-d h:i:s a', \time());
             $caja = Caja::findOrfail($id);
             // $caja->estadoCaja;
@@ -146,7 +146,7 @@ class CajaController extends Controller{
             //     return ["cod"=>"12","msg"=>"Pin incorrecto para la caja"];
             // }
             $aperturaData = [
-                'usuario_id'=>'2',
+                'usuario_id'=>'1',
                 'saldo_apertura'=>$campos['saldo'],
                 'fecha_apertura'=>$date,
                 'estado'=>1
@@ -157,7 +157,7 @@ class CajaController extends Controller{
             // realizar la apertura de la caja ->create )
             // actualizar el saldo
             $caja->update(['saldo_caja'=>$request->input('saldo')]);
-            return ["cod"=>"00","msg"=>"Caja abierta Correctamente"];
+            return ["cod"=>"00","msg"=>"Caja abierta Correctamente","datos"=>["id"=>$caja->id,"descripcion"=>$caja->descripcion]];
         } catch( ModelNotFoundException $e){
             return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
         } catch (\Exception $e) {
@@ -186,7 +186,7 @@ class CajaController extends Controller{
             $caja->estadoCaja->last()->save();
             $caja->update(['saldo_caja'=>0]);
 
-            return ["cod"=>"11","msg"=>"Caja cerrada"];
+            return ["cod"=>"00","msg"=>"Caja cerrada"];
         } catch( ModelNotFoundException $e){
             return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
         } catch (\Exception $e) {
