@@ -20,8 +20,8 @@ class CreateSolicitudTable extends Migration
             $table->integer('ingresos_actuales');
             $table->integer('monto_credito');
             $table->integer('gastos_administrativos');
-            $table->integer('interes');
-            $table->integer('interes_moratorio');
+            $table->decimal('interes');
+            $table->decimal('interes_moratorio');
             $table->unsignedBigInteger('tipo_plazo');
             $table->foreign('tipo_plazo')->references('id')->on('tipo_plazo');
             $table->string('observacion')->nullable();

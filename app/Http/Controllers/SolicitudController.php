@@ -75,7 +75,7 @@ class SolicitudController extends Controller{
 
             $solicitud = Solicitud::create($campos);
             foreach ($request->input('ref_personales') as $key => $value) {
-                $camposRef = ['cliente_id'=>$value['id_cliente'],     'relacion_cliente'=>$value['relacion']];
+                $camposRef = ['cliente_id'=>$value['cliente_id'],     'relacion_cliente'=>$value['relacion_cliente']];
                 $refPersTemp = new ReferenciaPersonal($camposRef);
                 $solicitud->referenciaPersonal()->save($refPersTemp);
             }
@@ -105,6 +105,7 @@ class SolicitudController extends Controller{
         return ["cod"=>"00","msg"=>"todo correcto"];
     }
 
+
     /**
      * Display the specified resource.
      *
@@ -119,7 +120,12 @@ class SolicitudController extends Controller{
             $solicitud->historialEstado;
             $solicitud->referenciaPersonal;
             $solicitud->referenciaComercial;
-
+            foreach ($solicitud->historialEstado as $historial) {
+                $historial->estadoSolicitud;
+            }
+            foreach ($solicitud->referenciaPersonal as $refPersonal) {
+                $refPersonal->cliente;
+            }
             $analisis = $this->calculosAnalisis($id);
 
             // $solicitud->put('analisis', $analisis);
@@ -151,6 +157,70 @@ class SolicitudController extends Controller{
      */
     public function update(UpdateSolicitudRequest $request, Solicitud $solicitud){
         //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \App\Http\Requests\UpdateSolicitudRequest  $request
+     * @param  \App\Models\Solicitud  $solicitud
+     * @return \Illuminate\Http\Response
+     */
+    public function actualizarReferencias(UpdateSolicitudRequest $request,$id){
+        try {
+            $solicitud = Solicitud::findOrfail($id);
+            $refsPersBD = $solicitud->referenciaPersonal;
+            $refsComBD = $solicitud->referenciaComercial;
+            if( count($request->input('ref_personales'))<1 ){
+                throw  \Illuminate\Validation\ValidationException::withMessages(['Referencia Personal' => ['Debe completar al menos una referencia personal']]);
+            }
+            if( count($request->input('ref_comerciales'))<1 ){
+                throw  \Illuminate\Validation\ValidationException::withMessages(['Referencia Comercial' => ['Debe completar al menos una referencia comercial']]);
+            }
+
+            $refPersonalPeticion = $request->input('ref_personales');
+            $refComercialPeticion = $request->input('ref_comerciales');
+
+            foreach ($refPersonalPeticion as $referencia) {
+                $b= 1;
+                foreach ($refsPersBD as $refDB) {
+                    if($referencia['cliente_id'] == $refDB['cliente_id']){
+                        $b=0;
+                    }
+                }
+                if($b){
+                    $refPersTemp = new ReferenciaPersonal($referencia);
+                    $solicitud->referenciaPersonal()->save($refPersTemp);
+                }
+
+            }
+
+            foreach ($refComercialPeticion as $referencia) {
+                $b= 1;
+                foreach ($refsComBD as $refDB) {
+                    if(($referencia['entidad'] == $refDB['entidad'])
+                    && ($referencia['estado'] == $refDB['estado'])
+                    && ($referencia['monto_cuota'] == $refDB['monto_cuota'])
+                    && ($referencia['cuotas_pendientes'] == $refDB['cuotas_pendientes'])
+                    && ($referencia['cuotas_totales'] == $refDB['cuotas_totales'])){
+                        $b=0;
+                    }
+                }
+                if($b){
+                    $refPersTemp = new ReferenciaComercial($referencia);
+                    $solicitud->referenciaComercial()->save($refPersTemp);
+                }
+
+            }
+
+            return ["cod"=>"00","msg"=>"Actualización Correcta"];
+        } catch( ModelNotFoundException $e){
+            return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
+        } catch (\Exception $e) {
+            return ["cod"=>"99","msg"=>"no existen datos","error"=>$e->getMessage()];
+        }
+
+
     }
 
     /**
