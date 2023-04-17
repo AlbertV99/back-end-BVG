@@ -125,7 +125,7 @@ class CajaController extends Controller{
 
     public function abrirCaja(UpdateCajaRequest $request,$id){
         try {
-            \date_default_timezone_set('Australia/Melbourne');
+            \date_default_timezone_set('America/Santiago');
             $date = \date('Y-m-d h:i:s a', \time());
             $caja = Caja::findOrfail($id);
             // $caja->estadoCaja;
