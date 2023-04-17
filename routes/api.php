@@ -12,6 +12,7 @@ use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\CajaController;
 use App\Http\Controllers\ConceptosCajaController;
 use App\Http\Controllers\EstadoCuotaController;
+use App\Http\Controllers\OperacionesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -75,6 +76,11 @@ Route::middleware(['cors'])->group(function () {
     Route::put('/conceptoCaja/{id}',[ConceptosCajaController::class, 'update']);
     Route::delete('/conceptoCaja/{id}',[ConceptosCajaController::class, 'destroy']);
 
+    #OPERACIONES
+    Route::get('/operaciones/{pag?}',[OperacionesController::class, 'index']);
+    Route::get('/operaciones/u/{id}',[OperacionesController::class, 'show']);
+    Route::post('/operaciones/',[OperacionesController::class, 'store']);
+    
     #CAJA
     Route::get('/caja/{pag?}',[CajaController::class, 'index']);
     Route::get('/caja/u/{id}',[CajaController::class, 'show']);

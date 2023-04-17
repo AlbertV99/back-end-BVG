@@ -6,6 +6,7 @@ use App\Models\ConceptosCaja;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreConceptosCajaRequest;
 use App\Http\Requests\UpdateConceptosCajaRequest;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ConceptosCajaController extends Controller
 {
