@@ -9,6 +9,9 @@ use App\Http\Requests\UpdateOperacionesRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\ConceptosCaja;
 use App\Models\Solicitud;
+use App\Models\Caja;
+use App\Models\AperturaCaja;
+use App\Models\HistorialEstado;
 
 class OperacionesController extends Controller
 {
@@ -54,39 +57,62 @@ class OperacionesController extends Controller
     /*
      VALIDACIONES
         1- Verificar que la solicitud si o si en estado aprobado cualquier otro estado nel pastel [listo]
-        2- Verificar que la caja tenga monto necesario para dar, este abierta
-        3- Ver que el usuario que quiere hacer la transaccion sea el que abrio la caja previamente 
+        2- Verificar que la caja tenga monto necesario para dar, este abierta [listo]
+        3- Ver que el usuario que quiere hacer la transaccion sea el que abrio la caja previamente [listo]
      PROCESOS
-        1- Marcar la solicitud como desembolsado 
-        2- Restar del saldo de la caja 
-        3- Calcular el saldo anterior y el saldo posterior (sacar de la peticion post)
+        1- Marcar la solicitud como desembolsado [listo]
+        2- Restar del saldo de la caja [listo]
+        3- Calcular el saldo anterior y el saldo posterior (sacar de la peticion post) [listo]
         4- Obtener la fecha de operacion desde el servidor
     */
     public function store(StoreOperacionesRequest $request)
     {
         try {
+
+            \date_default_timezone_set('America/Santiago');
+            $date = \date('Y-m-d h:i:s a', \time());
+
             $campos = $this->validate($request,[
                 "caja"=>"required|integer",
                 "concepto"=>"integer",
-                "saldo_anterior"=>"required|integer",
                 "monto"=>"required|integer",
-                "saldo_posterior"=>"required|integer",
-                "fecha_operacion"=>"required|date",
                 "solicitud_id"=>"required|numeric",
                 "cuota_id"=>"string",
                 "usuario_id"=>"required|integer",
             ]);
+            
+            $caja = Caja::findOrfail($campos["caja"]);
+            $monto = $caja->saldo_actual;
+            $aperturaCaja = $caja->estadoCaja->last()->estado;
+            $usuario = $caja->estadoCaja->last()->usuario_id;
+            //return["usuario"=>$usuario];
+            if($monto < $campos["monto"]){
+                return ["cod"=>"11","msg"=>"No tiene monto necesario en caja"];
+            }
+            if($aperturaCaja != 1){
+                return ["cod"=>"11","msg"=>"Caja cerrada"];
+            }
+            if($usuario != $campos["usuario_id"]){
+                return ["cod"=>"11","msg"=>"Usuario no ha abierto la caja "];
+            }
 
             $campos['concepto']= 2;
             $solicitud = Solicitud::findOrfail($campos["solicitud_id"]);
-            // $solicitud->estadosolicitud;
             $estado = $solicitud->historialEstado->last()->estado_id;
             if($estado === null ||  $estado != 3){
                 return ["cod"=>"11","msg"=>"El estado no es APROBADO"];
             }
 
-
+            $saldo_anterior = $monto;
+            $saldo_posterior = $monto - $campos["monto"];
+            $campos["saldo_anterior"] = $saldo_anterior;
+            $campos["saldo_posterior"] = $saldo_posterior;
+            $campos["fecha_operacion"] =$date;
+            $caja->update(["saldo_actual"=>$saldo_posterior]);
             $Operaciones = Operaciones::create($campos);
+            $historial = new HistorialEstado(["estado_id"=>5,"observacion_cambio"=>"Desmbolso de la solicitud"]);
+            $solicitud->historialEstado()->save($historial);
+
         } catch (\Illuminate\Validation\ValidationException $e) {
             return ["cod"=>"06","msg"=>"Error al insertar los datos","errores"=>[$e->errors() ]];
 

@@ -22,3 +22,4 @@ class Operaciones extends Model
         'usuario_id',
     ];
 }
+
