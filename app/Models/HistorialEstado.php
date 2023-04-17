@@ -19,6 +19,6 @@ class HistorialEstado extends Model
     }
 
     public function estadoSolicitud(){
-        return $this->belongsTo(EstadoSolicitud::class);
+        return $this->belongsTo(EstadoSolicitud::class,"estado_id","id");
     }
 }

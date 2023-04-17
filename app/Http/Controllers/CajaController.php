@@ -146,7 +146,7 @@ class CajaController extends Controller{
             //     return ["cod"=>"12","msg"=>"Pin incorrecto para la caja"];
             // }
             $aperturaData = [
-                'usuario_id'=>'2',
+                'usuario_id'=>'1',
                 'saldo_apertura'=>$campos['saldo'],
                 'fecha_apertura'=>$date,
                 'estado'=>1
