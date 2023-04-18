@@ -15,8 +15,8 @@ class ConceptosCaja extends Seeder
     public function run()
     {
         $lista = [
-            ["Entrada","Pago Cuota"],
-            ["Salida", "Desembolso"]
+            ["ENTRADA","Pago Cuota"],
+            ["SALIDA", "Desembolso"]
         ];
         foreach ($lista as $key => $value) {
             ConceptosCajaModel::create([
