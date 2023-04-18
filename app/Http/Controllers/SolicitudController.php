@@ -171,6 +171,10 @@ class SolicitudController extends Controller{
             $solicitud = Solicitud::findOrfail($id);
             $refsPersBD = $solicitud->referenciaPersonal;
             $refsComBD = $solicitud->referenciaComercial;
+            $campos = $this->validate($request,[
+                "estado_id"=>'integer',
+                "observacion"=>'string'
+            ]);
             if( count($request->input('ref_personales'))<1 ){
                 throw  \Illuminate\Validation\ValidationException::withMessages(['Referencia Personal' => ['Debe completar al menos una referencia personal']]);
             }
@@ -213,6 +217,19 @@ class SolicitudController extends Controller{
 
             }
 
+            $estado_actual = $solicitud->historialEstado->last()->estado_id;
+
+            if ($estado_actual != $campos["estado_id"]) {
+                if( $this->validarEstado($estado_actual,$campos["estado_id"])) {
+                    $historial = new HistorialEstado(["estado_id"=>$campos["estado_id"],"observacion_cambio"=>$campos['observacion']]);
+                    $solicitud->historialEstado()->save($historial);
+
+                }else{
+                    return ["cod"=>"12","msg"=>"Estado no disponible para el cambio"];
+                }
+
+            }
+
             return ["cod"=>"00","msg"=>"Actualización Correcta"];
         } catch( ModelNotFoundException $e){
             return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
@@ -223,6 +240,38 @@ class SolicitudController extends Controller{
 
     }
 
+    public function cambiarEstado(UpdateSolicitudRequest $request,$id){
+        $solicitud = Solicitud::findOrfail($id);
+        $estado_actual = $solicitud->historialEstado->last()->estado_id;
+        $campos = $this->validate($request,[
+            "estado_id"=>'required|integer',
+            "observacion"=>'required|string'
+        ]);
+
+        if($this->validarEstado($estado_actual,$campos["estado_id"])) {
+            $historial = new HistorialEstado(["estado_id"=>$campos["estado_id"],"observacion_cambio"=>$campos['observacion']]);
+            $solicitud->historialEstado()->save($historial);
+            return ["cod"=>"00","msg"=>"Cambio de estado realizado Correctamente"];
+        }else{
+            return ["cod"=>"12","msg"=>"Estado no disponible para el cambio"];
+
+        }
+
+    }
+
+    private function validarEstado($oldEstado,$newEstado){
+        $estado = EstadoSolicitud::findOrfail($oldEstado);
+        $estado->regla;
+        $resp = false;
+
+        foreach ($estado->regla as $regla) {
+            if($regla->estado_posible == $newEstado){
+                $resp=true;
+                break;
+            }
+        }
+         return $resp;
+    }
     /**
      * Remove the specified resource from storage.
      *
