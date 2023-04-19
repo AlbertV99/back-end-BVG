@@ -69,6 +69,8 @@ Route::middleware(['cors'])->group(function () {
     Route::put('/solicitud/{id}',[SolicitudController::class, 'actualizarReferencias']);
     Route::put('/solicitud/{id}/estado',[SolicitudController::class, 'cambiarEstado']);
     Route::delete('/solicitud/{id}',[SolicitudController::class, 'destroy']);
+    Route::get('/solicitud/{estado}/cliente/{id}/',[SolicitudController::class, 'filtroSolicitud']);
+    
 
 
     #CONCEPTO CAJA
