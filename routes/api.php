@@ -49,11 +49,14 @@ Route::middleware(['cors'])->group(function () {
     Route::get('/estadoCuota',[EstadoCuotaController::class, 'index']);
 
     # BARRIO
-    Route::get('/barrio/{pag?}',[BarrioController::class, 'index']);
-    Route::get('/barrio/u/{id}',[BarrioController::class, 'show']);
-    Route::post('/barrio/',[BarrioController::class, 'store']);
-    Route::put('/barrio/{id}',[BarrioController::class, 'update']);
-    Route::delete('/barrio/{id}',[BarrioController::class, 'destroy']);
+    Route::controller(BarrioController::class)->group(function () {
+        Route::get('/barrio/{pag?}', 'index');
+        Route::get('/barrio/u/{id}', 'show');
+        Route::post('/barrio/', 'store');
+        Route::put('/barrio/{id}', 'update');
+        Route::delete('/barrio/{id}', 'destroy');
+    });
+
 
     #TIPOS PLAZOS
     Route::get('/tipoPlazo/{pag?}',[TipoPlazoController::class, 'index']);
@@ -63,12 +66,17 @@ Route::middleware(['cors'])->group(function () {
     Route::delete('/tipoPlazo/{id}',[TipoPlazoController::class, 'destroy']);
 
     #SOLICITUDES
-    Route::get('/solicitud/{estado}/{pag?}/',[SolicitudController::class, 'index']);
-    Route::get('/solicitudUnico/{id}',[SolicitudController::class, 'show']);
-    Route::post('/solicitud/',[SolicitudController::class, 'store']);
-    Route::put('/solicitud/{id}',[SolicitudController::class, 'actualizarReferencias']);
-    Route::put('/solicitud/{id}/estado',[SolicitudController::class, 'cambiarEstado']);
-    Route::delete('/solicitud/{id}',[SolicitudController::class, 'destroy']);
+    Route::controller(SolicitudController::class)->group(function () {
+        Route::get('/solicitud/{estado}/{pag?}/','index');
+        Route::get('/solicitudUnico/{id}','show');
+        Route::get('/solicitud/cuotero/interes/{idPlazo}/cuotas/{cuotas}/monto/{monto}','calcularCuotero');
+
+        Route::post('/solicitud/','store');
+        Route::put('/solicitud/{id}','actualizarReferencias');
+        Route::put('/solicitud/{id}/estado','cambiarEstado');
+        Route::delete('/solicitud/{id}','destroy');
+    });
+
 
 
     #CONCEPTO CAJA
@@ -82,7 +90,7 @@ Route::middleware(['cors'])->group(function () {
     Route::get('/operaciones/{pag?}',[OperacionesController::class, 'index']);
     Route::get('/operaciones/u/{id}',[OperacionesController::class, 'show']);
     Route::post('/operaciones/',[OperacionesController::class, 'store']);
-    
+
     #CAJA
     Route::get('/caja/{pag?}',[CajaController::class, 'index']);
     Route::get('/caja/u/{id}',[CajaController::class, 'show']);
@@ -92,6 +100,11 @@ Route::middleware(['cors'])->group(function () {
     Route::post('/cierre/caja/{id}',[CajaController::class, 'cerrarCaja']);
     Route::put('/caja/{id}',[CajaController::class, 'update']);
     Route::delete('/caja/{id}',[CajaController::class, 'destroy']);
+
+    #RUTA INEXISTENTE
+    Route::fallback(function () {
+        return ["cod"=>"99","msg"=>"Error general"];
+    });
 
 });
 // Route::apiResource('cliente', ClienteController::class);

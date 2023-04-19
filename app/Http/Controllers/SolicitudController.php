@@ -9,6 +9,7 @@ use App\Models\ReferenciaPersonal;
 use App\Models\ReferenciaComercial;
 use App\Models\EstadoSolicitud;
 use App\Models\HistorialEstado;
+use App\Models\TipoPlazo;
 
 class SolicitudController extends Controller{
     private $c_reg_panel = 25;
@@ -89,11 +90,12 @@ class SolicitudController extends Controller{
                     $solicitud->referenciaComercial()->save($refPersTemp);
                 }
             }
-            $pendiente = EstadoSolicitud::where("descripcion","Pendiente")->get();
+            $pendiente = EstadoSolicitud::where("descripcion","PENDIENTE")->get();
             $historial = new HistorialEstado(["estado_id"=>$pendiente[0]->id,"observacion_cambio"=>"Creacion de Solicitud"]);
 
             $solicitud->historialEstado()->save($historial);
 
+            return ["cod"=>"00","msg"=>"todo correcto"];
 
 
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -102,7 +104,6 @@ class SolicitudController extends Controller{
         } catch (\Exception $e) {
             return ["cod"=>"05","msg"=>"Error al insertar los datos","error"=>$e->getMessage()];
         }
-        return ["cod"=>"00","msg"=>"todo correcto"];
     }
 
 
@@ -127,10 +128,15 @@ class SolicitudController extends Controller{
                 $refPersonal->cliente;
             }
             $analisis = $this->calculosAnalisis($id);
+            $cuotero = $this->calcularCuotero($solicitud->tipoPlazo->id,"12",$solicitud->monto_credito+$solicitud->gastos_administrativos);
+            $reglas_estado = $solicitud->historialEstado->last()->estadoSolicitud->regla;
+            foreach ($reglas_estado as $regla) {
+                $regla->estadoPosible;
+            }
 
             // $solicitud->put('analisis', $analisis);
 
-            return ["cod"=>"00","msg"=>"todo correcto","analisis"=>$analisis,"datos"=>$solicitud];
+            return ["cod"=>"00","msg"=>"todo correcto","datos"=>["solicitud"=>$solicitud,"analisis"=>$analisis,"cuotero"=>$cuotero['datos'],"reglas"=>$reglas_estado]];
         } catch( ModelNotFoundException $e){
             return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
         } catch (\Exception $e) {
@@ -219,7 +225,7 @@ class SolicitudController extends Controller{
 
             $estado_actual = $solicitud->historialEstado->last()->estado_id;
 
-            if ($estado_actual != $campos["estado_id"]) {
+            if ($estado_actual != $campos["estado_id"] && ($campos["estado_id"] !="") && ($campos["estado_id"] !="0")) {
                 if( $this->validarEstado($estado_actual,$campos["estado_id"])) {
                     $historial = new HistorialEstado(["estado_id"=>$campos["estado_id"],"observacion_cambio"=>$campos['observacion']]);
                     $solicitud->historialEstado()->save($historial);
@@ -241,6 +247,7 @@ class SolicitudController extends Controller{
     }
 
     public function cambiarEstado(UpdateSolicitudRequest $request,$id){
+        $desembolsado = EstadoSolicitud::where("descripcion","DESEMBOLSADO")->get();
         $solicitud = Solicitud::findOrfail($id);
         $estado_actual = $solicitud->historialEstado->last()->estado_id;
         $campos = $this->validate($request,[
@@ -251,6 +258,10 @@ class SolicitudController extends Controller{
         if($this->validarEstado($estado_actual,$campos["estado_id"])) {
             $historial = new HistorialEstado(["estado_id"=>$campos["estado_id"],"observacion_cambio"=>$campos['observacion']]);
             $solicitud->historialEstado()->save($historial);
+            if($campos["estado_id"] == $desembolsado[0]->id){
+                $this->guardarCuotero();
+            }
+
             return ["cod"=>"00","msg"=>"Cambio de estado realizado Correctamente"];
         }else{
             return ["cod"=>"12","msg"=>"Estado no disponible para el cambio"];
@@ -319,4 +330,38 @@ class SolicitudController extends Controller{
 
     }
 
+    public function calcularCuotero($idPlazo,$cuotas,$monto){
+        $cuotero = [];
+        # Conversion de interes al plazo seleccionado
+        $tipoPlazo = TipoPlazo::findOrfail($idPlazo);
+
+        $tasaInteres =  ( ( $tipoPlazo->interes / 100 ) / $tipoPlazo->factor_divisor ) ;
+
+        # factor de amortizacion
+        $factor = ($tasaInteres * pow( 1 + $tasaInteres,$cuotas)) / (pow(1 + $tasaInteres, $cuotas) - 1);;
+
+        # Valor de cuota
+        $montoCuota = round(($monto * $factor),2);
+
+        # Saldo
+        $saldoPendiente = $monto;
+
+        #Proceso para generar cuotero
+        for ( $i = 1; $i <= $cuotas ; $i++) {
+            $interesCuota = round(($saldoPendiente * $tasaInteres),2);
+            $neto = $montoCuota - $interesCuota;
+            $saldoPendiente -= ($montoCuota - $interesCuota);
+
+            $cuotero[]=[
+                "n_cuota"=> $i,
+                "interes"=> number_format($interesCuota, 2,".",""),
+                "neto"=> number_format($neto,2,".",""),
+                "saldo"=>  number_format($neto,2,".",""),
+                "cuota"=>  number_format($montoCuota,2,".",""),
+                "capital"=> number_format($saldoPendiente,2,".","")
+            ];
+
+        }
+        return ["cod"=>"00","msg"=>"todo correcto","montoCuota"=>$montoCuota,"datos"=>$cuotero];
+    }
 }

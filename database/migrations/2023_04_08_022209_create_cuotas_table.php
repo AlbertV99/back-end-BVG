@@ -17,9 +17,12 @@ class CreateCuotasTable extends Migration
             $table->id();
             $table->unsignedBigInteger('solicitud_id');
             $table->foreign('solicitud_id')->references('id')->on('solicitud');
-            $table->integer('importe');
-            $table->integer('saldo');
-            $table->integer('mora');
+            $table->decimal('cuota');
+            $table->decimal('saldo');
+            $table->decimal('interes');
+            $table->decimal('amortizacion');
+            $table->decimal('mora');
+            $table->decimal('capital');
             $table->integer('n_cuota');
             $table->unsignedBigInteger('estado');
             $table->foreign('estado')->references('id')->on('estado_cuota');
