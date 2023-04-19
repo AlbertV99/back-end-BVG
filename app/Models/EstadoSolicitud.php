@@ -16,4 +16,7 @@ class EstadoSolicitud extends Model
     public function historiales(){
         return $this->hasMany(HistorialEstado::class,"estado_id");
     }
+    public function regla(){
+        return $this->hasMany(ReglaEstado::class,"estado_regla");
+    }
 }
