@@ -27,11 +27,14 @@ use App\Http\Controllers\OperacionesController;
 
 Route::middleware(['cors'])->group(function () {
     #CLIENTE
-    Route::get('/cliente/{pag?}',[ClienteController::class, 'index']);
-    Route::get('/cliente/u/{id}',[ClienteController::class, 'show']);
-    Route::post('/cliente/',[ClienteController::class, 'store']);
-    Route::put('/cliente/{id}',[ClienteController::class, 'update']);
-    Route::delete('/cliente/{id}',[ClienteController::class, 'destroy']);
+    Route::controller(ClienteController::class)->group(function () {
+        Route::get('/cliente/{pag?}', 'index');
+        Route::get('/cliente/u/{id}', 'show');
+        Route::post('/cliente/', 'store');
+        Route::put('/cliente/{id}', 'update');
+        Route::delete('/cliente/{id}', 'destroy');
+    });
+
 
     # PERFIL CLIENTE
     Route::get('/perfilCliente/{id}',[ClienteController::class, 'obtenerPerfil']);
@@ -59,18 +62,20 @@ Route::middleware(['cors'])->group(function () {
 
 
     #TIPOS PLAZOS
-    Route::get('/tipoPlazo/{pag?}',[TipoPlazoController::class, 'index']);
-    Route::get('/tipoPlazo/u/{id}',[TipoPlazoController::class, 'show']);
-    Route::post('/tipoPlazo/',[TipoPlazoController::class, 'store']);
-    Route::put('/tipoPlazo/{id}',[TipoPlazoController::class, 'update']);
-    Route::delete('/tipoPlazo/{id}',[TipoPlazoController::class, 'destroy']);
+    Route::controller(SolicitudController::class)->group(function () {
+        Route::get('/tipoPlazo/{pag?}','index');
+        Route::get('/tipoPlazo/u/{id}','show');
+        Route::post('/tipoPlazo/','store');
+        Route::put('/tipoPlazo/{id}','update');
+        Route::delete('/tipoPlazo/{id}','destroy');
+    });
 
     #SOLICITUDES
     Route::controller(SolicitudController::class)->group(function () {
         Route::get('/solicitud/{estado}/{pag?}/','index');
         Route::get('/solicitudUnico/{id}','show');
         Route::get('/solicitud/cuotero/interes/{idPlazo}/cuotas/{cuotas}/monto/{monto}','calcularCuotero');
-
+        
         Route::post('/solicitud/','store');
         Route::put('/solicitud/{id}','actualizarReferencias');
         Route::put('/solicitud/{id}/estado','cambiarEstado');
@@ -80,26 +85,33 @@ Route::middleware(['cors'])->group(function () {
 
 
     #CONCEPTO CAJA
-    Route::get('/conceptoCaja/{pag?}',[ConceptosCajaController::class, 'index']);
-    Route::get('/conceptoCaja/u/{id}',[ConceptosCajaController::class, 'show']);
-    Route::post('/conceptoCaja/',[ConceptosCajaController::class, 'store']);
-    Route::put('/conceptoCaja/{id}',[ConceptosCajaController::class, 'update']);
-    Route::delete('/conceptoCaja/{id}',[ConceptosCajaController::class, 'destroy']);
+    Route::controller(ConceptosCajaController::class)->group(function () {
+        Route::get('/conceptoCaja/{pag?}','index');
+        Route::get('/conceptoCaja/u/{id}','show');
+        Route::post('/conceptoCaja/','store');
+        Route::put('/conceptoCaja/{id}','update');
+        Route::delete('/conceptoCaja/{id}','destroy');
+    }
 
     #OPERACIONES
-    Route::get('/operaciones/{pag?}',[OperacionesController::class, 'index']);
-    Route::get('/operaciones/u/{id}',[OperacionesController::class, 'show']);
-    Route::post('/operaciones/',[OperacionesController::class, 'store']);
+    Route::controller(OperacionesController::class)->group(function () {
+        Route::get('/operaciones/{pag?}', 'index');
+        Route::get('/operaciones/u/{id}', 'show');
+        Route::post('/operaciones/', 'store');
+
+    });
 
     #CAJA
-    Route::get('/caja/{pag?}',[CajaController::class, 'index']);
-    Route::get('/caja/u/{id}',[CajaController::class, 'show']);
-    Route::post('/caja/',[CajaController::class, 'store']);
-    Route::get('/estado/caja/{id}/{uid}',[CajaController::class, 'estadoCaja']);
-    Route::post('/apertura/caja/{id}',[CajaController::class, 'abrirCaja']);
-    Route::post('/cierre/caja/{id}',[CajaController::class, 'cerrarCaja']);
-    Route::put('/caja/{id}',[CajaController::class, 'update']);
-    Route::delete('/caja/{id}',[CajaController::class, 'destroy']);
+    Route::controller(CajaController::class)->group(function () {
+        Route::get('/caja/{pag?}', 'index');
+        Route::get('/caja/u/{id}', 'show');
+        Route::post('/caja/', 'store');
+        Route::get('/estado/caja/{id}/{uid}', 'estadoCaja');
+        Route::post('/apertura/caja/{id}', 'abrirCaja');
+        Route::post('/cierre/caja/{id}', 'cerrarCaja');
+        Route::put('/caja/{id}', 'update');
+        Route::delete('/caja/{id}', 'destroy');
+    ]);
 
     #RUTA INEXISTENTE
     Route::fallback(function () {
