@@ -28,7 +28,7 @@ class OperacionesController extends Controller
         $salto = $pag*$this->c_reg_panel;
 
         $query = Operaciones::select("operacion.id","operacion.caja","operacion.concepto","operacion.saldo_anterior","operacion.monto",
-        "operacion.saldo_posterior","operacion.fecha_operacion","operacion.solicitud_id","operacion.cuota_id","operacion.usuario_id",
+        "operacion.saldo_posterior","operacion.fecha_operacion","operacion.solicitud_id","operacion.usuario_id",
         "caja.descripcion as caja_descripcion","conceptos_caja.descripcion as concepto_caja","usuario.nombre_usuario as nombre_usuario")
         ->join("caja", "caja.id", "operacion.id")
         ->join("conceptos_caja","conceptos_caja.id","operacion.concepto")
@@ -67,18 +67,21 @@ class OperacionesController extends Controller
 
             $campos = $this->validate($request,[
                 "caja"=>"required|integer",
-                "concepto"=>"integer",
                 "monto"=>"required|integer",
                 "solicitud_id"=>"required|numeric",
-                "cuota_id"=>"string",
                 "usuario_id"=>"required|integer",
+                "concepto"=>"interger",
             ]);
             
             $caja = Caja::findOrfail($campos["caja"]);
             $monto = $caja->saldo_actual;
             $aperturaCaja = $caja->estadoCaja->last()->estado;
             $usuario = $caja->estadoCaja->last()->usuario_id;
-            //return["usuario"=>$usuario];
+            $concepto_caja = ConceptosCaja::select('id')
+           ->where('descripcion','=', 'Desembolso');
+           //return["usuario"=>$usuario];
+            $campos["concepto"] =$concepto_caja;
+            $campos['concepto']= 2;
             if($monto < $campos["monto"]){
                 return ["cod"=>"11","msg"=>"No tiene monto necesario en caja"];
             }
@@ -88,8 +91,6 @@ class OperacionesController extends Controller
             if($usuario != $campos["usuario_id"]){
                 return ["cod"=>"11","msg"=>"Usuario no ha abierto la caja "];
             }
-
-            $campos['concepto']= 2;
             $solicitud = Solicitud::findOrfail($campos["solicitud_id"]);
             $estado = $solicitud->historialEstado->last()->estado_id;
             if($estado === null ||  $estado != 3){
