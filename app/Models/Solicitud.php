@@ -19,7 +19,9 @@ class Solicitud extends Model{
         'observacion',
         'usuario_id',
         'fecha_retiro',
-        'vencimiento_retiro'
+        'vencimiento_retiro',
+        'estado',
+        'cant_cuotas',
 
     ];
 

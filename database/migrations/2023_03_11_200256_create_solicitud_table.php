@@ -29,6 +29,8 @@ class CreateSolicitudTable extends Migration
             $table->foreign('usuario_id')->references('id')->on('usuario');
             $table->date('fecha_retiro')->nullable();
             $table->date('vencimiento_retiro')->nullable();
+            $table->integer('estado')->nullable();
+            $table->integer('cant_cuotas');
             $table->timestamps();
         });
     }

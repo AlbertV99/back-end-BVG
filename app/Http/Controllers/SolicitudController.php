@@ -9,6 +9,7 @@ use App\Models\ReferenciaPersonal;
 use App\Models\ReferenciaComercial;
 use App\Models\EstadoSolicitud;
 use App\Models\HistorialEstado;
+use Illuminate\Support\Str;
 use App\Models\TipoPlazo;
 use App\Models\Cuotas;
 use App\Models\EstadoCuota;
@@ -27,10 +28,15 @@ class SolicitudController extends Controller{
         $idEstado = array_search(strtolower($estado),$this->estadoBD);
         $c_paginas = ceil(Solicitud::count()/$this->c_reg_panel);
         $salto = $pag*$this->c_reg_panel;
+        $string = Str::upper($estado);
+        $pendiente = EstadoSolicitud::where("descripcion",$string)->get();
+        $id = ['estado'=>$pendiente[0]->id];
 
-        $query=Solicitud::select("solicitud.id","cliente.documento","cliente.nombre","cliente.apellido","cliente.tipo_documento","solicitud.ingresos_actuales","solicitud.monto_credito","solicitud.interes","solicitud.tipo_plazo",)
+
+        $query=Solicitud::select("solicitud.id","cliente.documento","cliente.nombre","cliente.apellido","cliente.tipo_documento","solicitud.ingresos_actuales","solicitud.monto_credito","solicitud.interes","solicitud.tipo_plazo","solicitud.cant_cuotas","tipo_plazo.descripcion as descripcion_plazo")
         ->join("cliente", "cliente.id", "solicitud.cliente_id","estado_solicitud.descripcion")
         ->join("tipo_plazo", "tipo_plazo.id", "solicitud.tipo_plazo")
+        ->where("solicitud.estado","=",$id);
         // ->leftJoin('historial_estado', function($query) {
         //     $query->on('solicitud.id','=','historial_estado.solicitud_id')
         //     ->whereRaw('historial_estado.id IN (select MAX(historial_estado.id) from historial_estado as he join solicitud as s on he.solicitud_id = s.id group by s.id)');
@@ -75,6 +81,8 @@ class SolicitudController extends Controller{
                 'observacion'=>'string',
                 'usuario_id'=>'integer',
                 'vencimiento_retiro'=>'date',
+                'cant_cuotas'=>'integer',
+
             ]);
 
             $solicitud = Solicitud::create($campos);
@@ -95,8 +103,10 @@ class SolicitudController extends Controller{
             }
             $pendiente = EstadoSolicitud::where("descripcion","PENDIENTE")->get();
             $historial = new HistorialEstado(["estado_id"=>$pendiente[0]->id,"observacion_cambio"=>"Creacion de Solicitud"]);
+        
 
             $solicitud->historialEstado()->save($historial);
+            $solicitud->update(['estado'=>$pendiente[0]->id]);
 
             return ["cod"=>"00","msg"=>"todo correcto"];
 
@@ -332,6 +342,33 @@ class SolicitudController extends Controller{
         }
         return $calculos;
 
+    }
+
+    public function filtroSolicitud($estado,$id){
+
+        $string = Str::upper($estado);
+        $aprobado = EstadoSolicitud::where("descripcion",$string)->get();
+        $id_estado = ['estado'=>$aprobado[0]->id];
+
+
+        $query=Solicitud::select("solicitud.id","cliente.documento","cliente.nombre","cliente.apellido","cliente.tipo_documento","solicitud.ingresos_actuales","solicitud.monto_credito","solicitud.interes","solicitud.tipo_plazo","solicitud.cant_cuotas","tipo_plazo.descripcion as descripcion_plazo")
+        ->join("cliente", "cliente.id", "solicitud.cliente_id","estado_solicitud.descripcion")
+        ->join("tipo_plazo", "tipo_plazo.id", "solicitud.tipo_plazo")
+        ->where("solicitud.estado",$id_estado['estado'])
+        ->where("cliente.id",$id);
+        // ->leftJoin('historial_estado', function($query) {
+        //     $query->on('solicitud.id','=','historial_estado.solicitud_id')
+        //     ->whereRaw('historial_estado.id IN (select MAX(historial_estado.id) from historial_estado as he join solicitud as s on he.solicitud_id = s.id group by s.id)');
+        // })
+        // ->leftJoin("estado_solicitud","estado_solicitud.id","historial_estado.estado_id")
+        ;
+
+        $query = $query->orderBy("cliente.documento")->get();
+        if(count($query) != 0){
+            return ["cod"=>"00","msg"=>"todo correcto","datos"=>$query];
+        }else{
+            return ["cod"=>"04","msg"=>"no existen datos"];
+        }
     }
 
     public function calcularCuotero($idPlazo,$cuotas,$monto){
