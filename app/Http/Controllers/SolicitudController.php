@@ -10,11 +10,14 @@ use App\Models\ReferenciaComercial;
 use App\Models\EstadoSolicitud;
 use App\Models\HistorialEstado;
 use App\Models\TipoPlazo;
+use App\Models\Cuotas;
+use App\Models\EstadoCuota;
 
 class SolicitudController extends Controller{
     private $c_reg_panel = 25;
     private $c_reg_lista = 10;
     private $estadoBD = ["pendiente","analizando","aprobado","rechazado","desembolsado","cancelado","finalizado"];
+
     /**
      * Display a listing of the resource.
      *
@@ -259,7 +262,7 @@ class SolicitudController extends Controller{
             $historial = new HistorialEstado(["estado_id"=>$campos["estado_id"],"observacion_cambio"=>$campos['observacion']]);
             $solicitud->historialEstado()->save($historial);
             if($campos["estado_id"] == $desembolsado[0]->id){
-                $this->guardarCuotero();
+                $this->guardarCuotero($solicitud);
             }
 
             return ["cod"=>"00","msg"=>"Cambio de estado realizado Correctamente"];
@@ -283,6 +286,7 @@ class SolicitudController extends Controller{
         }
          return $resp;
     }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -331,6 +335,8 @@ class SolicitudController extends Controller{
     }
 
     public function calcularCuotero($idPlazo,$cuotas,$monto){
+        $fecha_temp = "22-04-2023";
+
         $cuotero = [];
         # Conversion de interes al plazo seleccionado
         $tipoPlazo = TipoPlazo::findOrfail($idPlazo);
@@ -351,6 +357,7 @@ class SolicitudController extends Controller{
             $interesCuota = round(($saldoPendiente * $tasaInteres),2);
             $neto = $montoCuota - $interesCuota;
             $saldoPendiente -= ($montoCuota - $interesCuota);
+            $fecha_temp = date('Y-m-d', strtotime($fecha_temp. ' + '.$tipoPlazo->dias_vencimiento.' days'));
 
             $cuotero[]=[
                 "n_cuota"=> $i,
@@ -358,10 +365,36 @@ class SolicitudController extends Controller{
                 "neto"=> number_format($neto,2,".",""),
                 "saldo"=>  number_format($neto,2,".",""),
                 "cuota"=>  number_format($montoCuota,2,".",""),
-                "capital"=> number_format($saldoPendiente,2,".","")
+                "capital"=> number_format($saldoPendiente,2,".",""),
+                "vencimiento"=>$fecha_temp
             ];
 
         }
         return ["cod"=>"00","msg"=>"todo correcto","montoCuota"=>$montoCuota,"datos"=>$cuotero];
+    }
+
+    private function guardarCuotero(Solicitud $solicitud){
+
+        $solicitud->tipoPlazo;
+
+        $cuotero = $this->calcularCuotero($solicitud->tipoPlazo->id,"12",$solicitud->monto_credito+$solicitud->gastos_administrativos);
+        $estado = EstadoCuota::where('descripcion','PENDIENTE')->get()[0];
+        //ESTADOCUOTA
+        $temp =[];
+        foreach ($cuotero['datos'] as  $cuota) {
+            $temp[]  = new Cuotas([
+                'n_cuota'=>$cuota["n_cuota"],
+                'cuota'=>$cuota["cuota"],
+                'saldo'=>$cuota["neto"],
+                'interes'=>$cuota["interes"],
+                'amortizacion'=>$cuota["neto"],
+                'mora'=>"0",
+                'capital'=>$cuota["capital"],
+                'estado'=>$estado->id,
+                'fec_vencimiento'=>$cuota['vencimiento']
+            ]);
+        }
+        $solicitud->cuotas()->saveMany($temp);
+
     }
 }

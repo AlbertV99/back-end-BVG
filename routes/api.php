@@ -62,7 +62,7 @@ Route::middleware(['cors'])->group(function () {
 
 
     #TIPOS PLAZOS
-    Route::controller(SolicitudController::class)->group(function () {
+    Route::controller(TipoPlazoController::class)->group(function () {
         Route::get('/tipoPlazo/{pag?}','index');
         Route::get('/tipoPlazo/u/{id}','show');
         Route::post('/tipoPlazo/','store');
@@ -75,7 +75,7 @@ Route::middleware(['cors'])->group(function () {
         Route::get('/solicitud/{estado}/{pag?}/','index');
         Route::get('/solicitudUnico/{id}','show');
         Route::get('/solicitud/cuotero/interes/{idPlazo}/cuotas/{cuotas}/monto/{monto}','calcularCuotero');
-        
+
         Route::post('/solicitud/','store');
         Route::put('/solicitud/{id}','actualizarReferencias');
         Route::put('/solicitud/{id}/estado','cambiarEstado');
@@ -91,7 +91,7 @@ Route::middleware(['cors'])->group(function () {
         Route::post('/conceptoCaja/','store');
         Route::put('/conceptoCaja/{id}','update');
         Route::delete('/conceptoCaja/{id}','destroy');
-    }
+    });
 
     #OPERACIONES
     Route::controller(OperacionesController::class)->group(function () {
@@ -111,7 +111,7 @@ Route::middleware(['cors'])->group(function () {
         Route::post('/cierre/caja/{id}', 'cerrarCaja');
         Route::put('/caja/{id}', 'update');
         Route::delete('/caja/{id}', 'destroy');
-    ]);
+    });
 
     #RUTA INEXISTENTE
     Route::fallback(function () {

@@ -41,4 +41,9 @@ class Solicitud extends Model{
         return $this->belongsTo(Cliente::class,"cliente_id");
     }
 
+    public function cuotas(){
+        return $this->hasMany(Cuotas::class);
+
+    }
+
 }
