@@ -15,9 +15,9 @@ class EstadoCuota extends Seeder
     public function run()
     {
         $lista = [
-            "Pendiente",
-            "Pagado",
-            "Vencido",
+            "PENDIENTE",
+            "PAGADO",
+            "VENCIDO",
         ];
         foreach ($lista as $key => $value) {
             EstadoCuotaModel::create([
