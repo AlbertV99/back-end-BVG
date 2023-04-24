@@ -13,6 +13,8 @@ use Illuminate\Support\Str;
 use App\Models\TipoPlazo;
 use App\Models\Cuotas;
 use App\Models\EstadoCuota;
+use Illuminate\Support\Carbon as BaseCarbon;
+
 
 class SolicitudController extends Controller{
     private $c_reg_panel = 25;
@@ -81,13 +83,13 @@ class SolicitudController extends Controller{
                 'observacion'=>'string',
                 'usuario_id'=>'integer',
                 'vencimiento_retiro'=>'date',
-                'cant_cuotas'=>'integer',
-
+                'cant_cuotas'=>'required|integer',
+                'inicio_cuota'=>'required|integer',
             ]);
 
             $solicitud = Solicitud::create($campos);
             foreach ($request->input('ref_personales') as $key => $value) {
-                $camposRef = ['cliente_id'=>$value['cliente_id'],     'relacion_cliente'=>$value['relacion_cliente']];
+                $camposRef = ['cliente_id'=>$value['cliente_id'], 'relacion_cliente'=>$value['relacion_cliente']];
                 $refPersTemp = new ReferenciaPersonal($camposRef);
                 $solicitud->referenciaPersonal()->save($refPersTemp);
             }
@@ -103,7 +105,7 @@ class SolicitudController extends Controller{
             }
             $pendiente = EstadoSolicitud::where("descripcion","PENDIENTE")->get();
             $historial = new HistorialEstado(["estado_id"=>$pendiente[0]->id,"observacion_cambio"=>"Creacion de Solicitud"]);
-        
+
 
             $solicitud->historialEstado()->save($historial);
             $solicitud->update(['estado'=>$pendiente[0]->id]);
@@ -134,6 +136,9 @@ class SolicitudController extends Controller{
             $solicitud->historialEstado;
             $solicitud->referenciaPersonal;
             $solicitud->referenciaComercial;
+
+            $fecha_venc = BaseCarbon::now()->addMonths(1)->startOfMonth()->add(($solicitud->inicio_cuota-1),'day');
+
             foreach ($solicitud->historialEstado as $historial) {
                 $historial->estadoSolicitud;
             }
@@ -141,7 +146,7 @@ class SolicitudController extends Controller{
                 $refPersonal->cliente;
             }
             $analisis = $this->calculosAnalisis($id);
-            $cuotero = $this->calcularCuotero($solicitud->tipoPlazo->id,"12",$solicitud->monto_credito+$solicitud->gastos_administrativos);
+            $cuotero = $this->calcularCuotero($solicitud->tipoPlazo->id,"12",$solicitud->monto_credito+$solicitud->gastos_administrativos,$fecha_venc);
             $reglas_estado = $solicitud->historialEstado->last()->estadoSolicitud->regla;
             foreach ($reglas_estado as $regla) {
                 $regla->estadoPosible;
@@ -164,7 +169,6 @@ class SolicitudController extends Controller{
      * @return \Illuminate\Http\Response
      */
     public function edit(Solicitud $solicitud){
-        //
     }
 
     /**
@@ -242,6 +246,7 @@ class SolicitudController extends Controller{
                 if( $this->validarEstado($estado_actual,$campos["estado_id"])) {
                     $historial = new HistorialEstado(["estado_id"=>$campos["estado_id"],"observacion_cambio"=>$campos['observacion']]);
                     $solicitud->historialEstado()->save($historial);
+                    $solicitud->update(['estado'=>$campos["estado_id"]]);
 
                 }else{
                     return ["cod"=>"12","msg"=>"Estado no disponible para el cambio"];
@@ -271,6 +276,8 @@ class SolicitudController extends Controller{
         if($this->validarEstado($estado_actual,$campos["estado_id"])) {
             $historial = new HistorialEstado(["estado_id"=>$campos["estado_id"],"observacion_cambio"=>$campos['observacion']]);
             $solicitud->historialEstado()->save($historial);
+            $solicitud->update(['estado'=>$campos["estado_id"]]);
+
             if($campos["estado_id"] == $desembolsado[0]->id){
                 $this->guardarCuotero($solicitud);
             }
@@ -350,7 +357,6 @@ class SolicitudController extends Controller{
         $aprobado = EstadoSolicitud::where("descripcion",$string)->get();
         $id_estado = ['estado'=>$aprobado[0]->id];
 
-
         $query=Solicitud::select("solicitud.id","cliente.documento","cliente.nombre","cliente.apellido","cliente.tipo_documento","solicitud.ingresos_actuales","solicitud.monto_credito","solicitud.interes","solicitud.tipo_plazo","solicitud.cant_cuotas","tipo_plazo.descripcion as descripcion_plazo")
         ->join("cliente", "cliente.id", "solicitud.cliente_id","estado_solicitud.descripcion")
         ->join("tipo_plazo", "tipo_plazo.id", "solicitud.tipo_plazo")
@@ -371,7 +377,7 @@ class SolicitudController extends Controller{
         }
     }
 
-    public function calcularCuotero($idPlazo,$cuotas,$monto){
+    public function calcularCuotero($idPlazo,$cuotas,$monto,$fecha_inicio){
         $fecha_temp = "22-04-2023";
 
         $cuotero = [];
@@ -413,9 +419,11 @@ class SolicitudController extends Controller{
     private function guardarCuotero(Solicitud $solicitud){
 
         $solicitud->tipoPlazo;
+        $fecha_venc = BaseCarbon::now()->addMonths(1)->startOfMonth()->add(($solicitud->inicio_cuota-1),'day');
 
-        $cuotero = $this->calcularCuotero($solicitud->tipoPlazo->id,"12",$solicitud->monto_credito+$solicitud->gastos_administrativos);
+        $cuotero = $this->calcularCuotero($solicitud->tipoPlazo->id,$solicitud->cant_cuotas,$solicitud->monto_credito+$solicitud->gastos_administrativos,$fecha_venc);
         $estado = EstadoCuota::where('descripcion','PENDIENTE')->get()[0];
+
         //ESTADOCUOTA
         $temp =[];
         foreach ($cuotero['datos'] as  $cuota) {
@@ -434,4 +442,6 @@ class SolicitudController extends Controller{
         $solicitud->cuotas()->saveMany($temp);
 
     }
+
+
 }

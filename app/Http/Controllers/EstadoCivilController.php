@@ -24,8 +24,7 @@ class EstadoCivilController extends Controller{
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
+    public function create(){
         //
     }
 
@@ -35,8 +34,7 @@ class EstadoCivilController extends Controller{
      * @param  \App\Http\Requests\StoreEstadoCivilRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreEstadoCivilRequest $request)
-    {
+    public function store(StoreEstadoCivilRequest $request){
         //
     }
 

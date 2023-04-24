@@ -22,15 +22,17 @@ class Solicitud extends Model{
         'vencimiento_retiro',
         'estado',
         'cant_cuotas',
-
+        'inicio_cuota'
     ];
 
     public function referenciaPersonal(){
         return $this->hasMany(ReferenciaPersonal::class,"solicitud_id");
     }
+
     public function referenciaComercial(){
         return $this->hasMany(ReferenciaComercial::class,"solicitud_id");
     }
+
     public function historialEstado(){
         return $this->hasMany(HistorialEstado::class);
     }
@@ -45,7 +47,6 @@ class Solicitud extends Model{
 
     public function cuotas(){
         return $this->hasMany(Cuotas::class);
-
     }
 
 }
