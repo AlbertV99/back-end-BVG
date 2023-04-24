@@ -22,8 +22,7 @@ class OperacionesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($pag=0)
-    {
+    public function index($pag=0){
         $c_paginas = ceil(Operaciones::count()/$this->c_reg_panel);
         $salto = $pag*$this->c_reg_panel;
 
@@ -46,8 +45,7 @@ class OperacionesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
+    public function create(){
 
     }
 
@@ -58,8 +56,7 @@ class OperacionesController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function store(StoreOperacionesRequest $request)
-    {
+    public function store(StoreOperacionesRequest $request){
         try {
 
             \date_default_timezone_set('America/Santiago');
@@ -72,7 +69,7 @@ class OperacionesController extends Controller
                 "usuario_id"=>"required|integer",
                 "concepto"=>"interger",
             ]);
-            
+
             $caja = Caja::findOrfail($campos["caja"]);
             $monto = $caja->saldo_actual;
             $aperturaCaja = $caja->estadoCaja->last()->estado;
