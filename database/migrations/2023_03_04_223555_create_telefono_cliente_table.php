@@ -14,6 +14,7 @@ class CreateTelefonoClienteTable extends Migration
     public function up()
     {
         Schema::create('telefono_cliente', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('id_cliente');
             $table->foreign('id_cliente')->references('id')->on('cliente');
             $table->string("telefono");

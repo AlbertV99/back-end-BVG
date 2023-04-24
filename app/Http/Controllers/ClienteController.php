@@ -6,6 +6,7 @@ use App\Http\Requests\StoreClienteRequest;
 use App\Http\Requests\UpdateClienteRequest;
 use App\Models\Cliente;
 use App\Models\PerfilCliente;
+use App\Models\TelefonoCliente;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Carbon as BaseCarbon;
 
@@ -23,8 +24,7 @@ class ClienteController extends Controller{
 
         $query = Cliente::select("cliente.id","barrio.nombre","cliente.documento","cliente.nombre","cliente.apellido","cliente.tipo_documento","cliente.f_nacimiento","cliente.correo","cliente.direccion","cliente.sexo","estado_civil.descripcion")
         ->join("barrio", "barrio.id", "cliente.barrio")
-        ->join("estado_civil", "estado_civil.id", "cliente.estado_civil")
-        ;
+        ->join("estado_civil", "estado_civil.id", "cliente.estado_civil");
         // if($busqueda !=""){
         //     $query = $query->where("usuario.nombre_usuario","like",$busqueda)->orWhere("usuario.nombre","like",$busqueda)->orWhere("usuario.apellido","like",$busqueda)->orWhere("usuario.apellido","like",$busqueda);
         // }
@@ -51,6 +51,7 @@ class ClienteController extends Controller{
     public function store(StoreClienteRequest $request){
 
         try {
+            if( count($request->input('tel_cliente'))<1 ){throw  \Illuminate\Validation\ValidationException::withMessages(['Telefono' => ['Debe completar al menos un telefono']]);}
             $campos = $this->validate($request,[
                 'barrio'=>'required|string',
                 'documento'=>'required|string',
@@ -66,6 +67,12 @@ class ClienteController extends Controller{
             ]);
 
             $usuario = Cliente::create($campos);
+            foreach($request->input('tel_cliente') as $key => $value){
+                $camposTelefono = ['telefono'=> $value['telefono_cliente']];
+                $telefono = new TelefonoCliente($camposTelefono);
+                $usuario->telefono()->save($telefono);
+
+            }
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             return ["cod"=>"06","msg"=>"Error al insertar los datos","errores"=>[$e->errors() ]];
@@ -85,6 +92,7 @@ class ClienteController extends Controller{
     public function show($id){
         try {
             $cliente = Cliente::findOrfail($id);
+            $cliente->telefono;
 
             return ["cod"=>"00","msg"=>"todo correcto","datos"=>[$cliente]];
         } catch( ModelNotFoundException $e){
