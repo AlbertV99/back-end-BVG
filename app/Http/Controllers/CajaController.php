@@ -164,6 +164,7 @@ class CajaController extends Controller{
             return ["cod"=>"99","msg"=>"Error general","error"=>$e->getMessage()];
         }
     }
+
     public function cerrarCaja(UpdateCajaRequest $request,$id){
         try {
             $caja = Caja::findOrfail($id);
@@ -179,7 +180,7 @@ class CajaController extends Controller{
             // }
             // realizar la apertura de la caja ->create )
             // actualizar el saldo $caja->update(['saldo_caja'=>$request->input('saldo')])
-            $caja->estadoCaja->last()->usuario_id='2';
+            $caja->estadoCaja->last()->usuario_id='1';
             $caja->estadoCaja->last()->saldo_cierre=$caja->saldo_actual;
             $caja->estadoCaja->last()->fecha_cierre=$date;
             $caja->estadoCaja->last()->estado=0;

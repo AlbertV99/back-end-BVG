@@ -50,7 +50,7 @@ class OperacionesController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Funcion para realizar un desembolso
      *
      * @param  \App\Http\Requests\StoreOperacionesRequest  $request
      * @return \Illuminate\Http\Response
@@ -114,6 +114,71 @@ class OperacionesController extends Controller
         return ["cod"=>"00","msg"=>"todo correcto"];
     }
 
+
+    /**
+     * Funcion para realizar un pago de cuota
+     *
+     * @param  \App\Http\Requests\StoreOperacionesRequest  $request
+     * @return \Illuminate\Http\Response
+     */
+
+    public function store(StoreOperacionesRequest $request){
+        try {
+
+            \date_default_timezone_set('America/Santiago');
+            $date = \date('Y-m-d h:i:s a', \time());
+
+            $campos = $this->validate($request,[
+                "caja"=>"required|integer",
+                "monto"=>"required|integer",
+                "solicitud_id"=>"required|numeric",
+                "usuario_id"=>"required|integer",
+                "concepto"=>"interger",
+            ]);
+
+            $caja = Caja::findOrfail($campos["caja"]);
+            $monto = $caja->saldo_actual;
+            $aperturaCaja = $caja->estadoCaja->last()->estado;
+            $usuario = $caja->estadoCaja->last()->usuario_id;
+            $concepto_caja = ConceptosCaja::select('id')
+           ->where('descripcion','=', 'Desembolso');
+           //return["usuario"=>$usuario];
+            $campos["concepto"] =$concepto_caja;
+            $campos['concepto']= 2;
+            if($monto < $campos["monto"]){
+                return ["cod"=>"11","msg"=>"No tiene monto necesario en caja"];
+            }
+            if($aperturaCaja != 1){
+                return ["cod"=>"11","msg"=>"Caja cerrada"];
+            }
+            if($usuario != $campos["usuario_id"]){
+                return ["cod"=>"11","msg"=>"Usuario no ha abierto la caja "];
+            }
+            $solicitud = Solicitud::findOrfail($campos["solicitud_id"]);
+            $estado = $solicitud->historialEstado->last()->estado_id;
+            if($estado === null ||  $estado != 3){
+                return ["cod"=>"11","msg"=>"El estado no es APROBADO"];
+            }
+
+            $saldo_anterior = $monto;
+            $saldo_posterior = $monto - $campos["monto"];
+            $campos["saldo_anterior"] = $saldo_anterior;
+            $campos["saldo_posterior"] = $saldo_posterior;
+            $campos["fecha_operacion"] =$date;
+            $caja->update(["saldo_actual"=>$saldo_posterior]);
+            $Operaciones = Operaciones::create($campos);
+            $historial = new HistorialEstado(["estado_id"=>5,"observacion_cambio"=>"Desmbolso de la solicitud"]);
+            $solicitud->historialEstado()->save($historial);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return ["cod"=>"06","msg"=>"Error al insertar los datos","errores"=>[$e->errors() ]];
+
+        } catch (\Exception $e) {
+            return ["cod"=>"05","msg"=>"Error al insertar los datos","error"=>$e->getMessage()];
+        }
+        //return["estado"=>$estado];
+        return ["cod"=>"00","msg"=>"todo correcto"];
+    }
     /**
      * Display the specified resource.
      *

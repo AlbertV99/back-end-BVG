@@ -404,11 +404,11 @@ class SolicitudController extends Controller{
 
             $cuotero[]=[
                 "n_cuota"=> $i,
-                "interes"=> number_format($interesCuota, 2,".",""),
-                "neto"=> number_format($neto,2,".",""),
-                "saldo"=>  number_format($neto,2,".",""),
-                "cuota"=>  number_format($montoCuota,2,".",""),
-                "capital"=> number_format($saldoPendiente,2,".",""),
+                "interes"=> round($interesCuota, -3),
+                "neto"=> round($neto,2,-3),
+                "saldo"=>  round($neto,2,-3),
+                "cuota"=>  round($montoCuota,2,-3),
+                "capital"=> round($saldoPendiente,2,-3),
                 "vencimiento"=>$fecha_temp
             ];
 
