@@ -122,6 +122,7 @@ class ClienteController extends Controller{
      */
     public function update(UpdateClienteRequest $request, $id){
         try {
+            if( count($request->input('tel_cliente'))<1 ){throw  \Illuminate\Validation\ValidationException::withMessages(['Telefono' => ['Debe completar al menos un telefono']]);}
             $cliente = Cliente::findOrfail($id);
             $campos = $this->validate($request,[
                 'barrio'=>'required|string',
@@ -137,8 +138,14 @@ class ClienteController extends Controller{
                 'estado_civil'=>'required|integer',
             ]);
 
-             $cliente->update($campos);
-             return ["cod"=>"00","msg"=>"todo correcto"];
+            foreach($request->input('tel_cliente') as $key => $value){
+                $camposTelefono = ['telefono'=> $value['telefono_cliente']];
+                $telefono = new TelefonoCliente($camposTelefono);
+                $cliente->telefono()->update($telefono);
+
+            }
+            $cliente->update($campos);
+            return ["cod"=>"00","msg"=>"todo correcto"];
         } catch(ModelNotFoundException $e){
             return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
         } catch (\Exception $e) {
