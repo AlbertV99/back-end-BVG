@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreTipoPlazoRequest;
 use App\Http\Requests\UpdateTipoPlazoRequest;
 use App\Models\TipoPlazo;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TipoPlazoController extends Controller{
     private $c_reg_panel = 25;
