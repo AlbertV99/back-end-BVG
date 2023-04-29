@@ -74,8 +74,7 @@ class ConceptosCajaController extends Controller
      * @param  \App\Models\ConceptosCaja  $conceptosCaja
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
+    public function show($id){
         try {
             $ConceptosCaja = ConceptosCaja::findOrfail($id);
             return ["cod"=>"00","msg"=>"todo correcto","datos"=>[$ConceptosCaja]];
@@ -92,8 +91,7 @@ class ConceptosCajaController extends Controller
      * @param  \App\Models\ConceptosCaja  $conceptosCaja
      * @return \Illuminate\Http\Response
      */
-    public function edit(ConceptosCaja $conceptosCaja)
-    {
+    public function edit(ConceptosCaja $conceptosCaja){
         //
     }
 
@@ -109,7 +107,7 @@ class ConceptosCajaController extends Controller
         try {
             $ConceptosCaja = ConceptosCaja::findOrfail($id);
             $campos = $this->validate($request,[
-                "tipo"=>"required|string",
+                "tipo"=>['required','string' , 'regex:/ENTRADA|SALIDA/'],
                 "descripcion"=>"required|string"
             ]);
 
@@ -133,11 +131,13 @@ class ConceptosCajaController extends Controller
     public function destroy($id)
     {
         try {
-            $ConceptosCaja = ConceptosCaja::where("id",$id);
+            $ConceptosCaja = ConceptosCaja::findOrfail($id);
             $ConceptosCaja->delete();
 
             return ["cod"=>"00","msg"=>"todo correcto"];
-        } catch (\Exception $e) {
+        } catch( ModelNotFoundException $e){
+            return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
+        }  catch (\Exception $e) {
             return ["cod"=>"08","msg"=>"Error al eliminar el registro","errores"=>[$e->getMessage() ]];
         }
     }
