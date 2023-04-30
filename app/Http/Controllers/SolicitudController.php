@@ -397,7 +397,7 @@ class SolicitudController extends Controller{
 
         #Proceso para generar cuotero
         for ( $i = 1; $i <= $cuotas ; $i++) {
-            $interesCuota = $this->redondearMiles(($saldoPendiente * $tasaInteres),2);
+            $interesCuota = ($this->redondearMiles(($saldoPendiente * $tasaInteres),2));
             $neto = $montoCuota - $interesCuota;
             $saldoPendiente -= ($montoCuota - $interesCuota);
             if($tipoPlazo->id == 4){
@@ -408,7 +408,7 @@ class SolicitudController extends Controller{
 
             $cuotero[]=[
                 "n_cuota"=> $i,
-                "interes"=> $this->redondearMiles($interesCuota),
+                "interes"=> round($this->redondearMiles($interesCuota)*1.1,0),
                 "neto"=> $this->redondearMiles($neto),
                 "saldo"=>  $this->redondearMiles($neto),
                 "cuota"=>  $this->redondearMiles($montoCuota),
