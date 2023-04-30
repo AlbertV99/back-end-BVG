@@ -19,7 +19,7 @@ use Illuminate\Support\Carbon as BaseCarbon;
 class SolicitudController extends Controller{
     private $c_reg_panel = 25;
     private $c_reg_lista = 10;
-    private $estadoBD = ["pendiente","analizando","aprobado","rechazado","desembolsado","cancelado","finalizado"];
+    private $estadoBD = ["pendiente","analizado","aprobado","rechazado","desembolsado","cancelado","finalizado"];
 
     /**
      * Display a listing of the resource.
@@ -75,10 +75,10 @@ class SolicitudController extends Controller{
             $campos = $this->validate($request,[
                 'cliente_id'=>'required|string',
                 'ingresos_actuales'=>'required|string',
-                'monto_credito'=>'required|integer',
-                'gastos_administrativos'=>'required|integer',
-                'interes'=>'required|numeric',
-                'interes_moratorio'=>'required|numeric',
+                'monto_credito'=>'required|integer|min:0',
+                'gastos_administrativos'=>'required|integer|min:0',
+                'interes'=>'required|numeric|min:0',
+                'interes_moratorio'=>'required|numeric|min:0',
                 'tipo_plazo'=>'required|integer',
                 'observacion'=>'string',
                 'usuario_id'=>'integer',

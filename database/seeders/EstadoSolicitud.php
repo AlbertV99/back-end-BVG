@@ -19,7 +19,7 @@ class EstadoSolicitud extends Seeder
     {
         $lista = [
             ["estado"=>"PENDIENTE","reglas"=>["ANALIZANDO","CANCELADO"]], # NUEVO [analizado | cancelado]
-            ["estado"=>"ANALIZANDO","reglas"=>["APROBADO","RECHAZADO","PENDIENTE","CANCELADO"]], # EN ANALISIS [aprobado | rechazado | cancelado | pendiente (para volver a vendedor por datos pendientes) ]
+            ["estado"=>"ANALIZADO","reglas"=>["APROBADO","RECHAZADO","PENDIENTE","CANCELADO"]], # EN ANALISIS [aprobado | rechazado | cancelado | pendiente (para volver a vendedor por datos pendientes) ]
             ["estado"=>"APROBADO","reglas"=>["DESEMBOLSADO","CANCELADO"]], # APROBADO [ desembolsado | cancelado (ejemplo :  no retiro su dinero en fecha maxima)]
             ["estado"=>"RECHAZADO","reglas"=>[]], # RECHAZADO
             ["estado"=>"DESEMBOLSADO","reglas"=>["FINALIZADO"]], # YA SE RETIRO EL DINERO, SE COMIENZAN A CONTAR LAS CUOTAS [ finalizado ]
