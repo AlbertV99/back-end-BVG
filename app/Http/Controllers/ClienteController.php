@@ -68,6 +68,9 @@ class ClienteController extends Controller{
 
             $usuario = Cliente::create($campos);
             foreach($request->input('tel_cliente') as $key => $value){
+                if(!isset($value['telefono_cliente']) || $value['telefono_cliente'] == ''){
+                    continue;
+                }
                 $camposTelefono = ['telefono'=> $value['telefono_cliente']];
                 $telefono = new TelefonoCliente($camposTelefono);
                 $usuario->telefono()->save($telefono);
@@ -140,10 +143,12 @@ class ClienteController extends Controller{
                 $cliente->telefono()->delete();
 
                 foreach($request->input('tel_cliente') as $key => $value){
+                    if(!isset($value['telefono_cliente']) || $value['telefono_cliente'] == ''){
+                        continue;
+                    }
                     $camposTelefono = ['telefono'=> $value['telefono_cliente']];
                     $telefono = new TelefonoCliente($camposTelefono);
                     $cliente->telefono()->save($telefono);
-    
                 }
 
             $cliente->update($campos);
