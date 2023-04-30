@@ -377,8 +377,8 @@ class SolicitudController extends Controller{
         }
     }
 
-    public function calcularCuotero($idPlazo,$cuotas,$monto,$fecha_inicio){
-        $fecha_temp = "22-04-2023";
+    public function calcularCuotero($idPlazo,$cuotas,$monto,$fecha_inicio="0"){
+        $fecha_temp = ($fecha_inicio!="0")?$fecha_inicio:"22-04-2023";
 
         $cuotero = [];
         # Conversion de interes al plazo seleccionado
@@ -390,25 +390,29 @@ class SolicitudController extends Controller{
         $factor = ($tasaInteres * pow( 1 + $tasaInteres,$cuotas)) / (pow(1 + $tasaInteres, $cuotas) - 1);;
 
         # Valor de cuota
-        $montoCuota = round(($monto * $factor),2);
+        $montoCuota = $this->redondearMiles(($monto * $factor));
 
         # Saldo
         $saldoPendiente = $monto;
 
         #Proceso para generar cuotero
         for ( $i = 1; $i <= $cuotas ; $i++) {
-            $interesCuota = round(($saldoPendiente * $tasaInteres),2);
+            $interesCuota = $this->redondearMiles(($saldoPendiente * $tasaInteres),2);
             $neto = $montoCuota - $interesCuota;
             $saldoPendiente -= ($montoCuota - $interesCuota);
-            $fecha_temp = date('Y-m-d', strtotime($fecha_temp. ' + '.$tipoPlazo->dias_vencimiento.' days'));
+            if($tipoPlazo->id == 4){
+                $fecha_temp = date('Y-m-d', strtotime($fecha_temp. ' + 1 month'));
+            }else{
+                $fecha_temp = date('Y-m-d', strtotime($fecha_temp. ' + '.$tipoPlazo->dias_vencimiento.' days'));
+            }
 
             $cuotero[]=[
                 "n_cuota"=> $i,
-                "interes"=> round($interesCuota, -3),
-                "neto"=> round($neto,2,-3),
-                "saldo"=>  round($neto,2,-3),
-                "cuota"=>  round($montoCuota,2,-3),
-                "capital"=> round($saldoPendiente,2,-3),
+                "interes"=> $this->redondearMiles($interesCuota),
+                "neto"=> $this->redondearMiles($neto),
+                "saldo"=>  $this->redondearMiles($neto),
+                "cuota"=>  $this->redondearMiles($montoCuota),
+                "capital"=> $this->redondearMiles($saldoPendiente),
                 "vencimiento"=>$fecha_temp
             ];
 
@@ -443,5 +447,8 @@ class SolicitudController extends Controller{
 
     }
 
-
+    private function redondearMiles($numero){
+        $x = ceil(($numero / 1000)) * 1000;
+        return $x;
+    }
 }
