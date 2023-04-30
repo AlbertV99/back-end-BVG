@@ -122,7 +122,8 @@ class OperacionesController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function store(StoreOperacionesRequest $request){
+   /* public function store(StoreOperacionesRequest $request){
+
         try {
 
             \date_default_timezone_set('America/Santiago');
@@ -178,7 +179,7 @@ class OperacionesController extends Controller
         }
         //return["estado"=>$estado];
         return ["cod"=>"00","msg"=>"todo correcto"];
-    }
+    }*/
     /**
      * Display the specified resource.
      *
