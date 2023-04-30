@@ -122,11 +122,10 @@ class ClienteController extends Controller{
      */
     public function update(UpdateClienteRequest $request, $id){
         try {
-            if( count($request->input('tel_cliente'))<1 ){throw  \Illuminate\Validation\ValidationException::withMessages(['Telefono' => ['Debe completar al menos un telefono']]);}
             $cliente = Cliente::findOrfail($id);
             $campos = $this->validate($request,[
                 'barrio'=>'required|string',
-                'documento'=>'required|string',
+                //'documento'=>'required|string',
                 'tipo_documento'=>'required|integer',
                 'nombre'=>'required|string',
                 'apellido'=>'required|string',
@@ -137,13 +136,16 @@ class ClienteController extends Controller{
                 'observaciones'=>'required|string',
                 'estado_civil'=>'required|integer',
             ]);
+            
+                $cliente->telefono()->delete();
 
-            foreach($request->input('tel_cliente') as $key => $value){
-                $camposTelefono = ['telefono'=> $value['telefono_cliente']];
-                $telefono = new TelefonoCliente($camposTelefono);
-                $cliente->telefono()->update($telefono);
+                foreach($request->input('tel_cliente') as $key => $value){
+                    $camposTelefono = ['telefono'=> $value['telefono_cliente']];
+                    $telefono = new TelefonoCliente($camposTelefono);
+                    $cliente->telefono()->save($telefono);
+    
+                }
 
-            }
             $cliente->update($campos);
             return ["cod"=>"00","msg"=>"todo correcto"];
         } catch(ModelNotFoundException $e){
@@ -163,7 +165,10 @@ class ClienteController extends Controller{
     public function destroy($id){
         try {
             $cliente = Cliente::findOrfail($id);
+            //$telefBD= $cliente->telefono;
+           //return["telefBD"=>$telefBD];
             $cliente->delete();
+            //$telefBD->delete();
 
             return ["cod"=>"00","msg"=>"todo correcto"];
         } catch(ModelNotFoundException $e){
