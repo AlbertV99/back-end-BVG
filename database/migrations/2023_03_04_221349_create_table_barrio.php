@@ -17,6 +17,7 @@ class CreateTableBarrio extends Migration
             $table->id();
             $table->string("nombre");
             $table->string("observacion")->nullable();
+            $table->softDeletes($column = 'eliminado', $precision = 0);
         });
     }
 

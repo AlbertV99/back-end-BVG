@@ -19,6 +19,7 @@ class CreateCajaTable extends Migration
             $table->string('pin');
             $table->integer('saldo_actual');
             $table->timestamps();
+            $table->softDeletes($column = 'eliminado', $precision = 0);
         });
     }
 
