@@ -10,6 +10,7 @@ class Cliente extends Model
 {
     use HasFactory;
     use SoftDeletes;
+    const DELETED_AT = 'eliminado';
     protected $table = 'cliente';
     protected $fillable = [
         'barrio',

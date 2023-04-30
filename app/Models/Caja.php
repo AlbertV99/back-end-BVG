@@ -10,6 +10,7 @@ class Caja extends Model{
 
     use HasFactory;
     use SoftDeletes;
+    const DELETED_AT = 'eliminado';
     public $timestamps = false;
     protected $table = 'caja';
     protected $fillable = [
