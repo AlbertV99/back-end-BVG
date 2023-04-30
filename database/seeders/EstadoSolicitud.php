@@ -18,7 +18,7 @@ class EstadoSolicitud extends Seeder
     public function run()
     {
         $lista = [
-            ["estado"=>"PENDIENTE","reglas"=>["ANALIZANDO","CANCELADO"]], # NUEVO [analizado | cancelado]
+            ["estado"=>"PENDIENTE","reglas"=>["ANALIZADO","CANCELADO"]], # NUEVO [analizado | cancelado]
             ["estado"=>"ANALIZADO","reglas"=>["APROBADO","RECHAZADO","PENDIENTE","CANCELADO"]], # EN ANALISIS [aprobado | rechazado | cancelado | pendiente (para volver a vendedor por datos pendientes) ]
             ["estado"=>"APROBADO","reglas"=>["DESEMBOLSADO","CANCELADO"]], # APROBADO [ desembolsado | cancelado (ejemplo :  no retiro su dinero en fecha maxima)]
             ["estado"=>"RECHAZADO","reglas"=>[]], # RECHAZADO

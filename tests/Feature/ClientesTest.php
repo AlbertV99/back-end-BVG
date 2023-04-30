@@ -40,6 +40,44 @@ class ClientesTest extends TestCase
 	    ]]);
         $response->assertStatus(200)->assertJson(['cod' => "00"]);
 
+        //test 2
+        $response = $this->json('POST', '/api/cliente', [
+        'documento' => '5031168',
+        'barrio' => '2',
+        'tipo_documento' => '1',
+        'nombre' => 'Alberto Daniel',
+        'apellido' => 'Valdez Urquhart',
+        'f_nacimiento' => '1999-11-09',
+        'correo' => 'alberto.valdez@gmail.com',
+        'direccion' => 'Loma Pyta',
+        'sexo' => 'Masc',
+        'observaciones' => 'Ninguna',
+        'estado_civil' => '1',
+        "tel_cliente" => [
+			["telefono_cliente"=>"0974155070"],
+	    ]]);
+        $response->assertStatus(200)->assertJson(['cod' => "00"]);
+
+        // test 3
+        $response = $this->json('POST', '/api/cliente', [
+        'documento' => '4002183',
+        'barrio' => '4',
+        'tipo_documento' => '1',
+        'nombre' => 'Hugo Alejandro',
+        'apellido' => 'Barrios Jara',
+        'f_nacimiento' => '1995-03-07',
+        'correo' => 'hugo.ortellado@gmail.com',
+        'direccion' => 'Capiata',
+        'sexo' => 'Masc',
+        'observaciones' => 'Ninguna',
+        'estado_civil' => '1',
+        "tel_cliente" => [
+            ["telefono_cliente"=>"0985222189"],
+			["telefono_cliente"=>"0988331898"],
+	    ]]);
+        $response->assertStatus(200)->assertJson(['cod' => "00"]);
+
+
         $response = $this->json('POST', '/api/cliente', [
             'barrio' => '1',
             'tipo_documento' => '1',
@@ -113,4 +151,3 @@ class ClientesTest extends TestCase
 
     }*/
 }
-
