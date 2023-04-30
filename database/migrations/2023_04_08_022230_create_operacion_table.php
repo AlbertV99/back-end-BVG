@@ -25,7 +25,7 @@ class CreateOperacionTable extends Migration
             $table->integer('monto');
             $table->integer('saldo_posterior');
             $table->date('fecha_operacion');
-            $table->unsignedBigInteger('solicitud_id');
+            $table->unsignedBigInteger('solicitud_id')->nullable();
 
 
             $table->timestamps();
