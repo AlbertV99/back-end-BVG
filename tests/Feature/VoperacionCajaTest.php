@@ -47,7 +47,7 @@ class OperacionesCaja extends TestCase
 
     }
 
-    public function test_insertar_desembolsos(){
+    public function test_desembolsos(){
         $response = $this->json('POST', '/api/operaciones/desembolsar', [
             "caja"=>"1",
             "monto"=>"3000000",
@@ -62,6 +62,20 @@ class OperacionesCaja extends TestCase
             "usuario_id"=>"1",
         ]);
         $response->assertStatus(200)->assertJson(['cod' => "06"]);
+
+    }
+
+    public function test_pagos_cuotas(){
+        $response = $this->json('POST', '/api/operaciones/pagarCuotas', [
+            "caja"=>"1",
+            "monto"=>"256000",
+            "solicitud_id"=>1,
+            "usuario_id"=>"1",
+            "cuotas"=>[
+                ["id"=>1,"solicitud_id"=>1]
+            ],
+        ]);
+        $response->assertStatus(200)->assertJson(['cod' => "00"]);
 
     }
 
