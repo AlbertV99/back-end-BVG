@@ -97,7 +97,8 @@ Route::middleware(['cors'])->group(function () {
     Route::controller(OperacionesController::class)->group(function () {
         Route::get('/operaciones/{pag?}', 'index');
         Route::get('/operaciones/u/{id}', 'show');
-        Route::post('/operaciones/', 'store');
+        Route::post('/operaciones/desembolsar', 'desembolso');
+        Route::post('/operaciones/pagarCuotas', 'pagarCuota');
 
     });
 
