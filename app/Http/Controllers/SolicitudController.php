@@ -265,7 +265,7 @@ class SolicitudController extends Controller{
     }
 
     public function cambiarEstado(UpdateSolicitudRequest $request,$id){
-        $desembolsado = EstadoSolicitud::where("descripcion","DESEMBOLSADO")->get();
+        $desembolsado = EstadoSolicitud::where("descripcion","APROBADO")->get();
         $solicitud = Solicitud::findOrfail($id);
         $estado_actual = $solicitud->historialEstado->last()->estado_id;
         $campos = $this->validate($request,[
