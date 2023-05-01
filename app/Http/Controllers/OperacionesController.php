@@ -56,7 +56,7 @@ class OperacionesController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function store(StoreOperacionesRequest $request){
+    public function desembolso(StoreOperacionesRequest $request){
         try {
 
             \date_default_timezone_set('America/Santiago');
@@ -108,7 +108,7 @@ class OperacionesController extends Controller
             return ["cod"=>"06","msg"=>"Error al insertar los datos","errores"=>[$e->errors() ]];
 
         } catch (\Exception $e) {
-            return ["cod"=>"05","msg"=>"Error al insertar los datos","error"=>$e->getMessage()];
+            return ["cod"=>"99","msg"=>"Error al insertar los datos","error"=>$e->getMessage()];
         }
         //return["estado"=>$estado];
         return ["cod"=>"00","msg"=>"todo correcto"];

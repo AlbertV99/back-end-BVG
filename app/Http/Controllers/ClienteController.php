@@ -155,6 +155,8 @@ class ClienteController extends Controller{
             return ["cod"=>"00","msg"=>"todo correcto"];
         } catch(ModelNotFoundException $e){
             return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return ["cod"=>"06","msg"=>"Error al insertar los datos","errores"=>[$e->errors() ]];
         } catch (\Exception $e) {
             return ["cod"=>"99","msg"=>"Error general","error"=>$e->getMessage()];
         }
