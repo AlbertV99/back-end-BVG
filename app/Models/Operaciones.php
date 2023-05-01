@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Operaciones extends Model
 {
     use HasFactory;
-    
+
     protected $table = 'operacion';
     protected $fillable = [
         'caja',
@@ -21,5 +21,7 @@ class Operaciones extends Model
         'cuota_id',
         'usuario_id',
     ];
+    public function detalles(){
+        return $this->hasMany(DetalleCuotaOperacion::class,'operacion_id');
+    }
 }
-

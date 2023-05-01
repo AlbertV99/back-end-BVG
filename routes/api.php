@@ -80,6 +80,7 @@ Route::middleware(['cors'])->group(function () {
         Route::put('/solicitud/{id}','actualizarReferencias');
         Route::put('/solicitud/{id}/estado','cambiarEstado');
         Route::delete('/solicitud/{id}','destroy');
+        Route::get('/solicitud/{estado}/cliente/{id}/','filtroSolicitud');
     });
 
 

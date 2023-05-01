@@ -33,11 +33,6 @@ class ClienteController extends Controller{
         return ["cod"=>"00","msg"=>"todo correcto","pagina_actual"=>$pag,"cantidad_paginas"=>$c_paginas,"datos"=>$query->get()];
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create(){
         //
     }
@@ -139,7 +134,7 @@ class ClienteController extends Controller{
                 'observaciones'=>'required|string',
                 'estado_civil'=>'required|integer',
             ]);
-            
+
                 $cliente->telefono()->delete();
 
                 foreach($request->input('tel_cliente') as $key => $value){
