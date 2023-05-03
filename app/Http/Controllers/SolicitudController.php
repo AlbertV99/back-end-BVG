@@ -412,7 +412,7 @@ class SolicitudController extends Controller{
                 "neto"=> $this->redondearMiles($neto),
                 "saldo"=>  $this->redondearMiles($neto),
                 "cuota"=>  $this->redondearMiles($montoCuota),
-                "capital"=> $this->redondearMiles($saldoPendiente),
+                "capital"=> max($this->redondearMiles($saldoPendiente),0),
                 "vencimiento"=>$fecha_temp
             ];
 
