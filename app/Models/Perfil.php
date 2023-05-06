@@ -14,6 +14,9 @@ class Perfil extends Model{
         'observacion',
     ];
     public function accesos(){
-        return $this->belongsTo(Acceso::class);
+        return $this->hasMany(Acceso::class);
+    }
+    public function usuarios(){
+        return $this->hasMany(Usuario ::class);
     }
 }

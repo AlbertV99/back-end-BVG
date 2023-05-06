@@ -15,6 +15,8 @@ use App\Http\Controllers\EstadoCuotaController;
 use App\Http\Controllers\OperacionesController;
 use App\Http\Controllers\AgrupadorController;
 use App\Http\Controllers\OpcionMenuController;
+use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\PerfilController;
 
 
 
@@ -98,6 +100,23 @@ Route::middleware(['cors'])->group(function () {
         Route::post('/opcionMenu/','store');
         Route::put('/opcionMenu/{id}','update');
         Route::delete('/opcionMenu/{id}','destroy');
+    });
+
+    #USUARIOS
+    Route::controller(UsuarioController::class)->group(function () {
+        Route::get('/usuario/{pag?}','index');
+        Route::get('/usuario/u/{id}','show');
+        Route::post('/usuario/','store');
+        Route::put('/usuario/{id}','update');
+        Route::delete('/usuario/{id}','destroy');
+    });
+    #PERFIL
+    Route::controller(PerfilController::class)->group(function () {
+        Route::get('/perfil/{pag?}','index');
+        Route::get('/perfil/u/{id}','show');
+        Route::post('/perfil/','store');
+        Route::put('/perfil/{id}','update');
+        Route::delete('/perfil/{id}','destroy');
     });
 
 /************************

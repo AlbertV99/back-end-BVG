@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Acceso extends Model{
-    
+
     use HasFactory;
     protected $table = 'acceso';
     protected $fillable = [
@@ -14,7 +14,10 @@ class Acceso extends Model{
         'opcion_id',
         'acceso'
     ];
-    public function solicitud(){
-        return $this->belongsTo(Solicitud::class);
+    public function perfil(){
+        return $this->belongsTo(Perfil::class);
+    }
+    public function opcionesMenu(){
+        return $this->belongsTo(OpcionMenu::class);
     }
 }

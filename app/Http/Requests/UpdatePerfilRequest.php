@@ -11,9 +11,8 @@ class UpdatePerfilRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
-    {
-        return false;
+    public function authorize(){
+        return true;
     }
 
     /**

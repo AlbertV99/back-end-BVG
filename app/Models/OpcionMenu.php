@@ -15,7 +15,10 @@ class OpcionMenu extends Model{
         'agrupador_id',
     ];
 
-    public function solicitud(){
+    public function agrupador(){
         return $this->belongsTo(Agrupador::class,'agrupador_id','id');
+    }
+    public function accesos(){
+        return $this->hasMany(Acceso ::class);
     }
 }
