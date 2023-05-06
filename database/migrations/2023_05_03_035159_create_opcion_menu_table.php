@@ -16,7 +16,7 @@ class CreateOpcionMenuTable extends Migration
         Schema::create('opcion_menu', function (Blueprint $table) {
             $table->id();
             $table->string("descripcion");
-            $table->string("observacion");
+            $table->string("observacion")->nullable();
             $table->unsignedBigInteger('agrupador_id');
             $table->foreign('agrupador_id')->references('id')->on('agrupador');
         });
