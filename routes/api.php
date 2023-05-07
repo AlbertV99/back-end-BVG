@@ -142,6 +142,7 @@ Route::middleware(['cors'])->group(function () {
         Route::get('/operaciones/u/{id}', 'show');
         Route::post('/operaciones/desembolsar', 'desembolso');
         Route::post('/operaciones/pagarCuotas', 'pagarCuota');
+        Route::post('/operaciones/movimientoGenerico', 'movimientoGenerico');
 
     });
 
