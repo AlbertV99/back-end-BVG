@@ -6,8 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class BarrioTest extends TestCase
-{
+class BarrioTest extends TestCase{
     /**
      * A basic feature test example.
      *
