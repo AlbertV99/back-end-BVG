@@ -20,7 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('apellido');
             $table->string('cedula');
             $table->string('pass');
-            $table->string('fecha_nacimiento');
+            $table->date('fecha_nacimiento');
             $table->string('email');
             $table->unsignedBigInteger('perfil_id');
             $table->boolean('restablecer_pass');

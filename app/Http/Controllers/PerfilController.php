@@ -20,7 +20,7 @@ class PerfilController extends Controller{
         $c_paginas = ceil(Perfil::count()/$this->c_reg_panel);
         $salto = $pag*$this->c_reg_panel;
 
-        $query = Perfil::select("descripcion","observacion");
+        $query = Perfil::select("id","descripcion","observacion");
 
         $query = $query->orderBy("descripcion");
 
@@ -50,8 +50,8 @@ class PerfilController extends Controller{
                 "observacion"=>"string",
             ]);
             //AGREGAR PARA OPCIONES DE MENU
-
-            $barrio = Perfil::create($campos);
+            $campos['descripcion'] = strtoupper($campos['descripcion']);
+            $perfil = Perfil::create($campos);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             return ["cod"=>"06","msg"=>"Error al insertar los datos","errores"=>[$e->errors()]];

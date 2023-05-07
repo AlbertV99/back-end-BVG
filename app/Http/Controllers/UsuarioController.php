@@ -19,8 +19,8 @@ class UsuarioController extends Controller{
         $c_paginas = ceil(Usuario::count()/$this->c_reg_panel);
         $salto = $pag*$this->c_reg_panel;
 
-        $query = Usuario::select("usuario.id","usuario.nombre_usuario","usuario.nombre","usuario.cedula","usuario.fecha_nacimiento","usuario.email","perfil.descripcion")
-        ->join("perfil","perfil.id","usuario.perfil_id");;
+        $query = Usuario::select("usuario.id","usuario.nombre_usuario","usuario.nombre","usuario.apellido","usuario.cedula","usuario.fecha_nacimiento","usuario.email","perfil.descripcion","usuario.restablecer_pass")
+        ->join("perfil","perfil.id","usuario.perfil_id");
         // if($busqueda !=""){
         //     $query = $query->where("usuario.nombre_usuario","like",$busqueda)->orWhere("usuario.nombre","like",$busqueda)->orWhere("usuario.apellido","like",$busqueda)->orWhere("usuario.apellido","like",$busqueda);
         // }
@@ -45,7 +45,29 @@ class UsuarioController extends Controller{
      * @return \Illuminate\Http\Response
      */
     public function store(StoreUsuarioRequest $request){
-        //MELI : INVESTIGAR METODO DE CREAR USUARIO CON ENCRIPTACION DE CONTRASEÑA
+
+        try {
+            $campos = $this->validate($request,[
+                "nombre_usuario"=>"required|string",
+                "nombre"=>"required|string",
+                "apellido"=>"required|string",
+                "cedula"=>"required|string",
+                "pass"=>"required|string",
+                "fecha_nacimiento"=>"required|date",
+                "email"=>"required|string",
+                "perfil_id"=>"required|integer",
+                "restablecer_pass"=>"required|boolean"
+            ]);
+
+            $usuario = Usuario::create($campos);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return ["cod"=>"06","msg"=>"Error al insertar los datos","errores"=>[$e->errors() ]];
+
+        } catch (\Exception $e) {
+            return ["cod"=>"05","msg"=>"Error al insertar los datos","error"=>$e->getMessage()];
+        }
+        return ["cod"=>"00","msg"=>"todo correcto"];
     }
 
     /**
@@ -84,9 +106,34 @@ class UsuarioController extends Controller{
      * @param  \App\Models\Usuario  $usuario
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateUsuarioRequest $request, Usuario $usuario)
+    public function update(UpdateUsuarioRequest $request, $id)
     {
-        //
+        try {
+            $usuario = Usuario::findOrfail($id);
+            //return ["cod"=>$usuario];
+            $campos = $this->validate($request,[
+                "nombre_usuario"=>"required|string",
+                "nombre"=>"required|string",
+                "apellido"=>"required|string",
+                "cedula"=>"required|string",
+                "pass"=>"required|string",
+                "fecha_nacimiento"=>"required|date",
+                "email"=>"required|string",
+                "perfil_id"=>"required|integer",
+                "restablecer_pass"=>"required|boolean"
+            ]);
+            
+            $usuario->update($campos);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return ["cod"=>"06","msg"=>"Error al insertar los datos","errores"=>[$e->errors() ]];
+
+        } catch (\Exception $e) {
+            return ["cod"=>"05","msg"=>"Error al insertar los datos","error"=>$e->getMessage()];
+        } catch(ModelNotFoundException $e){
+            return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
+        }
+        return ["cod"=>"00","msg"=>"todo correcto"];
     }
 
     /**
