@@ -13,6 +13,12 @@ use App\Http\Controllers\CajaController;
 use App\Http\Controllers\ConceptosCajaController;
 use App\Http\Controllers\EstadoCuotaController;
 use App\Http\Controllers\OperacionesController;
+use App\Http\Controllers\AgrupadorController;
+use App\Http\Controllers\OpcionMenuController;
+use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\PerfilController;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -70,6 +76,53 @@ Route::middleware(['cors'])->group(function () {
         Route::delete('/tipoPlazo/{id}','destroy');
     });
 
+    #CONCEPTO CAJA
+    Route::controller(ConceptosCajaController::class)->group(function () {
+        Route::get('/conceptoCaja/{pag?}','index');
+        Route::get('/conceptoCaja/u/{id}','show');
+        Route::post('/conceptoCaja/','store');
+        Route::put('/conceptoCaja/{id}','update');
+        Route::delete('/conceptoCaja/{id}','destroy');
+    });
+
+    #AGRUPADOR DE MENUES
+    Route::controller(AgrupadorController::class)->group(function () {
+        Route::get('/agrupador/{pag?}','index');
+        Route::get('/agrupador/u/{id}','show');
+        Route::post('/agrupador/','store');
+        Route::put('/agrupador/{id}','update');
+        Route::delete('/agrupador/{id}','destroy');
+    });
+    #OPCIONES DE MENU
+    Route::controller(OpcionMenuController::class)->group(function () {
+        Route::get('/opcionMenu/{pag?}','index');
+        Route::get('/opcionMenu/u/{id}','show');
+        Route::post('/opcionMenu/','store');
+        Route::put('/opcionMenu/{id}','update');
+        Route::delete('/opcionMenu/{id}','destroy');
+    });
+
+    #USUARIOS
+    Route::controller(UsuarioController::class)->group(function () {
+        Route::get('/usuario/{pag?}','index');
+        Route::get('/usuario/u/{id}','show');
+        Route::post('/usuario/','store');
+        Route::put('/usuario/{id}','update');
+        Route::delete('/usuario/{id}','destroy');
+    });
+    #PERFIL
+    Route::controller(PerfilController::class)->group(function () {
+        Route::get('/perfil/{pag?}','index');
+        Route::get('/perfil/u/{id}','show');
+        Route::post('/perfil/','store');
+        Route::put('/perfil/{id}','update');
+        Route::delete('/perfil/{id}','destroy');
+    });
+
+/************************
+ * Zona de operaciones  *
+ ************************/
+
     #SOLICITUDES
     Route::controller(SolicitudController::class)->group(function () {
         Route::get('/solicitud/{estado}/{pag?}/','index');
@@ -81,17 +134,6 @@ Route::middleware(['cors'])->group(function () {
         Route::put('/solicitud/{id}/estado','cambiarEstado');
         Route::delete('/solicitud/{id}','destroy');
         Route::get('/solicitud/{estado}/cliente/{id}/','filtroSolicitud');
-    });
-
-
-
-    #CONCEPTO CAJA
-    Route::controller(ConceptosCajaController::class)->group(function () {
-        Route::get('/conceptoCaja/{pag?}','index');
-        Route::get('/conceptoCaja/u/{id}','show');
-        Route::post('/conceptoCaja/','store');
-        Route::put('/conceptoCaja/{id}','update');
-        Route::delete('/conceptoCaja/{id}','destroy');
     });
 
     #OPERACIONES

@@ -22,7 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('pass');
             $table->string('fecha_nacimiento');
             $table->string('email');
-            $table->string('perfil_id');
+            $table->unsignedBigInteger('perfil_id');
             $table->boolean('restablecer_pass');
             $table->softDeletes($column = 'activo', $precision = 0);
             $table->rememberToken();
