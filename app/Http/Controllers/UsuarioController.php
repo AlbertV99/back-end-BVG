@@ -55,10 +55,10 @@ class UsuarioController extends Controller{
                 "pass"=>"required|string",
                 "fecha_nacimiento"=>"required|date",
                 "email"=>"required|string",
-                "perfil_id"=>"required|integer",
-                "restablecer_pass"=>"required|boolean"
+                "perfil_id"=>"required|integer"
             ]);
-
+            
+            $campos['restablecer_pass'] = false;
             $usuario = Usuario::create($campos);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -119,10 +119,9 @@ class UsuarioController extends Controller{
                 "pass"=>"required|string",
                 "fecha_nacimiento"=>"required|date",
                 "email"=>"required|string",
-                "perfil_id"=>"required|integer",
-                "restablecer_pass"=>"required|boolean"
+                "perfil_id"=>"required|integer"
             ]);
-            
+            $campos['restablecer_pass'] = false;
             $usuario->update($campos);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -142,8 +141,18 @@ class UsuarioController extends Controller{
      * @param  \App\Models\Usuario  $usuario
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Usuario $usuario)
+    public function destroy($id)
     {
-        //
+        try {
+            $usuario = Usuario::findOrfail($id);
+            //return ["cod"=>$usuario];
+            $usuario->delete();
+
+            return ["cod"=>"00","msg"=>"todo correcto"];
+        } catch( ModelNotFoundException $e){
+            return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
+        } catch (\Exception $e) {
+            return ["cod"=>"08","msg"=>"Error al eliminar el registro","errores"=>[$e->getMessage() ]];
+        }
     }
 }
