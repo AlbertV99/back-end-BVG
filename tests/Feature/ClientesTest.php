@@ -13,12 +13,14 @@ class ClientesTest extends TestCase
      *
      * @return void
      */
+
     public function test_example()
     {
         $response = $this->get('/api/cliente');
 
         $response->assertStatus(200)->assertJson(["cod"=>"00"]);
     }
+
     public function test_crear_cliente(){
         //Pruebas exitosas
         $response = $this->json('POST', '/api/cliente', [
@@ -99,12 +101,11 @@ class ClientesTest extends TestCase
 
     }
 
-   /* public function test_modificar_cliente(){
+    public function test_modificar_cliente(){
         $response = $this->json('PUT', '/api/cliente/1', [
-        'documento' => '5663612',
         'barrio' => '1',
         'tipo_documento' => '1',
-        'nombre' => 'Melinda Sueli',
+        'nombre' => 'Elena ',
         'apellido' => 'Gimenez Aveiro',
         'f_nacimiento' => '1999-02-19',
         'correo' => 'melisueli@gmail.com',
@@ -120,9 +121,7 @@ class ClientesTest extends TestCase
         $response->assertStatus(200)->assertJson(['cod' => "00"]);
 
         $response = $this->json('PUT', '/api/cliente/1', [
-            'barrio' => '1',
             'tipo_documento' => '1',
-            'nombre' => 'Melinda Sueli',
             'apellido' => 'Gimenez Aveiro',
             'f_nacimiento' => '1999-02-19',
             'correo' => 'melisueli@gmail.com',
@@ -139,7 +138,7 @@ class ClientesTest extends TestCase
 
 
 
-    }*/
+    }
 
    /*public function test_eliminar_cliente(){
         $response = $this->json('DELETE', '/api/cliente/99',[]);
