@@ -29,7 +29,7 @@ class OperacionesController extends Controller{
         $query = Operaciones::select("operacion.id","operacion.caja","operacion.concepto","operacion.saldo_anterior","operacion.monto",
         "operacion.saldo_posterior","operacion.fecha_operacion","operacion.solicitud_id","operacion.usuario_id",
         "caja.descripcion as caja_descripcion","conceptos_caja.descripcion as concepto_caja","usuario.nombre_usuario as nombre_usuario")
-        ->join("caja", "caja.id", "operacion.id")
+        ->join("caja", "caja.id", "operacion.caja")
         ->join("conceptos_caja","conceptos_caja.id","operacion.concepto")
         ->join("usuario","usuario.id","operacion.usuario_id");
         // if($busqueda !=""){
