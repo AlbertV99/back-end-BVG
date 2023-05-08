@@ -29,7 +29,7 @@ class OperacionesController extends Controller{
         $query = Operaciones::select("operacion.id","operacion.caja","operacion.concepto","operacion.saldo_anterior","operacion.monto",
         "operacion.saldo_posterior","operacion.fecha_operacion","operacion.solicitud_id","operacion.usuario_id",
         "caja.descripcion as caja_descripcion","conceptos_caja.descripcion as concepto_caja","usuario.nombre_usuario as nombre_usuario")
-        ->join("caja", "caja.id", "operacion.id")
+        ->join("caja", "caja.id", "operacion.caja")
         ->join("conceptos_caja","conceptos_caja.id","operacion.concepto")
         ->join("usuario","usuario.id","operacion.usuario_id");
         // if($busqueda !=""){
@@ -215,6 +215,62 @@ class OperacionesController extends Controller{
         return ["cod"=>"00","msg"=>"todo correcto"];
     }
 
+    public function movimientoGenerico(StoreOperacionesRequest $request){
+        try {
+
+            \date_default_timezone_set('America/Santiago');
+            $date = \date('Y-m-d h:i:s a', \time());
+
+            $campos = $this->validate($request,[
+                "caja"=>"required|integer",
+                "monto"=>"required|integer",
+                "usuario_id"=>"required|integer",
+                "concepto"=>"integer",
+            ]);
+
+            $caja = Caja::findOrfail($campos["caja"]);
+            $monto = $caja->saldo_actual;
+            $aperturaCaja = $caja->estadoCaja->last()->estado;
+            $usuario = $caja->estadoCaja->last()->usuario_id;
+            $concepto_caja = ConceptosCaja::findOrfail($campos['concepto']);
+            // return["usuario"=>$usuario];
+            $campos["concepto"] =$concepto_caja->id;
+            if($aperturaCaja != 1){
+                return ["cod"=>"11","msg"=>"Caja cerrada"];
+            }
+
+            if($usuario != $campos["usuario_id"]){
+                return ["cod"=>"11","msg"=>"Usuario no ha abierto la caja "];
+            }
+
+            if($concepto_caja->tipo == 'ENTRADA'){
+                $saldo_posterior = $monto + $campos["monto"];
+            }else{
+                if($monto < $campos["monto"]){
+                    return ["cod"=>"11","msg"=>"No tiene monto necesario en caja"];
+                }
+                $saldo_posterior = $monto - $campos["monto"];
+
+            }
+
+            $saldo_anterior = $monto;
+            $campos["saldo_anterior"] = $saldo_anterior;
+            $campos["saldo_posterior"] = $saldo_posterior;
+            $campos["fecha_operacion"] =$date;
+            $caja->update(["saldo_actual"=>$saldo_posterior]);
+            $Operaciones = Operaciones::create($campos);
+
+        } catch( ModelNotFoundException $e){
+            return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return ["cod"=>"06","msg"=>"Error al insertar los datos","errores"=>[$e->errors() ]];
+
+        } catch (\Exception $e) {
+            return ["cod"=>"99","msg"=>"Error al insertar los datos","error"=>$e->getMessage()];
+        }
+        //return["estado"=>$estado];
+        return ["cod"=>"00","msg"=>"todo correcto"];
+    }
 
     /**
      * Display the specified resource.
