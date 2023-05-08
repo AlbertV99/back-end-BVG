@@ -98,13 +98,13 @@ class PerfilController extends Controller{
      */
     public function update(UpdatePerfilRequest $request, $id){
         try {
-            $barrio = Perfil::findOrfail($id);
+            $perfil = Perfil::findOrfail($id);
             $campos = $this->validate($request,[
                 "descripcion"=>"required|string",
                 "observacion"=>"string",
             ]);
             //AGREGAR PARA OPCIONES DE MENU
-            $barrio->update($campos);
+            $perfil->update($campos);
             return ["cod"=>"00","msg"=>"todo correcto"];
 
         } catch (\Illuminate\Validation\ValidationException $e) {
