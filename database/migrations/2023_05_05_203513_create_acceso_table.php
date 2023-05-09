@@ -20,6 +20,7 @@ class CreateAccesoTable extends Migration
             $table->unsignedBigInteger('opcion_id');
             $table->foreign('opcion_id')->references('id')->on('opcion_menu');
             $table->boolean('acceso');
+            $table->unique(['perfil_id', 'opcion_id']);
             $table->timestamps();
         });
     }

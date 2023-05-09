@@ -82,7 +82,7 @@ class UsuarioController extends Controller{
         ]);
         if(Auth::attempt(['nombre_usuario' => $credentials['usuario'], 'password' => $credentials['password']])){ 
             $usuario = Auth::user(); 
-            $success['token'] =  $usuario->createToken('MyApp')->plainTextToken; 
+            $success['token'] =  $usuario->createToken($credentials['usuario'])->plainTextToken; 
             $success['name'] =  $usuario->nombre_usuario;
             return ["cod"=>"00","msg"=>"todo correcto","success"=>$success];
         }else{ 

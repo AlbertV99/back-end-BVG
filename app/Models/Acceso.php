@@ -15,9 +15,9 @@ class Acceso extends Model{
         'acceso'
     ];
     public function perfil(){
-        return $this->belongsTo(Perfil::class);
+        return $this->belongsTo(Perfil::class,"id","perfil_id");
     }
     public function opcionesMenu(){
-        return $this->belongsTo(OpcionMenu::class);
+        return $this->belongsTo(OpcionMenu::class,"id","opcion_id");
     }
 }
