@@ -28,7 +28,7 @@ class Cliente extends Model
     public function telefono(){
         return $this->hasMany(TelefonoCliente::class,'id_cliente');
     }
-    public function solicitud(): HasMany{
+    public function solicitud(){
         return $this->hasMany(Solicitud::class,'cliente_id');
     }
 
