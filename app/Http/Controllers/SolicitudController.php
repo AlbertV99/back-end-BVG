@@ -14,6 +14,7 @@ use App\Models\TipoPlazo;
 use App\Models\Cuotas;
 use App\Models\EstadoCuota;
 use Illuminate\Support\Carbon as BaseCarbon;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 
 class SolicitudController extends Controller{
@@ -434,7 +435,7 @@ class SolicitudController extends Controller{
             $temp[]  = new Cuotas([
                 'n_cuota'=>$cuota["n_cuota"],
                 'cuota'=>$cuota["cuota"],
-                'saldo'=>$cuota["neto"],
+                'saldo'=>$cuota["cuota"],
                 'interes'=>$cuota["interes"],
                 'amortizacion'=>$cuota["neto"],
                 'mora'=>"0",
@@ -450,5 +451,48 @@ class SolicitudController extends Controller{
     private function redondearMiles($numero){
         $x = ceil(($numero / 1000)) * 1000;
         return $x;
+    }
+
+    public function obtenerCuotasPendientes($id){
+        try {
+            $solicitudes = Solicitud::where('cliente_id','=',$id)->where('estado','5')->get();
+            if(count($solicitudes)<1){
+                throw  new ModelNotFoundException;
+            }
+
+            // return ["cod"=>"00","msg"=>"todo correcto","temp"=>$solicitudes,"cliente"=>$id];
+            // foreach ($solicitudes as  $solicitud) {
+            //     $this->recalcularCuotas($solicitud);
+            // }
+            $cuotas = [];
+            $cuotasPendientes = [];
+
+            foreach ($solicitudes as  $solictud) {
+                $cuotas[] = $solictud->cuotas->filter(function ($item, int $key) {
+                    return ($item->estado==1 || $item->estado == 3);
+                })->toArray();
+            }
+            foreach ($cuotas as $cuota) {
+                foreach($cuota as $desglose){
+                    array_push($cuotasPendientes, $desglose);
+                }
+            }
+
+            return ["cod"=>"00","msg"=>"todo correcto","datos"=>$cuotasPendientes];
+        } catch( ModelNotFoundException $e){
+            return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
+        }catch (\Exception $e) {
+            return ["cod"=>"99","msg"=>"Error inesperado","datos"=>$e->getMessage()];
+
+        }
+
+
+    }
+
+    private function recalcularCuotas($solicitud){
+        //fecha de hoy
+        foreach ($solicitud->cuotas as $cuota) {
+            //aplicar la mora
+        }
     }
 }

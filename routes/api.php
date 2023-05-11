@@ -136,6 +136,7 @@ Route::middleware(['cors'])->group(function () {
         Route::put('/solicitud/{id}/estado','cambiarEstado');
         Route::delete('/solicitud/{id}','destroy');
         Route::get('/solicitud/{estado}/cliente/{id}/','filtroSolicitud');
+        Route::get('/solicitud/cuotas/l/{id}', 'obtenerCuotasPendientes');
     });
 
     #OPERACIONES
