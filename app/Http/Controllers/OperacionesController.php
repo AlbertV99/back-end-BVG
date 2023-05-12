@@ -13,6 +13,7 @@ use App\Models\Caja;
 use App\Models\AperturaCaja;
 use App\Models\HistorialEstado;
 use App\Models\DetalleCuotaOperacion;
+use App\Models\Cuotas;
 
 class OperacionesController extends Controller{
     private $c_reg_panel = 25;
@@ -103,6 +104,7 @@ class OperacionesController extends Controller{
             $Operaciones = Operaciones::create($campos);
             $historial = new HistorialEstado(["estado_id"=>5,"observacion_cambio"=>"Desmbolso de la solicitud"]);
             $solicitud->historialEstado()->save($historial);
+            $solicitud->update(['estado'=>5]);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             return ["cod"=>"06","msg"=>"Error al insertar los datos","errores"=>[$e->errors() ]];
@@ -132,9 +134,7 @@ class OperacionesController extends Controller{
             $campos = $this->validate($request,[
                 "caja"=>"required|integer",
                 "monto"=>"required|integer",
-                "solicitud_id"=>"required|numeric",
                 "usuario_id"=>"required|integer",
-                "concepto"=>"interger",
             ]);
 
             $caja = Caja::findOrfail($campos["caja"]);
@@ -143,10 +143,10 @@ class OperacionesController extends Controller{
             $usuario = $caja->estadoCaja->last()->usuario_id;
 
             $concepto_caja = ConceptosCaja::select('id')
-           ->where('descripcion','=', 'Pago Cuota');
+           ->where('descripcion','=', 'Pago Cuota')->get();
            //return["usuario"=>$usuario];
             $campos["concepto"] =$concepto_caja;
-            $campos['concepto']= 2;
+            // $campos['concepto']= 2;
 
             if($aperturaCaja != 1){
                 return ["cod"=>"11","msg"=>"Caja cerrada"];
@@ -156,23 +156,17 @@ class OperacionesController extends Controller{
                 return ["cod"=>"11","msg"=>"Usuario no ha abierto la caja "];
             }
 
-            $solicitud = Solicitud::findOrfail($campos["solicitud_id"]);
-            $solicitud->cuotas;
-            $estado = $solicitud->historialEstado->last()->estado_id;
-            if($estado === null ||  $estado != 5){
-                return ["cod"=>"11","msg"=>"El estado no es DESEMBOLSADO"];
-            }
-
             //VALIDAR ESTADOS DE CUOTAS
             $indicesCuotas = [];
             foreach ($request->input("cuotas") as $value) {
-                $cuotaTemp = $solicitud->cuotas->search(function ($valor, int $pos) use ($value) {
-                    return ($valor->id == $value['id']);
-                });
+                // $cuotaTemp = $solicitud->cuotas->search(function ($valor, int $pos) use ($value) {
+                //     return ($valor->id == $value['id']);
+                // });
+                $cuotaTemp = Cuotas::findOrfail($value['id']);
                 $indicesCuotas[]=$cuotaTemp;
-                if($cuotaTemp && $solicitud->cuotas[$cuotaTemp]->estado != '1'){
-                    throw  \Illuminate\Validation\ValidationException::withMessages(['Cuotas' => ['Una de las cuotas no existe para la solicitud seleccionada o ya fue pagada']]);
-                }
+                // if($cuotaTemp && $solicitud->cuotas[$cuotaTemp]->estado != '1'){
+                //     throw  \Illuminate\Validation\ValidationException::withMessages(['Cuotas' => ['Una de las cuotas no existe para la solicitud seleccionada o ya fue pagada']]);
+                // }
             }
 
 
@@ -183,22 +177,26 @@ class OperacionesController extends Controller{
             $campos["fecha_operacion"] =$date;
 
             //actualizacion de saldo de caja
-            // return ["cod"=>"11","msg"=>"Prueba","datos"=>$indicesCuotas,"cuotas"=>$solicitud->cuotas];
+            // return ["cod"=>"11","msg"=>"Prueba","datos"=>$indicesCuotas];
             $montoTemp = $campos['monto'];
             $detalle = [];
-            foreach ($indicesCuotas as $posicion) {
-                $saldoNew = ($montoTemp>$solicitud->cuotas[$posicion]->saldo ) ? 0 :$solicitud->cuotas[$posicion]->saldo - $montoTemp;
+            foreach ($indicesCuotas as $cuota) {
                 $actualizacion = [];
+                $saldoNew = ($montoTemp>$cuota->saldo ) ? 0 :$cuota->saldo - $montoTemp;
                 $actualizacion ['saldo'] = $saldoNew;
                 if($saldoNew==0){
                     $actualizacion['estado'] = 2; // se cambia a pagado
                 }
-                $solicitud->cuotas[$posicion]->update($actualizacion);
-                $detalle[] = new DetalleCuotaOperacion(['cuota_id'=>$montoTemp>$solicitud->cuotas[$posicion]->id]);
+                $cuota->update($actualizacion);
+                $detalle[] = new DetalleCuotaOperacion(['cuota_id'=>$cuota->id]);
 
 
             }
             $caja->update(["saldo_actual"=>$saldo_posterior]);
+
+            $campos['concepto'] = $campos['concepto'][0]['id'];
+            // return ["cod"=>"11","msg"=>"Prueba","datos"=>$campos];
+
             $Operaciones = Operaciones::create($campos);
             // AGREGAR LAS CUOTAS PAGADAS
             $Operaciones->detalles()->saveMany($detalle);

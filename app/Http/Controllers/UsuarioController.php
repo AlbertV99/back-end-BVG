@@ -176,4 +176,16 @@ class UsuarioController extends Controller{
             return ["cod"=>"08","msg"=>"Error al eliminar el registro","errores"=>[$e->getMessage() ]];
         }
     }
+
+    public function obtenerDatosLogueo(){
+        $usuario = Usuario::findOrfail(1);
+        $usuario->perfil;
+        $accesos = $usuario->perfil->accesos;
+        $agrupadores = [];
+        foreach ($accesos as $opciones) {
+            $accesos->opcionMenu;
+            // $agrupadores[]=>
+        }
+        return ["cod"=>"00","msg"=>"todo correcto","usuario"=>$usuario];
+    }
 }

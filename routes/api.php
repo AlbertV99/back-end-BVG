@@ -105,6 +105,7 @@ Route::middleware(['cors'])->group(function () {
     #USUARIOS
     Route::controller(UsuarioController::class)->group(function () {
         Route::get('/usuario/{pag?}','index');
+        Route::get('/usuariologueado/','obtenerDatosLogueo');
         Route::get('/usuario/u/{id}','show');
         Route::post('/usuario/','store');
         Route::put('/usuario/{id}','update');
