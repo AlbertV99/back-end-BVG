@@ -7,6 +7,7 @@ use App\Http\Requests\UpdatePerfilRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\Perfil;
 use App\Models\Acceso;
+use App\Models\OpcionMenu;
 
 class PerfilController extends Controller{
     private $c_reg_panel = 25;
@@ -50,22 +51,33 @@ class PerfilController extends Controller{
                 "descripcion"=>"required|string",
                 "observacion"=>"string",
             ]);
-            //AGREGAR PARA OPCIONES DE MENU
+
+            $accesos = $request->input('accesos');
+            $opcionMenu = OpcionMenu::select("id")->get();
             $campos['descripcion'] = strtoupper($campos['descripcion']);
             $perfil = Perfil::create($campos);
-            foreach ($request->input('accesos') as $key => $value) {
+            foreach ($opcionMenu->toArray() as $key => $value) {
+                if(!in_array(["opcion_id"=>$value['id'],"acceso"=>false], $accesos)){
+                    array_push($accesos, ["opcion_id"=>$value['id'],"acceso"=>false]);
+                }
+            }
+
+            //return[$accesos];
+            foreach ($accesos as $key => $value) {
                 if(!isset($value['opcion_id']) || $value['opcion_id'] == ''){
                     continue;
                 }
                 if(!isset($value['acceso']) || $value['acceso'] == ''){
                     $value['acceso'] = false;
                 }
+
                 $camposAcceso = ['opcion_id'=>$value['opcion_id'], 'acceso'=>$value['acceso']];
                 $accesoTemp = new Acceso($camposAcceso);
                 try{
                     $perfil->accesos()->save($accesoTemp);
                 }catch(\Exception $e){
                 }
+
             }
 
         } catch (\Illuminate\Validation\ValidationException $e) {
