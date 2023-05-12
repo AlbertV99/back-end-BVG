@@ -16,6 +16,7 @@ class Perfil extends Seeder
     {
         $lista = [
         ["ADMINISTRADOR","Acceso a todos el sistema"],
+        ["SIN ACCESOS","Sin acceso a el sistema"],
     ];
 
         foreach ($lista as $key => $value) {
