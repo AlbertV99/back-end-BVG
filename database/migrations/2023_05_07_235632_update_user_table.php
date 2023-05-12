@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePerfilTable extends Migration
+class UpdateUserTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,8 @@ class CreatePerfilTable extends Migration
      */
     public function up()
     {
-        Schema::create('perfil', function (Blueprint $table) {
-            $table->id();
-            $table->string('descripcion')->unique();
-            $table->string('observacion');
-            $table->timestamps();
+        Schema::table('usuario', function (Blueprint $table) {
+            $table->foreign('perfil_id')->references('id')->on('perfil');
         });
     }
 
@@ -28,6 +25,6 @@ class CreatePerfilTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('perfil');
+        //
     }
 }

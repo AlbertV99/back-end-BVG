@@ -6,6 +6,7 @@ use App\Http\Requests\StoreUsuarioRequest;
 use App\Http\Requests\UpdateUsuarioRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\Usuario;
+use Illuminate\Support\Facades\Auth;
 
 class UsuarioController extends Controller{
     private $c_reg_panel = 25;
@@ -19,7 +20,7 @@ class UsuarioController extends Controller{
         $c_paginas = ceil(Usuario::count()/$this->c_reg_panel);
         $salto = $pag*$this->c_reg_panel;
 
-        $query = Usuario::select("usuario.id","usuario.nombre_usuario","usuario.nombre","usuario.apellido","usuario.cedula","usuario.fecha_nacimiento","usuario.email","perfil.descripcion","usuario.restablecer_pass")
+        $query = Usuario::select("usuario.id","usuario.nombre_usuario","usuario.nombre","usuario.apellido","usuario.cedula","usuario.fecha_nacimiento","usuario.email","perfil.descripcion","usuario.restablecer_password")
         ->join("perfil","perfil.id","usuario.perfil_id");
         // if($busqueda !=""){
         //     $query = $query->where("usuario.nombre_usuario","like",$busqueda)->orWhere("usuario.nombre","like",$busqueda)->orWhere("usuario.apellido","like",$busqueda)->orWhere("usuario.apellido","like",$busqueda);
@@ -52,13 +53,16 @@ class UsuarioController extends Controller{
                 "nombre"=>"required|string",
                 "apellido"=>"required|string",
                 "cedula"=>"required|string",
-                "pass"=>"required|string",
+                "password"=>"required|string",
                 "fecha_nacimiento"=>"required|date",
                 "email"=>"required|string",
-                "perfil_id"=>"required|integer",
-                "restablecer_pass"=>"required|boolean"
+                "perfil_id"=>"required|integer"
             ]);
 
+            $campos['restablecer_password'] = false;
+            $encriptado = bcrypt($campos['password']);
+            $campos['password'] = $encriptado;
+           // return[$campos];
             $usuario = Usuario::create($campos);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -68,6 +72,23 @@ class UsuarioController extends Controller{
             return ["cod"=>"05","msg"=>"Error al insertar los datos","error"=>$e->getMessage()];
         }
         return ["cod"=>"00","msg"=>"todo correcto"];
+    }
+
+    public function login(StoreUsuarioRequest $request)
+    {
+        $credentials = $request->validate([
+            'usuario' => ['required', 'string'],
+            'password' => ['required'],
+        ]);
+        if(Auth::attempt(['nombre_usuario' => $credentials['usuario'], 'password' => $credentials['password']])){ 
+            $usuario = Auth::user(); 
+            $success['token'] =  $usuario->createToken($credentials['usuario'])->plainTextToken; 
+            $success['name'] =  $usuario->nombre_usuario;
+            return ["cod"=>"00","msg"=>"todo correcto","success"=>$success];
+        }else{ 
+            return ["cod"=>"99","msg"=>"Error general"];
+        } 
+
     }
 
     /**
@@ -116,13 +137,12 @@ class UsuarioController extends Controller{
                 "nombre"=>"required|string",
                 "apellido"=>"required|string",
                 "cedula"=>"required|string",
-                "pass"=>"required|string",
+                "password"=>"required|string",
                 "fecha_nacimiento"=>"required|date",
                 "email"=>"required|string",
-                "perfil_id"=>"required|integer",
-                "restablecer_pass"=>"required|boolean"
+                "perfil_id"=>"required|integer"
             ]);
-
+            $campos['restablecer_password'] = false;
             $usuario->update($campos);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -142,9 +162,19 @@ class UsuarioController extends Controller{
      * @param  \App\Models\Usuario  $usuario
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Usuario $usuario)
+    public function destroy($id)
     {
-        //
+        try {
+            $usuario = Usuario::findOrfail($id);
+            //return ["cod"=>$usuario];
+            $usuario->delete();
+
+            return ["cod"=>"00","msg"=>"todo correcto"];
+        } catch( ModelNotFoundException $e){
+            return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
+        } catch (\Exception $e) {
+            return ["cod"=>"08","msg"=>"Error al eliminar el registro","errores"=>[$e->getMessage() ]];
+        }
     }
 
     public function obtenerDatosLogueo(){

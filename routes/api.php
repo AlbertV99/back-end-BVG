@@ -110,8 +110,9 @@ Route::middleware(['cors'])->group(function () {
         Route::post('/usuario/','store');
         Route::put('/usuario/{id}','update');
         Route::delete('/usuario/{id}','destroy');
-
+        Route::post('/usuario/login', 'login');
     });
+    
     #PERFIL
     Route::controller(PerfilController::class)->group(function () {
         Route::get('/perfil/{pag?}','index');

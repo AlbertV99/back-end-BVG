@@ -5,10 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
-class Usuario extends Model
+class Usuario extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable, HasApiTokens;
     use SoftDeletes;
     protected $table = 'usuario';
     const DELETED_AT = 'activo';
@@ -17,12 +20,18 @@ class Usuario extends Model
         'nombre',
         'apellido',
         'cedula',
-        'pass',
+        'password',
         'fecha_nacimiento',
         'email',
         'perfil_id',
-        'restablecer_pass'
+        'restablecer_password'
     ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
 
     public function perfil(){
         return $this->belongsTo(Perfil::class,"perfil_id","id");

@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
             EstadoCuota::class,
             ConceptosCaja::class,
             Menu::class,
+            Perfil::class,
+            Usuario::class
         ]);
     }
 }
