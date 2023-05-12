@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorebarrioRequest;
 use App\Http\Requests\UpdatebarrioRequest;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\barrio;
 
 class BarrioController extends Controller{

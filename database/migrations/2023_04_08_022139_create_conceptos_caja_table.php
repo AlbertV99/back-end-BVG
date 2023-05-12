@@ -17,6 +17,7 @@ class CreateConceptosCajaTable extends Migration
             $table->id();
             $table->string('tipo');
             $table->string('descripcion');
+            $table->softDeletes($column = 'eliminado', $precision = 0);
         });
     }
 

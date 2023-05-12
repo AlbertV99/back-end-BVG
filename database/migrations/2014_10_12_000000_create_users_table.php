@@ -19,11 +19,11 @@ class CreateUsersTable extends Migration
             $table->string('nombre');
             $table->string('apellido');
             $table->string('cedula');
-            $table->string('pass');
-            $table->string('fecha_nacimiento');
+            $table->string('password');
+            $table->date('fecha_nacimiento');
             $table->string('email');
-            $table->string('perfil_id');
-            $table->boolean('restablecer_pass');
+            $table->unsignedBigInteger('perfil_id');
+            $table->boolean('restablecer_password');
             $table->softDeletes($column = 'activo', $precision = 0);
             $table->rememberToken();
             $table->timestamps();

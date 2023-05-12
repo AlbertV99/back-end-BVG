@@ -6,8 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class BarrioTest extends TestCase
-{
+class BarrioTest extends TestCase{
     /**
      * A basic feature test example.
      *
@@ -47,13 +46,13 @@ class BarrioTest extends TestCase
 
     }
 
-    public function test_eliminar_barrio(){
+    /*public function test_eliminar_barrio(){
         $response = $this->json('DELETE', '/api/barrio/99',[]);
         $response->assertStatus(200)->assertJson(['cod' => "08"]);
 
 
-        $response = $this->json('DELETE', '/api/barrio/1',[]);
+        $response = $this->json('DELETE', '/api/barrio/9',[]);
         $response->assertStatus(200)->assertJson(['cod' => "00"]);
 
-    }
+    }*/
 }

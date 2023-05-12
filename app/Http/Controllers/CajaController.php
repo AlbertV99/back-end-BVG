@@ -6,6 +6,7 @@ use App\Http\Requests\StoreCajaRequest;
 use App\Http\Requests\UpdateCajaRequest;
 use App\Models\Caja;
 use App\Models\AperturaCaja;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CajaController extends Controller{
     private $c_reg_panel = 25;
@@ -160,10 +161,13 @@ class CajaController extends Controller{
             return ["cod"=>"00","msg"=>"Caja abierta Correctamente","datos"=>["id"=>$caja->id,"descripcion"=>$caja->descripcion]];
         } catch( ModelNotFoundException $e){
             return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
+        } catch (\Illuminate\Validation\ValidationException $e){
+            return ["cod"=>"06","msg"=>"Error a insertar los datos","error"=>$e->getMessage()];
         } catch (\Exception $e) {
             return ["cod"=>"99","msg"=>"Error general","error"=>$e->getMessage()];
         }
     }
+
     public function cerrarCaja(UpdateCajaRequest $request,$id){
         try {
             $caja = Caja::findOrfail($id);
@@ -179,7 +183,7 @@ class CajaController extends Controller{
             // }
             // realizar la apertura de la caja ->create )
             // actualizar el saldo $caja->update(['saldo_caja'=>$request->input('saldo')])
-            $caja->estadoCaja->last()->usuario_id='2';
+            $caja->estadoCaja->last()->usuario_id='1';
             $caja->estadoCaja->last()->saldo_cierre=$caja->saldo_actual;
             $caja->estadoCaja->last()->fecha_cierre=$date;
             $caja->estadoCaja->last()->estado=0;

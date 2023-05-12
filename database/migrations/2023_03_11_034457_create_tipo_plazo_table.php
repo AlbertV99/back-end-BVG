@@ -19,6 +19,7 @@ class CreateTipoPlazoTable extends Migration
             $table->integer('factor_divisor');
             $table->integer('dias_vencimiento');
             $table->decimal('interes');
+            $table->softDeletes($column = 'eliminado', $precision = 0);
         });
     }
 

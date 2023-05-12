@@ -11,8 +11,7 @@ class CreateSolicitudTable extends Migration
      *
      * @return void
      */
-    public function up()
-    {
+    public function up(){
         Schema::create('solicitud', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('cliente_id');
@@ -29,6 +28,9 @@ class CreateSolicitudTable extends Migration
             $table->foreign('usuario_id')->references('id')->on('usuario');
             $table->date('fecha_retiro')->nullable();
             $table->date('vencimiento_retiro')->nullable();
+            $table->integer('estado')->nullable();
+            $table->integer('cant_cuotas');
+            $table->integer('inicio_cuota');
             $table->timestamps();
         });
     }
