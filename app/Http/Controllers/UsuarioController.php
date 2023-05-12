@@ -122,7 +122,7 @@ class UsuarioController extends Controller{
                 "perfil_id"=>"required|integer",
                 "restablecer_pass"=>"required|boolean"
             ]);
-            
+
             $usuario->update($campos);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -145,5 +145,17 @@ class UsuarioController extends Controller{
     public function destroy(Usuario $usuario)
     {
         //
+    }
+
+    public function obtenerDatosLogueo(){
+        $usuario = Usuario::findOrfail(1);
+        $usuario->perfil;
+        $accesos = $usuario->perfil->accesos;
+        $agrupadores = [];
+        foreach ($accesos as $opciones) {
+            $accesos->opcionMenu;
+            // $agrupadores[]=>
+        }
+        return ["cod"=>"00","msg"=>"todo correcto","usuario"=>$usuario];
     }
 }
