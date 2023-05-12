@@ -18,10 +18,10 @@ class Menu extends Seeder
         $observacionMenuOpcionDefecto = "CREADO POR SEMILLA";
         $icono = "testing";
         $lista = [
-            ["agrupador"=>"Documentos","opciones"=>[
+            ["agrupador"=>"Cliente","opciones"=>[
                 ["descripcion"=>"Clientes","direccion"=>"cliente"],
                 ["descripcion"=>"PerfilCliente","direccion"=>"perfilCliente"],
-                ["descripcion"=>"Clientes","direccion"=>"barrio"],
+                ["descripcion"=>"Barrio","direccion"=>"barrio"],
             ]], #
             ["agrupador"=>"Credito","opciones"=>[
                 ["descripcion"=>"Tipo Plazo","direccion"=>"tipoPlazo"],
