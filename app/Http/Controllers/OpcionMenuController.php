@@ -50,7 +50,7 @@ class OpcionMenuController extends Controller{
             $campos = $this->validate($request,[
                 "descripcion"=>"required|string",
                 "observacion"=>"string",
-                "agrupador_id"=>"required|integer"
+                "agrupador_id"=>"required|integer",
                 "dir_imagen"=>"required|image|mimes:jpeg,png,jpg,gif,svg|max:2048",
             ]);
             $imageName = time().'.'.$request->image->extension();
@@ -109,7 +109,8 @@ class OpcionMenuController extends Controller{
             $campos = $this->validate($request,[
                 "descripcion"=>"required|string",
                 "observacion"=>"string",
-                "agrupador_id"=>"required|integer"
+                "agrupador_id"=>"required|integer",
+                "dir_imagen"=>"required|image|mimes:jpeg,png,jpg,gif,svg|max:2048",
             ]);
             //AGREGAR PARA OPCIONES DE MENU
             $barrio->update($campos);
