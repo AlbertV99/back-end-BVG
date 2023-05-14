@@ -13,7 +13,7 @@ class StoreOpcionMenuRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return false;
     }
 
     /**

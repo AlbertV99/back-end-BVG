@@ -13,6 +13,7 @@ class OpcionMenu extends Model{
         'descripcion',
         'observacion',
         'agrupador_id',
+        'dir_imagen'
     ];
 
     public function agrupador(){

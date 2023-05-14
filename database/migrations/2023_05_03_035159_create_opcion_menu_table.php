@@ -14,11 +14,14 @@ class CreateOpcionMenuTable extends Migration
     public function up()
     {
         Schema::create('opcion_menu', function (Blueprint $table) {
+
             $table->id();
             $table->string("descripcion");
             $table->string("observacion")->nullable();
+            $table->string("dir_imagen")->default('Imagenes/opcionMenu/estatico.png');
             $table->unsignedBigInteger('agrupador_id');
             $table->foreign('agrupador_id')->references('id')->on('agrupador');
+
         });
     }
 
