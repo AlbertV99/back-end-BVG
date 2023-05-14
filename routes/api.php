@@ -111,6 +111,7 @@ Route::middleware(['cors'])->group(function () {
         Route::put('/usuario/{id}','update');
         Route::delete('/usuario/{id}','destroy');
         Route::post('/usuario/login', 'login');
+        Route::post('/usuario/logout', 'logout');
     });
     
     #PERFIL
