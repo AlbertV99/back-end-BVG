@@ -20,7 +20,7 @@ class OpcionMenuController extends Controller{
         $c_paginas = ceil(OpcionMenu::count()/$this->c_reg_panel);
         $salto = $pag*$this->c_reg_panel;
 
-        $query = OpcionMenu::select("opcion_menu.id","opcion_menu.observacion","opcion_menu.descripcion","agrupador.descripcion as dsc_agrupador", "agrupador.id as dsc_id")
+        $query = OpcionMenu::select("opcion_menu.id","opcion_menu.observacion","opcion_menu.descripcion","opcion_menu.dir_imagen","agrupador.descripcion as dsc_agrupador", "agrupador.id as dsc_id")
         ->join('agrupador','agrupador.id','opcion_menu.agrupador_id');
         // if($busqueda !=""){
         //     $query = $query->where("usuario.nombre_usuario","like",$busqueda)->orWhere("usuario.nombre","like",$busqueda)->orWhere("usuario.apellido","like",$busqueda)->orWhere("usuario.apellido","like",$busqueda);
