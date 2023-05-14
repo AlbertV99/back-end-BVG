@@ -74,8 +74,7 @@ class UsuarioController extends Controller{
         return ["cod"=>"00","msg"=>"todo correcto"];
     }
 
-    public function login(StoreUsuarioRequest $request)
-    {
+    public function login(StoreUsuarioRequest $request){
         $credentials = $request->validate([
             'usuario' => ['required', 'string'],
             'password' => ['required'],
@@ -84,6 +83,7 @@ class UsuarioController extends Controller{
             $usuario = Auth::user();
             $success['token'] =  $usuario->createToken($credentials['usuario'])->plainTextToken;
             $success['name'] =  $usuario->nombre_usuario;
+            $success['menu'] = $this->obtenerDatosLogueo();
             return ["cod"=>"00","msg"=>"todo correcto","success"=>$success];
         }else{
             return ["cod"=>"99","msg"=>"Error general"];
@@ -91,15 +91,14 @@ class UsuarioController extends Controller{
 
     }
 
-    public function logout(StoreUsuarioRequest $request) 
-    {
+    public function logout(StoreUsuarioRequest $request){
         try{
             Auth::logout();
 
             return ["cod"=>"00","msg"=>"todo correcto"];
         }catch (\Illuminate\Validation\ValidationException $e){
             return ["cod"=>"99","msg"=>"Error general","errores"=>[$e->errors() ]];
-        } 
+        }
 
     }
 
@@ -127,8 +126,7 @@ class UsuarioController extends Controller{
      * @param  \App\Models\Usuario  $usuario
      * @return \Illuminate\Http\Response
      */
-    public function edit(Usuario $usuario)
-    {
+    public function edit(Usuario $usuario){
         //
     }
 
@@ -139,8 +137,7 @@ class UsuarioController extends Controller{
      * @param  \App\Models\Usuario  $usuario
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateUsuarioRequest $request, $id)
-    {
+    public function update(UpdateUsuarioRequest $request, $id){
         try {
             $usuario = Usuario::findOrfail($id);
             //return ["cod"=>$usuario];
@@ -161,10 +158,10 @@ class UsuarioController extends Controller{
         } catch (\Illuminate\Validation\ValidationException $e) {
             return ["cod"=>"06","msg"=>"Error al insertar los datos","errores"=>[$e->errors() ]];
 
-        } catch (\Exception $e) {
-            return ["cod"=>"05","msg"=>"Error al insertar los datos","error"=>$e->getMessage()];
         } catch(ModelNotFoundException $e){
             return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
+        } catch (\Exception $e) {
+            return ["cod"=>"99","msg"=>"Error al insertar los datos","error"=>$e->getMessage()];
         }
     }
 
@@ -188,10 +185,12 @@ class UsuarioController extends Controller{
         }
     }
 
-    public function obtenerDatosLogueo(){
-        $usuario = Usuario::findOrfail(1);
+    private function obtenerDatosLogueo(){
+        $usuario = Auth::user();
+        // $usuario = Usuario::findOrfail(1);
+
         $usuario->perfil;
-        $accesos = $usuario->perfil->accesos;
+        $accesos = $usuario->perfil->accesos->where('acceso', 'true');
 
         $agrupadores = [];
         $agrupadores_filtrado= [];
@@ -221,6 +220,6 @@ class UsuarioController extends Controller{
 
         // foreach ($agrupadores as $agrupador) {
         // }
-        return ["cod"=>"00","msg"=>"todo correcto","agrupador"=>$agrupadores_filtrado,"usuario"=>$agrupadores];
+        return $agrupadores_filtrado;
     }
 }
