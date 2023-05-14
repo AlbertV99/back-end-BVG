@@ -30,8 +30,12 @@ use App\Http\Controllers\PerfilController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::middleware(['cors'])->group(function () {
+Route::middleware('cors')->group( function () {
+    Route::post('/usuario/login/', [UsuarioController::class, 'login']);
+    // Route::post('/usuario/login', 'login');
+    // Route::get('/usuariologueado/','obtenerDatosLogueo');
+});
+Route::middleware(['cors','auth:sanctum'])->group(function () {
     #CLIENTE
     Route::controller(ClienteController::class)->group(function () {
         Route::get('/cliente/{pag?}', 'index');
@@ -110,10 +114,10 @@ Route::middleware(['cors'])->group(function () {
         Route::post('/usuario/','store');
         Route::put('/usuario/{id}','update');
         Route::delete('/usuario/{id}','destroy');
-        Route::post('/usuario/login', 'login');
+        // Route::post('/usuario/login', 'login');
         Route::post('/usuario/logout', 'logout');
     });
-    
+
     #PERFIL
     Route::controller(PerfilController::class)->group(function () {
         Route::get('/perfil/{pag?}','index');
