@@ -126,6 +126,12 @@ class PerfilController extends Controller{
      */
     public function update(UpdatePerfilRequest $request, $id){
         try {
+
+            if($id === "1" || $id === "2"){
+                return ["cod"=>"11","msg"=>"No se puede editar este perfil"];
+            }
+
+
             $perfil = Perfil::findOrfail($id);
             $campos = $this->validate($request,[
                 "descripcion"=>"required|string",
@@ -165,8 +171,23 @@ class PerfilController extends Controller{
      * @param  \App\Models\Perfil  $perfil
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Perfil $perfil)
+    public function destroy($id)
     {
-        //
+        try {   
+            if($id === "1" || $id === "2"){
+                return ["cod"=>"11","msg"=>"No se puede eliminar este perfil"];
+            }
+
+            $perfil = Perfil::findOrfail($id);
+            //return ["cod"=>$accesos];
+            $perfil->accesos()->delete();
+            $perfil->delete();
+
+            return ["cod"=>"00","msg"=>"todo correcto"];
+        } catch( ModelNotFoundException $e){
+            return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
+        } catch (\Exception $e) {
+            return ["cod"=>"08","msg"=>"Error al eliminar el registro","errores"=>[$e->getMessage() ]];
+        }
     }
 }

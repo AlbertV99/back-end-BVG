@@ -91,6 +91,18 @@ class UsuarioController extends Controller{
 
     }
 
+    public function logout(StoreUsuarioRequest $request) 
+    {
+        try{
+            Auth::logout();
+
+            return ["cod"=>"00","msg"=>"todo correcto"];
+        }catch (\Illuminate\Validation\ValidationException $e){
+            return ["cod"=>"99","msg"=>"Error general","errores"=>[$e->errors() ]];
+        } 
+
+    }
+
     /**
      * Display the specified resource.
      *
@@ -145,6 +157,7 @@ class UsuarioController extends Controller{
             $campos['restablecer_password'] = false;
             $usuario->update($campos);
 
+            return ["cod"=>"00","msg"=>"todo correcto"];
         } catch (\Illuminate\Validation\ValidationException $e) {
             return ["cod"=>"06","msg"=>"Error al insertar los datos","errores"=>[$e->errors() ]];
 
@@ -153,7 +166,6 @@ class UsuarioController extends Controller{
         } catch(ModelNotFoundException $e){
             return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
         }
-        return ["cod"=>"00","msg"=>"todo correcto"];
     }
 
     /**
@@ -209,9 +221,6 @@ class UsuarioController extends Controller{
 
         // foreach ($agrupadores as $agrupador) {
         // }
-
-
-
         return ["cod"=>"00","msg"=>"todo correcto","agrupador"=>$agrupadores_filtrado,"usuario"=>$agrupadores];
     }
 }
