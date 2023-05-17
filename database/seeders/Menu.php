@@ -18,34 +18,38 @@ class Menu extends Seeder
         $observacionMenuOpcionDefecto = "CREADO POR SEMILLA";
         $icono = "testing";
         $lista = [
-            ["agrupador"=>"Cliente","opciones"=>[
+            ["agrupador"=>"Documento","icono"=>"CgFileDocument", "opciones"=>[
+                ["descripcion"=>"Documentos","direccion"=>"documento"],
+            ]],
+            ["agrupador"=>"Cliente","icono"=>"CgUserList", "opciones"=>[
                 ["descripcion"=>"Clientes","direccion"=>"cliente"],
                 ["descripcion"=>"PerfilCliente","direccion"=>"perfilCliente"],
                 ["descripcion"=>"Barrio","direccion"=>"barrio"],
             ]], #
-            ["agrupador"=>"Credito","opciones"=>[
+            ["agrupador"=>"Credito","icono"=>"CgCreditCard","opciones"=>[
                 ["descripcion"=>"Tipo Plazo","direccion"=>"tipoPlazo"],
                 ["descripcion"=>"Solicitud Agente","direccion"=>"solicitudAgente"],
                 ["descripcion"=>"Solicitud Analisis","direccion"=>"solicitudAnalista"],
                 ["descripcion"=>"Solicitud Directorio","direccion"=>"solicitudDirectorio"],
             ]], #
-            ["agrupador"=>"Caja","opciones"=>[
+            ["agrupador"=>"Caja","icono"=>"CgCalendarDates","opciones"=>[
                 ["descripcion"=>"Conceptos","direccion"=>"conceptosCaja"],
                 ["descripcion"=>"Cajas","direccion"=>"caja"],
                 ["descripcion"=>"Movimientos","direccion"=>"operacion"],
             ]], #
-            ["agrupador"=>"Seguridad","opciones"=>[
+            ["agrupador"=>"Seguridad","icono"=>"CgLock", "opciones"=>[
                 ["descripcion"=>"Usuarios","direccion"=>"usuario"],
                 ["descripcion"=>"Perfil","direccion"=>"perfilCliente"],
                 ["descripcion"=>"Agrupadores","direccion"=>"agrupador"],
                 ["descripcion"=>"Opciones de Menu","direccion"=>"opcionMenu"],
             ]], #
-            ["agrupador"=>"Reportes","opciones"=>[]], #
+            ["agrupador"=>"Reportes","icono"=>"CgReadme","opciones"=>[]], #
         ];
         $estados = [];
         foreach ($lista as  $value) {
             $agrupador = Agrupador::create([
                 'descripcion' => $value["agrupador"],
+                'icono'=>$value['icono'],
             ]);
             foreach ($value["opciones"] as $opcion) {
                 $agrupador->opciones()->save(new OpcionMenu(['descripcion'=>$opcion['descripcion'],"observacion"=>$observacionMenuOpcionDefecto,'direccion'=>$opcion['direccion']]));
