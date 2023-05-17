@@ -48,7 +48,7 @@ class Menu extends Seeder
                 'descripcion' => $value["agrupador"],
             ]);
             foreach ($value["opciones"] as $opcion) {
-                $agrupador->opciones()->save(new OpcionMenu(['descripcion'=>$opcion['descripcion'],"observacion"=>$observacionMenuOpcionDefecto]));
+                $agrupador->opciones()->save(new OpcionMenu(['descripcion'=>$opcion['descripcion'],"observacion"=>$observacionMenuOpcionDefecto,'direccion'=>$opcion['direccion']]));
             }
         }
     }

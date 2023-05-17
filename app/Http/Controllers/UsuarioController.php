@@ -83,6 +83,7 @@ class UsuarioController extends Controller{
             $usuario = Auth::user();
             $success['token'] =  $usuario->createToken($credentials['usuario'])->plainTextToken;
             $success['name'] =  $usuario->nombre_usuario;
+            $success['perfil'] =  $usuario->perfil->descripcion;
             $success['menu'] = $this->obtenerDatosLogueo();
             return ["cod"=>"00","msg"=>"todo correcto","success"=>$success];
         }else{
@@ -208,13 +209,15 @@ class UsuarioController extends Controller{
             if($b==-1){
                 $temp=$agrupador->toArray();
                 $opcionTemp = $acceso->opcionesMenu;
+                $opcionTemp['dir_imagen'] = 'http://'.request()->getHttpHost()."/".$opcionTemp['dir_imagen'];
                 unset($opcionTemp['agrupador']);
                 $temp["opciones"]=[$opcionTemp];
                 $agrupadores_filtrado[]=$temp;
             }else{
                 $opcionTemp = $acceso->opcionesMenu;
+                $opcionTemp['dir_imagen'] = 'http://'.request()->getHttpHost()."/".$opcionTemp['dir_imagen'];
                 unset($opcionTemp['agrupador']);
-                $agrupadores_filtrado[$b]["opciones"][]=[$opcionTemp];
+                $agrupadores_filtrado[$b]["opciones"][]=$opcionTemp;
             }
         }
 
