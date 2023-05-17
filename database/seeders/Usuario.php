@@ -15,8 +15,8 @@ class Usuario extends Seeder
     public function run()
     {
         $lista = [
-        ["admin","Administrador","Sistema","123456","153699","19/02/199","admin@gmail.com","1",false],
-    ];
+            ["admin","Administrador","Sistema","123456","153699","19/02/1999","admin@gmail.com",1,false],
+        ];
 
         foreach ($lista as $key => $value) {
             UsuarioModel::create([
@@ -24,7 +24,7 @@ class Usuario extends Seeder
                 'nombre' => $value[1],
                 'apellido' => $value[2],
                 'cedula' => $value[3],
-                'password' => $value[4],
+                'password' =>bcrypt($value[4]),
                 'fecha_nacimiento' => $value[5],
                 'email' => $value[6],
                 'perfil_id' => $value[7],

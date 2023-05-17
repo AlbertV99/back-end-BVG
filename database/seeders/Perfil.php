@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Perfil as PerfilModel;
+use App\Models\OpcionMenu;
+use App\Models\Acceso;
 
 class Perfil extends Seeder
 {
@@ -14,16 +16,22 @@ class Perfil extends Seeder
      */
     public function run()
     {
+        $opcionMenu = OpcionMenu::select("id")->get();
         $lista = [
-        ["ADMINISTRADOR","Acceso a todos el sistema"],
-        ["SIN ACCESOS","Sin acceso a el sistema"],
+        ["descripcion"=>"ADMINISTRADOR","observacion"=>"Acceso a todos el sistema","acceso"=>$opcionMenu],
+        ["descripcion"=>"SIN ACCESOS","observacion"=>"Sin acceso a el sistema","acceso"=>[]],
     ];
-
+        $perfiles = [];
         foreach ($lista as $key => $value) {
-            PerfilModel::create([
-                'descripcion' => $value[0],
-                'observacion' => $value[1],
+            $perfiles = PerfilModel::create([
+                'descripcion' => $value["descripcion"],
+                'observacion' => $value["observacion"],
             ]);
+            foreach ($value['acceso'] as  $accesos) {
+                $accesoPerfil = new Acceso(["opcion_id"=>$accesos['id'], "acceso"=>true]);
+                $perfiles->accesos()->save($accesoPerfil);
+            }
         }
+
     }
 }

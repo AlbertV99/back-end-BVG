@@ -89,7 +89,6 @@ class UsuarioController extends Controller{
         }else{
             return ["cod"=>"99","msg"=>"Error general"];
         }
-
     }
 
     public function logout(StoreUsuarioRequest $request){
