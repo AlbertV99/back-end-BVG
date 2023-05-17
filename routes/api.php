@@ -17,6 +17,7 @@ use App\Http\Controllers\AgrupadorController;
 use App\Http\Controllers\OpcionMenuController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\PerfilController;
+use App\Http\Controllers\DocumentoController;
 
 
 
@@ -45,6 +46,8 @@ Route::middleware(['cors','auth:sanctum'])->group(function () {
         Route::delete('/cliente/{id}', 'destroy');
     });
 
+    # DOCUMENTO⌊
+    Route::get('/documento/{pag?}',[DocumentoController::class, 'index']);
 
     # PERFIL CLIENTE
     Route::get('/perfilCliente/{id}',[ClienteController::class, 'obtenerPerfil']);
@@ -167,10 +170,7 @@ Route::middleware(['cors','auth:sanctum'])->group(function () {
         Route::delete('/caja/{id}', 'destroy');
     });
 
-    #RUTA INEXISTENTE
-    Route::fallback(function () {
-        return ["cod"=>"99","msg"=>"Error general"];
-    });
+
 
 });
 // Route::apiResource('cliente', ClienteController::class);

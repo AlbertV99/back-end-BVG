@@ -51,11 +51,12 @@ class OpcionMenuController extends Controller{
                 "descripcion"=>"required|string",
                 "observacion"=>"string",
                 "agrupador_id"=>"required|integer",
+                "direccion"=>"required|string",
                 "dir_imagen"=>"required|image|mimes:jpeg,png,jpg,gif,svg|max:2048",
             ]);
-            $imageName = time().'.'.$request->image->extension();
-            $request->image->move(public_path('Imagenes/opcionMenu'), $imageName);
-
+            $imageName = time().'.'.$request->dir_imagen->extension();
+            $request->dir_imagen->move(public_path('imagenes/opcionMenu'), $imageName);
+            $campos['dir_imagen'] = 'imagenes/opcionMenu/'.$imageName;
             //AGREGAR PARA OPCIONES DE MENU
 
             $barrio = OpcionMenu::create($campos);
