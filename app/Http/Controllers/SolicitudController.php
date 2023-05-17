@@ -15,6 +15,7 @@ use App\Models\Cuotas;
 use App\Models\EstadoCuota;
 use Illuminate\Support\Carbon as BaseCarbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Auth;
 
 
 class SolicitudController extends Controller{
@@ -82,12 +83,13 @@ class SolicitudController extends Controller{
                 'interes_moratorio'=>'required|numeric|min:0',
                 'tipo_plazo'=>'required|integer',
                 'observacion'=>'string',
-                'usuario_id'=>'integer',
                 'vencimiento_retiro'=>'date',
                 'cant_cuotas'=>'required|integer',
                 'inicio_cuota'=>'required|integer',
             ]);
 
+            $usuarioLogueado = Auth::user()->id;
+            $campos['usuario_id'] = $usuarioLogueado;
             $solicitud = Solicitud::create($campos);
             foreach ($request->input('ref_personales') as $key => $value) {
                 $camposRef = ['cliente_id'=>$value['cliente_id'], 'relacion_cliente'=>$value['relacion_cliente']];

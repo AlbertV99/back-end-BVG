@@ -14,6 +14,7 @@ use App\Models\AperturaCaja;
 use App\Models\HistorialEstado;
 use App\Models\DetalleCuotaOperacion;
 use App\Models\Cuotas;
+use Illuminate\Support\Facades\Auth;
 
 class OperacionesController extends Controller{
     private $c_reg_panel = 25;
@@ -67,12 +68,15 @@ class OperacionesController extends Controller{
                 "caja"=>"required|integer",
                 "monto"=>"required|integer",
                 "solicitud_id"=>"required|numeric",
-                "usuario_id"=>"required|integer",
                 "concepto"=>"interger",
             ]);
-
+            $usuarioLogueado = Auth::user()->id;
+            $campos['usuario_id'] = $usuarioLogueado;
             $caja = Caja::findOrfail($campos["caja"]);
             $monto = $caja->saldo_actual;
+            if($caja->estadoCaja->count() < 1){
+                return ["cod"=>"11","msg"=>"No existe apertura de caja"]; 
+            }
             $aperturaCaja = $caja->estadoCaja->last()->estado;
             $usuario = $caja->estadoCaja->last()->usuario_id;
             $concepto_caja = ConceptosCaja::select('id')
@@ -86,7 +90,7 @@ class OperacionesController extends Controller{
             if($aperturaCaja != 1){
                 return ["cod"=>"11","msg"=>"Caja cerrada"];
             }
-            if($usuario != $campos["usuario_id"]){
+            if($usuario != $usuarioLogueado){
                 return ["cod"=>"11","msg"=>"Usuario no ha abierto la caja "];
             }
             $solicitud = Solicitud::findOrfail($campos["solicitud_id"]);
@@ -134,9 +138,10 @@ class OperacionesController extends Controller{
             $campos = $this->validate($request,[
                 "caja"=>"required|integer",
                 "monto"=>"required|integer",
-                "usuario_id"=>"required|integer",
             ]);
 
+            $usuarioLogueado = Auth::user()->id;
+            $campos['usuario_id'] = $usuarioLogueado;
             $caja = Caja::findOrfail($campos["caja"]);
             $monto = $caja->saldo_actual;
             $aperturaCaja = $caja->estadoCaja->last()->estado;
@@ -152,7 +157,7 @@ class OperacionesController extends Controller{
                 return ["cod"=>"11","msg"=>"Caja cerrada"];
             }
 
-            if($usuario != $campos["usuario_id"]){
+            if($usuario != $usuarioLogueado){
                 return ["cod"=>"11","msg"=>"Usuario no ha abierto la caja "];
             }
 
@@ -222,10 +227,11 @@ class OperacionesController extends Controller{
             $campos = $this->validate($request,[
                 "caja"=>"required|integer",
                 "monto"=>"required|integer",
-                "usuario_id"=>"required|integer",
                 "concepto"=>"integer",
             ]);
 
+            $usuarioLogueado = Auth::user()->id;
+            $campos['usuario_id'] = $usuarioLogueado;
             $caja = Caja::findOrfail($campos["caja"]);
             $monto = $caja->saldo_actual;
             $aperturaCaja = $caja->estadoCaja->last()->estado;
@@ -237,7 +243,7 @@ class OperacionesController extends Controller{
                 return ["cod"=>"11","msg"=>"Caja cerrada"];
             }
 
-            if($usuario != $campos["usuario_id"]){
+            if($usuario != $usuarioLogueado){
                 return ["cod"=>"11","msg"=>"Usuario no ha abierto la caja "];
             }
 
