@@ -40,7 +40,10 @@ class Menu extends Seeder
                 ["descripcion"=>"Agrupadores","direccion"=>"agrupador"],
                 ["descripcion"=>"Opciones de Menu","direccion"=>"opcionMenu"],
             ]], #
-            ["agrupador"=>"Reportes","opciones"=>[]], #
+            ["agrupador"=>"Reportes","opciones"=>[]],
+            ["agrupador"=>"Documentos","opciones"=>[
+                ["descripcion"=>"Documentos","direccion"=>"documento"],
+            ]] 
         ];
         $estados = [];
         foreach ($lista as  $value) {
