@@ -19,7 +19,7 @@ class CreateOpcionMenuTable extends Migration
             $table->string("descripcion");
             $table->string("observacion")->nullable();
             $table->string("direccion");
-            $table->string("dir_imagen")->default('Imagenes/opcionMenu/estatico.png');
+            $table->string("dir_imagen")->default('imagenes/opcionMenu/estatico.png');
             $table->unsignedBigInteger('agrupador_id');
             $table->foreign('agrupador_id')->references('id')->on('agrupador');
 
