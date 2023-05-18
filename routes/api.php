@@ -17,6 +17,7 @@ use App\Http\Controllers\AgrupadorController;
 use App\Http\Controllers\OpcionMenuController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\PerfilController;
+use App\Http\Controllers\DocumentoController;
 
 
 
@@ -30,8 +31,12 @@ use App\Http\Controllers\PerfilController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::middleware(['cors'])->group(function () {
+Route::middleware('cors')->group( function () {
+    Route::post('/usuario/login/', [UsuarioController::class, 'login']);
+    // Route::post('/usuario/login', 'login');
+    // Route::get('/usuariologueado/','obtenerDatosLogueo');
+});
+Route::middleware(['cors','auth:sanctum'])->group(function () {
     #CLIENTE
     Route::controller(ClienteController::class)->group(function () {
         Route::get('/cliente/{pag?}', 'index');
@@ -41,6 +46,8 @@ Route::middleware(['cors'])->group(function () {
         Route::delete('/cliente/{id}', 'destroy');
     });
 
+    # DOCUMENTO⌊
+    Route::get('/documento/{pag?}',[DocumentoController::class, 'index']);
 
     # PERFIL CLIENTE
     Route::get('/perfilCliente/{id}',[ClienteController::class, 'obtenerPerfil']);
@@ -110,9 +117,10 @@ Route::middleware(['cors'])->group(function () {
         Route::post('/usuario/','store');
         Route::put('/usuario/{id}','update');
         Route::delete('/usuario/{id}','destroy');
-        Route::post('/usuario/login', 'login');
+        // Route::post('/usuario/login', 'login');
+        Route::post('/usuario/logout', 'logout');
     });
-    
+
     #PERFIL
     Route::controller(PerfilController::class)->group(function () {
         Route::get('/perfil/{pag?}','index');
@@ -162,10 +170,7 @@ Route::middleware(['cors'])->group(function () {
         Route::delete('/caja/{id}', 'destroy');
     });
 
-    #RUTA INEXISTENTE
-    Route::fallback(function () {
-        return ["cod"=>"99","msg"=>"Error general"];
-    });
+
 
 });
 // Route::apiResource('cliente', ClienteController::class);

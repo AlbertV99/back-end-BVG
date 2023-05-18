@@ -74,20 +74,31 @@ class UsuarioController extends Controller{
         return ["cod"=>"00","msg"=>"todo correcto"];
     }
 
-    public function login(StoreUsuarioRequest $request)
-    {
+    public function login(StoreUsuarioRequest $request){
         $credentials = $request->validate([
             'usuario' => ['required', 'string'],
             'password' => ['required'],
         ]);
-        if(Auth::attempt(['nombre_usuario' => $credentials['usuario'], 'password' => $credentials['password']])){ 
-            $usuario = Auth::user(); 
-            $success['token'] =  $usuario->createToken($credentials['usuario'])->plainTextToken; 
+        if(Auth::attempt(['nombre_usuario' => $credentials['usuario'], 'password' => $credentials['password']])){
+            $usuario = Auth::user();
+            $success['token'] =  $usuario->createToken($credentials['usuario'])->plainTextToken;
             $success['name'] =  $usuario->nombre_usuario;
+            $success['perfil'] =  $usuario->perfil->descripcion;
+            $success['menu'] = $this->obtenerDatosLogueo();
             return ["cod"=>"00","msg"=>"todo correcto","success"=>$success];
-        }else{ 
+        }else{
             return ["cod"=>"99","msg"=>"Error general"];
-        } 
+        }
+    }
+
+    public function logout(StoreUsuarioRequest $request){
+        try{
+            Auth::logout();
+
+            return ["cod"=>"00","msg"=>"todo correcto"];
+        }catch (\Illuminate\Validation\ValidationException $e){
+            return ["cod"=>"99","msg"=>"Error general","errores"=>[$e->errors() ]];
+        }
 
     }
 
@@ -115,8 +126,7 @@ class UsuarioController extends Controller{
      * @param  \App\Models\Usuario  $usuario
      * @return \Illuminate\Http\Response
      */
-    public function edit(Usuario $usuario)
-    {
+    public function edit(Usuario $usuario){
         //
     }
 
@@ -127,8 +137,7 @@ class UsuarioController extends Controller{
      * @param  \App\Models\Usuario  $usuario
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateUsuarioRequest $request, $id)
-    {
+    public function update(UpdateUsuarioRequest $request, $id){
         try {
             $usuario = Usuario::findOrfail($id);
             //return ["cod"=>$usuario];
@@ -145,15 +154,15 @@ class UsuarioController extends Controller{
             $campos['restablecer_password'] = false;
             $usuario->update($campos);
 
+            return ["cod"=>"00","msg"=>"todo correcto"];
         } catch (\Illuminate\Validation\ValidationException $e) {
             return ["cod"=>"06","msg"=>"Error al insertar los datos","errores"=>[$e->errors() ]];
 
-        } catch (\Exception $e) {
-            return ["cod"=>"05","msg"=>"Error al insertar los datos","error"=>$e->getMessage()];
         } catch(ModelNotFoundException $e){
             return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
+        } catch (\Exception $e) {
+            return ["cod"=>"99","msg"=>"Error al insertar los datos","error"=>$e->getMessage()];
         }
-        return ["cod"=>"00","msg"=>"todo correcto"];
     }
 
     /**
@@ -162,8 +171,7 @@ class UsuarioController extends Controller{
      * @param  \App\Models\Usuario  $usuario
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
+    public function destroy($id){
         try {
             $usuario = Usuario::findOrfail($id);
             //return ["cod"=>$usuario];
@@ -177,15 +185,43 @@ class UsuarioController extends Controller{
         }
     }
 
-    public function obtenerDatosLogueo(){
-        $usuario = Usuario::findOrfail(1);
+    private function obtenerDatosLogueo(){
+        $usuario = Auth::user();
+        // $usuario = Usuario::findOrfail(1);
+
         $usuario->perfil;
-        $accesos = $usuario->perfil->accesos;
+        $accesos = $usuario->perfil->accesos->where('acceso', 'true');
+
         $agrupadores = [];
-        foreach ($accesos as $opciones) {
-            $accesos->opcionMenu;
-            // $agrupadores[]=>
+        $agrupadores_filtrado= [];
+        $historial = [];
+        foreach ($accesos as $acceso) {
+            $agrupador = $acceso->opcionesMenu->agrupador;
+            $b=-1;
+            $agrupadores[] = $agrupador;
+            foreach ($agrupadores_filtrado as $key => $filtrado) {
+                if($agrupador["id"]== $filtrado['id']){
+                    $b=$key;
+                }
+            }
+
+            if($b==-1){
+                $temp=$agrupador->toArray();
+                $opcionTemp = $acceso->opcionesMenu;
+                $opcionTemp['dir_imagen'] = 'http://'.request()->getHttpHost()."/".$opcionTemp['dir_imagen'];
+                unset($opcionTemp['agrupador']);
+                $temp["opciones"]=[$opcionTemp];
+                $agrupadores_filtrado[]=$temp;
+            }else{
+                $opcionTemp = $acceso->opcionesMenu;
+                $opcionTemp['dir_imagen'] = 'http://'.request()->getHttpHost()."/".$opcionTemp['dir_imagen'];
+                unset($opcionTemp['agrupador']);
+                $agrupadores_filtrado[$b]["opciones"][]=$opcionTemp;
+            }
         }
-        return ["cod"=>"00","msg"=>"todo correcto","usuario"=>$usuario];
+
+        // foreach ($agrupadores as $agrupador) {
+        // }
+        return $agrupadores_filtrado;
     }
 }

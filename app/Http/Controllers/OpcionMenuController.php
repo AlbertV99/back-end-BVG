@@ -20,7 +20,7 @@ class OpcionMenuController extends Controller{
         $c_paginas = ceil(OpcionMenu::count()/$this->c_reg_panel);
         $salto = $pag*$this->c_reg_panel;
 
-        $query = OpcionMenu::select("opcion_menu.id","opcion_menu.observacion","opcion_menu.descripcion","agrupador.descripcion as dsc_agrupador", "agrupador.id as dsc_id")
+        $query = OpcionMenu::select("opcion_menu.id","opcion_menu.observacion","opcion_menu.descripcion","opcion_menu.dir_imagen","agrupador.descripcion as dsc_agrupador", "agrupador.id as dsc_id")
         ->join('agrupador','agrupador.id','opcion_menu.agrupador_id');
         // if($busqueda !=""){
         //     $query = $query->where("usuario.nombre_usuario","like",$busqueda)->orWhere("usuario.nombre","like",$busqueda)->orWhere("usuario.apellido","like",$busqueda)->orWhere("usuario.apellido","like",$busqueda);
@@ -50,8 +50,13 @@ class OpcionMenuController extends Controller{
             $campos = $this->validate($request,[
                 "descripcion"=>"required|string",
                 "observacion"=>"string",
-                "agrupador_id"=>"required|integer"
+                "agrupador_id"=>"required|integer",
+                "direccion"=>"required|string",
+                "dir_imagen"=>"required|image|mimes:jpeg,png,jpg,gif,svg|max:2048",
             ]);
+            $imageName = time().'.'.$request->dir_imagen->extension();
+            $request->dir_imagen->move(public_path('imagenes/opcionMenu'), $imageName);
+            $campos['dir_imagen'] = 'imagenes/opcionMenu/'.$imageName;
             //AGREGAR PARA OPCIONES DE MENU
 
             $barrio = OpcionMenu::create($campos);
@@ -81,6 +86,7 @@ class OpcionMenuController extends Controller{
             return ["cod"=>"99","msg"=>"Error general","error"=>$e->getMessage()];
         }
     }
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -104,7 +110,8 @@ class OpcionMenuController extends Controller{
             $campos = $this->validate($request,[
                 "descripcion"=>"required|string",
                 "observacion"=>"string",
-                "agrupador_id"=>"required|integer"
+                "agrupador_id"=>"required|integer",
+                "dir_imagen"=>"required|image|mimes:jpeg,png,jpg,gif,svg|max:2048",
             ]);
             //AGREGAR PARA OPCIONES DE MENU
             $barrio->update($campos);

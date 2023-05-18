@@ -18,6 +18,6 @@ class Acceso extends Model{
         return $this->belongsTo(Perfil::class,"id","perfil_id");
     }
     public function opcionesMenu(){
-        return $this->belongsTo(OpcionMenu::class,"id","opcion_id");
+        return $this->belongsTo(OpcionMenu::class,"opcion_id","id");
     }
 }
