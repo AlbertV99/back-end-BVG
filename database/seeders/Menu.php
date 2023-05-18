@@ -43,9 +43,6 @@ class Menu extends Seeder
                 ["descripcion"=>"Agrupadores","direccion"=>"agrupador"],
                 ["descripcion"=>"Opciones de Menu","direccion"=>"opcionMenu"],
             ]], #
-            ["agrupador"=>"Documentos","opciones"=>[
-                ["descripcion"=>"Documentos","direccion"=>"documento"],
-            ]], #
             ["agrupador"=>"Reportes","icono"=>"CgReadme","opciones"=>[]], #
         ];
         $estados = [];
