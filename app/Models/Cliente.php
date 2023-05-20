@@ -31,5 +31,8 @@ class Cliente extends Model
     public function solicitud(){
         return $this->hasMany(Solicitud::class,'cliente_id');
     }
+    public function cedula(){
+        return $this->hasMany(Documento::class,'cliente_id');
+    }
 
 }

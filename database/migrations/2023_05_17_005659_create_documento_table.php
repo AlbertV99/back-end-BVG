@@ -15,7 +15,7 @@ class CreateDocumentoTable extends Migration{
         Schema::create('documento', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->date('fecha_vencimiento');
+            $table->date('fecha_vencimiento')->nullable();
             $table->unsignedBigInteger('cliente_id')->nullable();
             $table->unsignedBigInteger('solicitud_id_contrato')->nullable();
             $table->unsignedBigInteger('solicitud_id_pagare')->nullable();
