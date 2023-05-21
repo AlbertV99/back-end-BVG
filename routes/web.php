@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ReporteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+Route::get('movimiento/pdf', [ReporteController::class, 'movimientosCaja']);
+Route::get('usuarios/pdf', [ReporteController::class, 'usuarios']);
+Route::get('clientes/pdf', [ReporteController::class, 'clientes']);
