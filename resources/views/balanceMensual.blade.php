@@ -22,7 +22,15 @@
 
 <body>
     <h1>{{ $title }}</h1>
-    <h3>Cantidad de usuario: {{ $cantidadUsuarios  }}</h3>
+
+    <h4>{{ $entrada }}</h4>
+    <h4>{{ $cantEntrada }}</h4>
+
+    <h4>{{ $salida }}</h4>
+    <h4>{{ $cantSalida}}</h4>
+
+    <h4>{{ $salida}}</h4>
+    <!-- <h3>Cantidad de usuario: {{ $cantidadUsuarios  }}</h3>
     <table> 
         <tr>
             <th>Usuario</th>
@@ -38,7 +46,7 @@
             <td>{{$value->descripcion  }}</td>
         </tr>
         @endforeach
-    </table>
+    </table> -->
 </body>
 
 </html>
