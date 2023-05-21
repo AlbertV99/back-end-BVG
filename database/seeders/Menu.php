@@ -39,7 +39,7 @@ class Menu extends Seeder
             ]], #
             ["agrupador"=>"Seguridad","icono"=>"CgLock", "opciones"=>[
                 ["descripcion"=>"Usuarios","direccion"=>"usuario"],
-                ["descripcion"=>"Perfil","direccion"=>"perfilCliente"],
+                ["descripcion"=>"Perfil","direccion"=>"perfil"],
                 ["descripcion"=>"Agrupadores","direccion"=>"agrupador"],
                 ["descripcion"=>"Opciones de Menu","direccion"=>"opcionMenu"],
             ]], #
