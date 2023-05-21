@@ -11,19 +11,24 @@ use PDF;
 
 class ReporteController extends Controller
 {
-    public function movimientosCaja()
-    {
-        $datos = Operaciones::select("operacion.id","operacion.caja","operacion.concepto","operacion.saldo_anterior","operacion.monto",
+    public function movimientosCaja($fechaInicio,$fechaFin){
+
+        $query  = Operaciones::select("operacion.id","operacion.caja","operacion.concepto","operacion.saldo_anterior","operacion.monto",
         "operacion.saldo_posterior","operacion.fecha_operacion","operacion.solicitud_id","operacion.usuario_id",
         "caja.descripcion as caja_descripcion","conceptos_caja.descripcion as concepto_caja","usuario.nombre_usuario as nombre_usuario")
         ->join("caja", "caja.id", "operacion.caja")
         ->join("conceptos_caja","conceptos_caja.id","operacion.concepto")
         ->join("usuario","usuario.id","operacion.usuario_id")
-        ->orderBy("operacion.fecha_operacion")
-        ->get();
+        ->orderBy("operacion.fecha_operacion");
+
+        // if ($fechaInicio && $fechaFin) {
+            $query->whereBetween('operacion.fecha_operacion', [$fechaInicio, $fechaFin]);
+        // }
+
+        $datos = $query->get();
 
         $data = [
-            'title' => 'Reporte movimientos de caja por fechas y/o cajas',
+            'title' => 'Reporte movimientos de caja por fechas',
             'datos' => $datos
         ];
 
@@ -85,12 +90,24 @@ class ReporteController extends Controller
     //     return $pdf->download('reporteEstadisticaMovimiento.pdf');
     // }
 
-    public function balance($mes)
+    public function balanceMensual($anho)
     {
-        $entrada = Operaciones::sum('monto')->whereMonth('fecha_operacion',$mes)->where('concepto','1')->get();
-        $cantEntrada = Operaciones::count()->whereMonth('fecha_operacion',$mes)->where('concepto','1')->get();
-        $salida = Operaciones::sum('monto')->whereMonth('fecha_operacion',$mes)->where('concepto','2')->get();
-        $cantSalida = Operaciones::count()->whereMonth('fecha_operacion',$mes)->where('concepto','2')->get();
+        $entrada = Operaciones::sum('monto')
+        ->whereMonth('fecha_operacion',$anho)
+        ->where('concepto','1')
+        ->get();
+        $cantEntrada = Operaciones::count()
+        ->whereMonth('fecha_operacion',$anho)
+        ->where('concepto','1'
+        )->get();
+        $salida = Operaciones::sum('monto')
+        ->whereMonth('fecha_operacion',$anho)
+        ->where('concepto','2')
+        ->get();
+        $cantSalida = Operaciones::count()
+        ->whereMonth('fecha_operacion',$anho)
+        ->where('concepto','2')
+        ->get();
 
         $data = [
             'title' => 'Reporte balance mensual',
@@ -101,9 +118,9 @@ class ReporteController extends Controller
             'resta' => ($entrada[0] - $salida[0])
         ];
 
-        $pdf = PDF::loadView('estadisticaMovimiento', $data);
+        $pdf = PDF::loadView('balanceMensual', $data);
 
-        return $pdf->download('reporteEstadisticaMovimiento.pdf');
+        return $pdf->download('reporteBalance.pdf');
     }
 
 }
