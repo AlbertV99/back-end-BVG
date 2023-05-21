@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Operaciones;
 use App\Models\Cliente;
@@ -121,6 +122,22 @@ class ReporteController extends Controller
         $pdf = PDF::loadView('balanceMensual', $data);
 
         return $pdf->download('reporteBalance.pdf');
+    }
+
+    public function estadisticaMovimiento(){
+        $movimientos = DB::table('operacion')
+            ->join('conceptos_caja', 'operacion.concepto', '=', 'conceptos_caja.id')
+            ->select(DB::raw(' EXTRACT(MONTH FROM operacion.fecha_operacion) as mes, conceptos_caja.tipo, SUM(operacion.monto) as total'))
+            ->groupBy(DB::raw(' EXTRACT(MONTH FROM operacion.fecha_operacion), conceptos_caja.tipo'))
+            ->get();
+        $data = [
+            'title' => 'Reporte balance mensual',
+            'datos' => json_encode($movimientos)
+        ];
+        $pdf = PDF::loadView('estadisticaMovimientos', $data);
+
+        return $pdf->download('estadisticaMovimiento.pdf');
+        // return view('estadisticaMovimientos', $data);
     }
 
 }
