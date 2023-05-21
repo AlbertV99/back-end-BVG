@@ -20,5 +20,6 @@ Route::get('/', function () {
 
 
 Route::get('movimiento/pdf', [ReporteController::class, 'movimientosCaja']);
+Route::get('estadisticaMov/pdf', [ReporteController::class, 'estadisticaMovimiento']);
 Route::get('usuarios/pdf', [ReporteController::class, 'usuarios']);
 Route::get('clientes/pdf', [ReporteController::class, 'clientes']);
