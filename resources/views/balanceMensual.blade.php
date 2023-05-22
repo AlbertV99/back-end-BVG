@@ -22,31 +22,39 @@
 
 <body>
     <h1>{{ $title }}</h1>
-
-    <h4>{{ $entrada }}</h4>
-    <h4>{{ $cantEntrada }}</h4>
-
-    <h4>{{ $salida }}</h4>
-    <h4>{{ $cantSalida}}</h4>
-
-    <h4>{{ $salida}}</h4>
-    <!-- <h3>Cantidad de usuario: {{ $cantidadUsuarios  }}</h3>
-    <table> 
+    <h3>Año: {{ $anho }}</h3>
+    <table>
         <tr>
-            <th>Usuario</th>
-            <th>Cedula</th>
-            <th>Nombre y Apellido</th>
-            <th>Perfil</th>
+            <th>Mes</th>
+            <th>Tipo</th>
+            <th>Total</th>
+            <th>Cantidad</th>
         </tr>
+        @php
+            $prevFecha = null;
+        @endphp
         @foreach($datos as $value)
-        <tr>
-            <td> {{$value->nombre_usuario  }}</td>
-            <td>{{$value->cedula  }}</td>
-            <td>{{ $value->nombre . ' ' . $value->apellido }}</td>
-            <td>{{$value->descripcion  }}</td>
-        </tr>
+            @if($prevFecha !== $value->mes)
+                <tr>
+                    <td rowspan="{{ $datos->where('mes', $value->mes)->count() }}">
+                        {{ $value->mes }}
+                    </td>
+                    <td>{{$value->tipo}}</td>
+                    <td>{{$value->total}}</td>
+                    <td>{{$value->cantidad}}</td>
+                </tr>
+            @else
+                <tr>
+                    <td>{{$value->tipo}}</td>
+                    <td>{{$value->total}}</td>
+                    <td>{{$value->cantidad}}</td>
+                </tr>
+            @endif
+            @php
+                $prevFecha = $value->mes;
+            @endphp
         @endforeach
-    </table> -->
+    </table>
 </body>
 
 </html>
