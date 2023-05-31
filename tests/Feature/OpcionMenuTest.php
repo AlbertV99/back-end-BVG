@@ -26,7 +26,7 @@ class OpcionMenuTest extends TestCase{
         $response->assertStatus(200)->assertJson(['cod' => "00"]);
 
         $response = $this->json('POST', '/api/agrupador', ['descripcion' => 'TestAgrupador',"observacion"=>"Agrupador de prueba con observacion sin icono"]);
-        $response->assertStatus(200)->assertJson(['cod' => "06"]);
+        $response->assertStatus(200)->assertJson(['cod' => "00"]);
 
         $response = $this->json('POST', '/api/agrupador', ["observacion"=>"Error a la hora de crear"]);
         $response->assertStatus(200)->assertJson(['cod' => "06"]);

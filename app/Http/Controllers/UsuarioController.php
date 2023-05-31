@@ -146,7 +146,6 @@ class UsuarioController extends Controller{
                 "nombre"=>"required|string",
                 "apellido"=>"required|string",
                 "cedula"=>"required|string",
-                "password"=>"required|string",
                 "fecha_nacimiento"=>"required|date",
                 "email"=>"required|string",
                 "perfil_id"=>"required|integer"

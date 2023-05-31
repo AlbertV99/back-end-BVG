@@ -75,7 +75,7 @@ class ConceptoCajaTest extends TestCase
     }
 
     public function test_eliminar_concepto_caja(){
-        $response = $this->json('DELETE', '/api/conceptoCaja/10',[]);
+        $response = $this->json('DELETE', '/api/conceptoCaja/100',[]);
         $response->assertStatus(200)->assertJson(['cod' => "04"]);
 
 

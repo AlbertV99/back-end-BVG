@@ -49,7 +49,7 @@ class ClienteController extends Controller{
         try {
 
             $telefono = json_decode($request->input("tel_cliente"));
-
+            // $telefono = $request->input("tel_cliente");
             if( count($telefono)<1 ){throw  \Illuminate\Validation\ValidationException::withMessages(['Telefono' => ['Debe completar al menos un telefono']]);}
 
             $campos = $this->validate($request,[
@@ -71,17 +71,19 @@ class ClienteController extends Controller{
             unset($campos['dir_imagen']);
             unset($campos['venc_cedula']);
             $usuario = Cliente::create($campos);
-            $datosArchivo =$this->guardarArchivo($request->dir_imagen,$campos['documento']);
-            $archivo = new Documento(["nombre"=>$datosArchivo,"fecha_vencimiento"=>$request->venc_cedula]);
-            $usuario->cedula()->save($archivo);
+            if(isset($request->dir_imagen)){
+                $datosArchivo =$this->guardarArchivo($request->dir_imagen,$campos['documento']);
+                $archivo = new Documento(["nombre"=>$datosArchivo,"fecha_vencimiento"=>$request->venc_cedula]);
+                $usuario->cedula()->save($archivo);
+            }
 
             foreach($telefono as $key => $value){
                 if(!isset($value->telefono_cliente) || $value->telefono_cliente == ''){
                     continue;
                 }
                 $camposTelefono = ['telefono'=> $value->telefono_cliente];
-                $telefono = new TelefonoCliente($camposTelefono);
-                $usuario->telefono()->save($telefono);
+                $telefonoN = new TelefonoCliente($camposTelefono);
+                $usuario->telefono()->save($telefonoN);
 
             }
             return ["cod"=>"00","msg"=>"todo correcto"];
@@ -135,6 +137,10 @@ class ClienteController extends Controller{
     public function update(UpdateClienteRequest $request, $id){
         try {
             $cliente = Cliente::findOrfail($id);
+
+            $telefono = json_decode($request->input("tel_cliente"));
+            // $telefono = $request->input("tel_cliente");
+            if( count($telefono)<1 ){throw  \Illuminate\Validation\ValidationException::withMessages(['Telefono' => ['Debe completar al menos un telefono']]);}
             $campos = $this->validate($request,[
                 'barrio'=>'required|string',
                 //'documento'=>'required|string',
@@ -145,17 +151,17 @@ class ClienteController extends Controller{
                 'correo'=>'required|string',
                 'direccion'=>'string',
                 'sexo'=>'required|string',
-                'observaciones'=>'required|string',
+                'observaciones'=>'string',
                 'estado_civil'=>'required|integer',
             ]);
 
                 $cliente->telefono()->delete();
 
-                foreach($request->input('tel_cliente') as $key => $value){
-                    if(!isset($value['telefono_cliente']) || $value['telefono_cliente'] == ''){
+                foreach($telefono as $key => $value){
+                    if(!isset($value->telefono_cliente) || $value->telefono_cliente == ''){
                         continue;
                     }
-                    $camposTelefono = ['telefono'=> $value['telefono_cliente']];
+                    $camposTelefono = ['telefono'=> $value->telefono_cliente];
                     $telefono = new TelefonoCliente($camposTelefono);
                     $cliente->telefono()->save($telefono);
                 }
