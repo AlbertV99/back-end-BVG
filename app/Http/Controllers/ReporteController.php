@@ -99,7 +99,7 @@ class ReporteController extends Controller
     public function estadisticaMovimiento(){
         $movimientos = DB::table('operacion')
             ->join('conceptos_caja', 'operacion.concepto', '=', 'conceptos_caja.id')
-            ->select(DB::raw(' EXTRACT(MONTH FROM operacion.fecha_operacion) as mes, conceptos_caja.tipo, SUM(operacion.monto) as total'))
+            ->select(DB::raw(' EXTRACT(MONTH FROM operacion.fecha_operacion) as mes, conceptos_caja.tipo, SUM(operacion.monto) as total ,COUNT(operacion.monto) as cantidad ',))
             ->groupBy(DB::raw(' EXTRACT(MONTH FROM operacion.fecha_operacion), conceptos_caja.tipo'))
             ->get();
         $data = [
