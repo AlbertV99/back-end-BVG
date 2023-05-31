@@ -20,25 +20,6 @@
     </style>
 </head>
 
-<!-- <body>
-    <h1>{{ $title }}</h1>
-    <table> 
-        <tr>
-            <th>Concepto</th>
-            <th>Caja</th>
-            <th>Monto</th>
-            <th>Usuario</th>
-        </tr>
-        @foreach($datos as $value)
-        <tr>
-            <td> {{$value->concepto_caja  }}</td>
-            <td>{{$value->caja_descripcion  }}</td>
-            <td>{{$value->monto  }}</td>
-            <td>{{$value->nombre_usuario  }}</td>
-        </tr>
-        @endforeach
-    </table>
-</body> -->
 <body>
     <h1>{{ $title }}</h1>
     <table>

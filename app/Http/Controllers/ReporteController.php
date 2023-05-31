@@ -74,49 +74,21 @@ class ReporteController extends Controller
         return $pdf->download('reporteUsuario.pdf');
     }
 
-    // public function estadisticaMovimiento()
-    // {
-    //     $datos = Operaciones::select("")
-    //     ->get();
-    //     $cantidadUsuarios = Usuario::count();
-
-    //     $data = [
-    //         'title' => 'Reporte Usuarios',
-    //         'datos' => $datos,
-    //         'cantidadUsuarios' => $cantidadUsuarios
-    //     ];
-
-    //     $pdf = PDF::loadView('estadisticaMovimiento', $data);
-
-    //     return $pdf->download('reporteEstadisticaMovimiento.pdf');
-    // }
-
     public function balanceMensual($anho)
     {
-        $entrada = Operaciones::sum('monto')
-        ->whereMonth('fecha_operacion',$anho)
-        ->where('concepto','1')
-        ->get();
-        $cantEntrada = Operaciones::count()
-        ->whereMonth('fecha_operacion',$anho)
-        ->where('concepto','1'
-        )->get();
-        $salida = Operaciones::sum('monto')
-        ->whereMonth('fecha_operacion',$anho)
-        ->where('concepto','2')
-        ->get();
-        $cantSalida = Operaciones::count()
-        ->whereMonth('fecha_operacion',$anho)
-        ->where('concepto','2')
-        ->get();
+        $movimientos = DB::table('operacion')
+            ->join('conceptos_caja', 'operacion.concepto', '=', 'conceptos_caja.id')
+            ->select(DB::raw(' EXTRACT(MONTH FROM operacion.fecha_operacion) as mes, conceptos_caja.tipo, SUM(operacion.monto) as total, COUNT(operacion.monto) as cantidad, EXTRACT(YEAR FROM operacion.fecha_operacion) as anho'))
+            ->where(DB::raw('EXTRACT(YEAR FROM operacion.fecha_operacion)'),'=',$anho)
+            ->groupBy(DB::raw('EXTRACT(MONTH FROM operacion.fecha_operacion), conceptos_caja.tipo, EXTRACT(YEAR FROM operacion.fecha_operacion)'))
+            ->get();
+
+            
 
         $data = [
             'title' => 'Reporte balance mensual',
-            'entrada' => $entrada[0],
-            'cantEntrada' => $cantEntrada[0],
-            'salida' => $salida[0],
-            'cantSalida' => $cantSalida[0],
-            'resta' => ($entrada[0] - $salida[0])
+            'datos' => $movimientos,
+            'anho' => $anho
         ];
 
         $pdf = PDF::loadView('balanceMensual', $data);

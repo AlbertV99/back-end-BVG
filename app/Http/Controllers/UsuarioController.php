@@ -49,11 +49,11 @@ class UsuarioController extends Controller{
 
         try {
             $campos = $this->validate($request,[
-                "nombre_usuario"=>"required|string",
+                "nombre_usuario"=>"required|string|min:4",
                 "nombre"=>"required|string",
                 "apellido"=>"required|string",
                 "cedula"=>"required|string",
-                "password"=>"required|string",
+                "password"=>"required|string|confirmed|min:6|",
                 "fecha_nacimiento"=>"required|date",
                 "email"=>"required|string",
                 "perfil_id"=>"required|integer"
@@ -172,6 +172,10 @@ class UsuarioController extends Controller{
      */
     public function destroy($id){
         try {
+            if($id === "1"){
+                return ["cod"=>"11","msg"=>"No se puede eliminar este perfil"];
+            }
+
             $usuario = Usuario::findOrfail($id);
             //return ["cod"=>$usuario];
             $usuario->delete();
