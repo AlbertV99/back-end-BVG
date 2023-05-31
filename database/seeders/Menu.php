@@ -19,29 +19,29 @@ class Menu extends Seeder
         $icono = "testing";
         $lista = [
             ["agrupador"=>"Documento","icono"=>"CgFileDocument", "opciones"=>[
-                ["descripcion"=>"Documentos","direccion"=>"documento"],
+                ["descripcion"=>"Documentos","direccion"=>"documento","dir_imagen"=>"imagenes/opcionMenu/documento.png"],
             ]],
             ["agrupador"=>"Cliente","icono"=>"CgUserList", "opciones"=>[
-                ["descripcion"=>"Clientes","direccion"=>"cliente"],
-                ["descripcion"=>"PerfilCliente","direccion"=>"perfilCliente"],
-                ["descripcion"=>"Barrio","direccion"=>"barrio"],
+                ["descripcion"=>"Clientes","direccion"=>"cliente","dir_imagen"=>"imagenes/opcionMenu/cliente.png"],
+                ["descripcion"=>"PerfilCliente","direccion"=>"perfilCliente","dir_imagen"=>"imagenes/opcionMenu/perfilCliente.png"],
+                ["descripcion"=>"Barrio","direccion"=>"barrio","dir_imagen"=>"imagenes/opcionMenu/barrio.png"],
             ]], #
             ["agrupador"=>"Credito","icono"=>"CgCreditCard","opciones"=>[
-                ["descripcion"=>"Tipo Plazo","direccion"=>"tipoPlazo"],
-                ["descripcion"=>"Solicitud Agente","direccion"=>"solicitudAgente"],
-                ["descripcion"=>"Solicitud Analisis","direccion"=>"solicitudAnalista"],
-                ["descripcion"=>"Solicitud Directorio","direccion"=>"solicitudDirectorio"],
+                ["descripcion"=>"Tipo Plazo","direccion"=>"tipoPlazo","dir_imagen"=>"imagenes/opcionMenu/tipoPlazo.png"],
+                ["descripcion"=>"Solicitud Agente","direccion"=>"solicitudAgente","dir_imagen"=>"imagenes/opcionMenu/solicitudAgente.png"],
+                ["descripcion"=>"Solicitud Analisis","direccion"=>"solicitudAnalista","dir_imagen"=>"imagenes/opcionMenu/solicitudAnalista.png"],
+                ["descripcion"=>"Solicitud Directorio","direccion"=>"solicitudDirectorio","dir_imagen"=>"imagenes/opcionMenu/solicitudDirectorio.png"],
             ]], #
             ["agrupador"=>"Caja","icono"=>"CgCalendarDates","opciones"=>[
-                ["descripcion"=>"Conceptos","direccion"=>"conceptosCaja"],
-                ["descripcion"=>"Cajas","direccion"=>"caja"],
-                ["descripcion"=>"Movimientos","direccion"=>"operacion"],
+                ["descripcion"=>"Conceptos","direccion"=>"conceptosCaja","dir_imagen"=>"imagenes/opcionMenu/conceptoCaja.png"],
+                ["descripcion"=>"Cajas","direccion"=>"caja","dir_imagen"=>"imagenes/opcionMenu/caja.png"],
+                ["descripcion"=>"Movimientos","direccion"=>"operacion","dir_imagen"=>"imagenes/opcionMenu/movimientos.png"],
             ]], #
             ["agrupador"=>"Seguridad","icono"=>"CgLock", "opciones"=>[
-                ["descripcion"=>"Usuarios","direccion"=>"usuario"],
-                ["descripcion"=>"Perfil","direccion"=>"perfil"],
-                ["descripcion"=>"Agrupadores","direccion"=>"agrupador"],
-                ["descripcion"=>"Opciones de Menu","direccion"=>"opcionMenu"],
+                ["descripcion"=>"Usuarios","direccion"=>"usuario","dir_imagen"=>"imagenes/opcionMenu/usuario.png"],
+                ["descripcion"=>"Perfil","direccion"=>"perfil","dir_imagen"=>"imagenes/opcionMenu/perfil.png"],
+                ["descripcion"=>"Agrupadores","direccion"=>"agrupador","dir_imagen"=>"imagenes/opcionMenu/agrupador.png"],
+                ["descripcion"=>"Opciones de Menu","direccion"=>"opcionMenu","dir_imagen"=>"imagenes/opcionMenu/opcionMenu.png"],
             ]], #
             ["agrupador"=>"Reportes","icono"=>"CgReadme","opciones"=>[]], #
         ];
@@ -52,7 +52,7 @@ class Menu extends Seeder
                 'icono'=>$value['icono'],
             ]);
             foreach ($value["opciones"] as $opcion) {
-                $agrupador->opciones()->save(new OpcionMenu(['descripcion'=>$opcion['descripcion'],"observacion"=>$observacionMenuOpcionDefecto,'direccion'=>$opcion['direccion']]));
+                $agrupador->opciones()->save(new OpcionMenu(['descripcion'=>$opcion['descripcion'],"observacion"=>$observacionMenuOpcionDefecto,'direccion'=>$opcion['direccion'],'dir_imagen'=>$opcion['dir_imagen']]));
             }
         }
     }
