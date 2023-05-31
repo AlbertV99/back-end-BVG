@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateClienteRequest;
 use App\Models\Cliente;
 use App\Models\PerfilCliente;
 use App\Models\TelefonoCliente;
+use App\Models\Documento;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Carbon as BaseCarbon;
 
@@ -46,7 +47,11 @@ class ClienteController extends Controller{
     public function store(StoreClienteRequest $request){
 
         try {
-            if( count($request->input('tel_cliente'))<1 ){throw  \Illuminate\Validation\ValidationException::withMessages(['Telefono' => ['Debe completar al menos un telefono']]);}
+
+            $telefono = json_decode($request->input("tel_cliente"));
+            // $telefono = $request->input("tel_cliente");
+            if( count($telefono)<1 ){throw  \Illuminate\Validation\ValidationException::withMessages(['Telefono' => ['Debe completar al menos un telefono']]);}
+
             $campos = $this->validate($request,[
                 'barrio'=>'required|string',
                 'documento'=>'required|string',
@@ -59,18 +64,29 @@ class ClienteController extends Controller{
                 'sexo'=>'required|string',
                 'observaciones'=>'string',
                 'estado_civil'=>'required|integer',
-            ]);
+                "dir_imagen"=>"file|mimes:pdf",
+                "venc_cedula"=>"date"
 
+            ]);
+            unset($campos['dir_imagen']);
+            unset($campos['venc_cedula']);
             $usuario = Cliente::create($campos);
-            foreach($request->input('tel_cliente') as $key => $value){
-                if(!isset($value['telefono_cliente']) || $value['telefono_cliente'] == ''){
+            if(isset($request->dir_imagen)){
+                $datosArchivo =$this->guardarArchivo($request->dir_imagen,$campos['documento']);
+                $archivo = new Documento(["nombre"=>$datosArchivo,"fecha_vencimiento"=>$request->venc_cedula]);
+                $usuario->cedula()->save($archivo);
+            }
+
+            foreach($telefono as $key => $value){
+                if(!isset($value->telefono_cliente) || $value->telefono_cliente == ''){
                     continue;
                 }
-                $camposTelefono = ['telefono'=> $value['telefono_cliente']];
-                $telefono = new TelefonoCliente($camposTelefono);
-                $usuario->telefono()->save($telefono);
+                $camposTelefono = ['telefono'=> $value->telefono_cliente];
+                $telefonoN = new TelefonoCliente($camposTelefono);
+                $usuario->telefono()->save($telefonoN);
 
             }
+            return ["cod"=>"00","msg"=>"todo correcto"];
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             return ["cod"=>"06","msg"=>"Error al insertar los datos","errores"=>[$e->errors() ]];
@@ -78,7 +94,7 @@ class ClienteController extends Controller{
         } catch (\Exception $e) {
             return ["cod"=>"05","msg"=>"Error al insertar los datos","error"=>$e->getMessage()];
         }
-        return ["cod"=>"00","msg"=>"todo correcto"];
+
     }
 
     /**
@@ -121,6 +137,10 @@ class ClienteController extends Controller{
     public function update(UpdateClienteRequest $request, $id){
         try {
             $cliente = Cliente::findOrfail($id);
+
+            $telefono = json_decode($request->input("tel_cliente"));
+            // $telefono = $request->input("tel_cliente");
+            if( count($telefono)<1 ){throw  \Illuminate\Validation\ValidationException::withMessages(['Telefono' => ['Debe completar al menos un telefono']]);}
             $campos = $this->validate($request,[
                 'barrio'=>'required|string',
                 //'documento'=>'required|string',
@@ -131,17 +151,17 @@ class ClienteController extends Controller{
                 'correo'=>'required|string',
                 'direccion'=>'string',
                 'sexo'=>'required|string',
-                'observaciones'=>'required|string',
+                'observaciones'=>'string',
                 'estado_civil'=>'required|integer',
             ]);
 
                 $cliente->telefono()->delete();
 
-                foreach($request->input('tel_cliente') as $key => $value){
-                    if(!isset($value['telefono_cliente']) || $value['telefono_cliente'] == ''){
+                foreach($telefono as $key => $value){
+                    if(!isset($value->telefono_cliente) || $value->telefono_cliente == ''){
                         continue;
                     }
-                    $camposTelefono = ['telefono'=> $value['telefono_cliente']];
+                    $camposTelefono = ['telefono'=> $value->telefono_cliente];
                     $telefono = new TelefonoCliente($camposTelefono);
                     $cliente->telefono()->save($telefono);
                 }
@@ -243,4 +263,12 @@ class ClienteController extends Controller{
         }
 
     }
+
+    private function guardarArchivo($archivo,$ci){
+        $imageName = $ci."-".time().'.'.$archivo->extension();
+        $archivo->move(public_path('imagenes/documentos'), $imageName);
+        return 'imagenes/documentos/'.$imageName;
+
+    }
+
 }

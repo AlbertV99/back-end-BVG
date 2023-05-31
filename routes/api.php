@@ -71,6 +71,7 @@ Route::middleware(['cors','auth:sanctum'])->group(function () {
         Route::post('/barrio/', 'store');
         Route::put('/barrio/{id}', 'update');
         Route::delete('/barrio/{id}', 'destroy');
+        // Route::get('/generate/pdf', 'generatePDF');
     });
 
 

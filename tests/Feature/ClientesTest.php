@@ -23,7 +23,7 @@ class ClientesTest extends TestCase
 
     public function test_crear_cliente(){
         //Pruebas exitosas
-        $response = $this->json('POST', '/api/cliente', [
+        $response = $this->withHeaders(['Content-Type' => 'multipart/form-data'])->post( '/api/cliente', [
         'documento' => '5663611',
         'barrio' => '1',
         'tipo_documento' => '1',
@@ -35,11 +35,11 @@ class ClientesTest extends TestCase
         'sexo' => 'Feme',
         'observaciones' => 'Ninguna',
         'estado_civil' => '1',
-        "tel_cliente" => [
+        "tel_cliente" => json_encode([
 			["telefono_cliente"=>"0974155070"],
 			["telefono_cliente"=>"0993363999"],
 			["telefono_cliente"=>"0974650507"],
-	    ]]);
+	    ])]);
         $response->assertStatus(200)->assertJson(['cod' => "00"]);
 
         //test 2
@@ -55,9 +55,9 @@ class ClientesTest extends TestCase
         'sexo' => 'Masc',
         'observaciones' => 'Ninguna',
         'estado_civil' => '1',
-        "tel_cliente" => [
+        "tel_cliente" => json_encode([
 			["telefono_cliente"=>"0974155070"],
-	    ]]);
+	    ])]);
         $response->assertStatus(200)->assertJson(['cod' => "00"]);
 
         // test 3
@@ -73,10 +73,10 @@ class ClientesTest extends TestCase
         'sexo' => 'Masc',
         'observaciones' => 'Ninguna',
         'estado_civil' => '1',
-        "tel_cliente" => [
+        "tel_cliente" => json_encode([
             ["telefono_cliente"=>"0985222189"],
 			["telefono_cliente"=>"0988331898"],
-	    ]]);
+	    ])]);
         $response->assertStatus(200)->assertJson(['cod' => "00"]);
 
 
@@ -91,11 +91,11 @@ class ClientesTest extends TestCase
             'sexo' => 'Feme',
             'observaciones' => 'Ninguna',
             'estado_civil' => '1',
-            "tel_cliente" => [
+            "tel_cliente" => json_encode([
                 ["telefono_cliente"=>"0974155070"],
                 ["telefono_cliente"=>"0993363999"],
                 ["telefono_cliente"=>"0974650507"],
-            ]]);
+            ])]);
         $response->assertStatus(200)->assertJson(['cod' => "06"]);
 
 

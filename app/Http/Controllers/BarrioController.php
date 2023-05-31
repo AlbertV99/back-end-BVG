@@ -7,6 +7,7 @@ use App\Http\Requests\UpdatebarrioRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\barrio;
 
+
 class BarrioController extends Controller{
     private $c_reg_panel = 25;
     private $c_reg_lista = 10;

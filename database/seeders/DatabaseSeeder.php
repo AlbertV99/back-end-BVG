@@ -24,7 +24,8 @@ class DatabaseSeeder extends Seeder
             ConceptosCaja::class,
             Menu::class,
             Perfil::class,
-            Usuario::class
+            Usuario::class,
+            Caja::class
         ]);
     }
 }

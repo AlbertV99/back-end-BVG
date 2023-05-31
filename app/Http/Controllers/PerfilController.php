@@ -128,32 +128,43 @@ class PerfilController extends Controller{
         try {
 
             if($id === "1" || $id === "2"){
-                return ["cod"=>"11","msg"=>"No se puede editar este perfil"];
+                return ["cod"=>"11","msg"=>"No se puede editar los perfiles por defecto"];
             }
-
 
             $perfil = Perfil::findOrfail($id);
             $campos = $this->validate($request,[
                 "descripcion"=>"required|string",
                 "observacion"=>"string",
             ]);
-
             $perfil->accesos()->delete();
+            
+            $accesos = $request->input('accesos');
+            $opcionMenu = OpcionMenu::select("id")->get();
+            $campos['descripcion'] = strtoupper($campos['descripcion']);
+            foreach ($opcionMenu->toArray() as $key => $value) {
+                if(!in_array(["opcion_id"=>$value['id'],"acceso"=>false], $accesos)){
+                    array_push($accesos, ["opcion_id"=>$value['id'],"acceso"=>false]);
+                }
+            }
 
-            foreach ($request->input('accesos') as $key => $value) {
+            //return[$accesos];
+            foreach ($accesos as $key => $value) {
                 if(!isset($value['opcion_id']) || $value['opcion_id'] == ''){
                     continue;
                 }
                 if(!isset($value['acceso']) || $value['acceso'] == ''){
                     $value['acceso'] = false;
                 }
+
                 $camposAcceso = ['opcion_id'=>$value['opcion_id'], 'acceso'=>$value['acceso']];
                 $accesoTemp = new Acceso($camposAcceso);
                 try{
                     $perfil->accesos()->save($accesoTemp);
                 }catch(\Exception $e){
                 }
+
             }
+
 
             $perfil->update($campos);
             return ["cod"=>"00","msg"=>"todo correcto"];
