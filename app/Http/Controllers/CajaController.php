@@ -101,6 +101,7 @@ class CajaController extends Controller{
             $barrio = Caja::findOrfail($id);
             $campos = $this->validate($request,[
                 "descripcion"=>"required|string",
+                "pin"=>"required|string"
             ]);
 
             $barrio->update($campos);
