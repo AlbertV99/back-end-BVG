@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateUsuarioRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\Usuario;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class UsuarioController extends Controller{
     private $c_reg_panel = 25;
@@ -93,7 +94,8 @@ class UsuarioController extends Controller{
 
     public function logout(StoreUsuarioRequest $request){
         try{
-            Auth::logout();
+            auth()->user()->currentAccessToken()->delete();
+            Auth::guard('web')->logout();
 
             return ["cod"=>"00","msg"=>"todo correcto"];
         }catch (\Illuminate\Validation\ValidationException $e){
