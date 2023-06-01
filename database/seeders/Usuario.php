@@ -15,7 +15,7 @@ class Usuario extends Seeder
     public function run()
     {
         $lista = [
-            ["admin","Administrador","Sistema","123456","153699","1999-11-09","admin@gmail.com",1,false],
+            ["admin","Administrador","Sistema","123456","123456","1999-11-09","admin@gmail.com",1,false],
         ];
 
         foreach ($lista as $key => $value) {
