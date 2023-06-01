@@ -131,6 +131,10 @@ class ConceptosCajaController extends Controller
     public function destroy($id)
     {
         try {
+            if($id === "1" || $id === "2"){
+                return ["cod"=>"11","msg"=>"No se puede eliminar este perfil"];
+            }
+            
             $ConceptosCaja = ConceptosCaja::findOrfail($id);
             $ConceptosCaja->delete();
 
