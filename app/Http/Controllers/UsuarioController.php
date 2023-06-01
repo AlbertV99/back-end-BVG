@@ -88,7 +88,7 @@ class UsuarioController extends Controller{
             $success['menu'] = $this->obtenerDatosLogueo();
             return ["cod"=>"00","msg"=>"todo correcto","success"=>$success];
         }else{
-            return ["cod"=>"99","msg"=>"Error general"];
+            return ["cod"=>"11","msg"=>"Usuario o contraseña incorrecta"];
         }
     }
 
