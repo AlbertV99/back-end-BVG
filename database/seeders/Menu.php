@@ -43,7 +43,12 @@ class Menu extends Seeder
                 ["descripcion"=>"Agrupadores","direccion"=>"agrupador","dir_imagen"=>"imagenes/opcionMenu/agrupador.png"],
                 ["descripcion"=>"Opciones de Menu","direccion"=>"opcionMenu","dir_imagen"=>"imagenes/opcionMenu/opcionMenu.png"],
             ]], #
-            ["agrupador"=>"Reportes","icono"=>"CgReadme","opciones"=>[]], #
+            ["agrupador"=>"Reportes","icono"=>"CgReadme","opciones"=>[
+                ["descripcion"=>"Reporte Usuario","direccion"=>"reporteUsuario","dir_imagen"=>"imagenes/opcionMenu/reporte.png"],
+                ["descripcion"=>"Reporte Cliente","direccion"=>"reporteCliente","dir_imagen"=>"imagenes/opcionMenu/reporte.png"],
+                ["descripcion"=>"Reporte Estadistica","direccion"=>"reporteEstadistica","dir_imagen"=>"imagenes/opcionMenu/estadistico.png"],
+                ["descripcion"=>"Reporte Balance","direccion"=>"reporteBalance","dir_imagen"=>"imagenes/opcionMenu/reporte.png"],
+                ]], #
         ];
         $estados = [];
         foreach ($lista as  $value) {

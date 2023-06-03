@@ -25,4 +25,3 @@ Route::get('clientes/pdf', [ReporteController::class, 'clientes']);
 Route::get('balance/pdf/{anho}', [ReporteController::class, 'balanceMensual']);
 Route::get('movimiento/pdf/{fechaInicio}/{fechaFin}', [ReporteController::class, 'movimientosCaja']);
 Route::get('estadisticaMov/pdf', [ReporteController::class, 'estadisticaMovimiento']);
-
