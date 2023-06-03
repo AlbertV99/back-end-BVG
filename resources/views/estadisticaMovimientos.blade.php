@@ -21,12 +21,12 @@
     </head>
 
     <body>
-        <h1>Titulo Test</h1>
-        <p>{{$datos}}</p>
+        <h1>Reporte estadistico</h1>
+        <!-- <p>{{$datos}}</p> -->
 
-        <!-- <div width="300px" height="300px" style="display: block; box-sizing: border-box; height: 300px; width: 300px;">
-            <canvas id="myChart" height="50px" width="50px" style="display: block; box-sizing: border-box; height: 300px; width: 300px;"></canvas>
-        </div> -->
+        <div width="500px" height="500px" style="display: block; box-sizing: border-box; height: 300px; width: 600px;">
+            <canvas id="myChart" height="100px" width="100px" style="display: block; box-sizing: border-box; height: 300px; width: 300px;"></canvas>
+        </div>
     </body>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="text/javascript">

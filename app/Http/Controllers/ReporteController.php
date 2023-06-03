@@ -83,7 +83,7 @@ class ReporteController extends Controller
             ->groupBy(DB::raw('EXTRACT(MONTH FROM operacion.fecha_operacion), conceptos_caja.tipo, EXTRACT(YEAR FROM operacion.fecha_operacion)'))
             ->get();
 
-            
+
 
         $data = [
             'title' => 'Reporte balance mensual',
@@ -108,8 +108,8 @@ class ReporteController extends Controller
         ];
         $pdf = PDF::loadView('estadisticaMovimientos', $data);
 
-        return $pdf->download('estadisticaMovimiento.pdf');
-        // return view('estadisticaMovimientos', $data);
+        // return $pdf->download('estadisticaMovimiento.pdf');
+        return view('estadisticaMovimientos', $data);
     }
 
 }

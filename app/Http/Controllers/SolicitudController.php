@@ -88,7 +88,7 @@ class SolicitudController extends Controller{
                 'inicio_cuota'=>'required|integer',
             ]);
 
-            $usuarioLogueado = Auth::user()->id;
+            $usuarioLogueado = auth('sanctum')->user()->id;
             $campos['usuario_id'] = $usuarioLogueado;
             $solicitud = Solicitud::create($campos);
             foreach ($request->input('ref_personales') as $key => $value) {
@@ -381,7 +381,7 @@ class SolicitudController extends Controller{
     }
 
     public function calcularCuotero($idPlazo,$cuotas,$monto,$fecha_inicio="0"){
-        $fecha_temp = ($fecha_inicio!="0")?$fecha_inicio:"22-04-2023";
+        $fecha_temp = ($fecha_inicio!="0")?$fecha_inicio:"01-06-2023";
 
         $cuotero = [];
         # Conversion de interes al plazo seleccionado

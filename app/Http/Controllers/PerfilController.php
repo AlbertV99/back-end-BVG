@@ -197,8 +197,10 @@ class PerfilController extends Controller{
             return ["cod"=>"00","msg"=>"todo correcto"];
         } catch( ModelNotFoundException $e){
             return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
-        } catch (\Exception $e) {
-            return ["cod"=>"08","msg"=>"Error al eliminar el registro","errores"=>[$e->getMessage() ]];
-        }
+        } catch (Illuminate\Database\QueryException $e){
+            return ["cod"=>"11","msg"=>"No se puede eliminar un perfil asociado a un usuario... Favor verificar","errores"=>[$e->getMessage() ]];
+        }catch (\Exception $e) {
+            return ["cod"=>"08","msg"=>"Error al eliminar el registro","errores"=>[$e->getMessage() ], "type_error"=>[get_class($e)]];
+        }  
     }
 }
