@@ -79,6 +79,7 @@ class OpcionMenuController extends Controller{
     public function show($id){
         try {
             $barrio = OpcionMenu::findOrfail($id);
+            $barrio->agrupador;
             return ["cod"=>"00","msg"=>"todo correcto","datos"=>[$barrio]];
         } catch( ModelNotFoundException $e){
             return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
