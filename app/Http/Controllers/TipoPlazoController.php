@@ -128,7 +128,7 @@ class TipoPlazoController extends Controller{
             $tipoPlazo = TipoPlazo::findOrfail($id);
             $tipoPlazo->delete();
 
-            return ["cod"=>"00","msg"=>"todo correcto"];
+            return ["cod"=>"00","msg"=>"Eliminado correctamente"];
         }  catch( ModelNotFoundException $e){
             return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
         } catch (\Exception $e) {
