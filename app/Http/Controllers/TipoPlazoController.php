@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateTipoPlazoRequest;
 use App\Models\TipoPlazo;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
+define('DIAS_ANHO',365);
 class TipoPlazoController extends Controller{
     private $c_reg_panel = 25;
     private $c_reg_lista = 10;
@@ -45,11 +46,10 @@ class TipoPlazoController extends Controller{
         try {
             $campos = $this->validate($request,[
                 "descripcion"=>"required|string",
-                "factor_divisor"=>"required|integer",
                 "dias_vencimiento"=>"required|integer",
                 "interes"=>"required|numeric"
             ]);
-
+            $campos['factor_divisor'] = DIAS_ANHO/$campos["dias_vencimiento"];
             $tipoPlazo = TipoPlazo::create($campos);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -101,11 +101,10 @@ class TipoPlazoController extends Controller{
             $tipoPlazo = TipoPlazo::findOrfail($id);
             $campos = $this->validate($request,[
                 "descripcion"=>"required|string",
-                "factor_divisor"=>"required|integer",
                 "dias_vencimiento"=>"required|integer",
                 "interes"=>"required|numeric"
             ]);
-
+            $campos['factor_divisor'] = DIAS_ANHO/$campos["dias_vencimiento"];
             $tipoPlazo->update($campos);
             return ["cod"=>"00","msg"=>"todo correcto"];
 

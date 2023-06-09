@@ -48,7 +48,7 @@ class CajaController extends Controller{
         try {
             $campos = $this->validate($request,[
                 "descripcion"=>"required|string",
-                "pin"=>"required|string"
+                "pin"=>"required|string|max:4"
             ]);
             $campos['saldo_actual']="0";
             $caja = Caja::create($campos);
@@ -101,7 +101,7 @@ class CajaController extends Controller{
             $barrio = Caja::findOrfail($id);
             $campos = $this->validate($request,[
                 "descripcion"=>"required|string",
-                "pin"=>"required|string"
+                "pin"=>"required|string|max:4"
             ]);
 
             $barrio->update($campos);

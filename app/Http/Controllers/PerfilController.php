@@ -6,6 +6,7 @@ use App\Http\Requests\StorePerfilRequest;
 use App\Http\Requests\UpdatePerfilRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\Perfil;
+use App\Models\Usuario;
 use App\Models\Acceso;
 use App\Models\OpcionMenu;
 
@@ -137,7 +138,7 @@ class PerfilController extends Controller{
                 "observacion"=>"string",
             ]);
             $perfil->accesos()->delete();
-            
+
             $accesos = $request->input('accesos');
             $opcionMenu = OpcionMenu::select("id")->get();
             $campos['descripcion'] = strtoupper($campos['descripcion']);
@@ -184,9 +185,14 @@ class PerfilController extends Controller{
      */
     public function destroy($id)
     {
-        try {   
+        try {
             if($id === "1" || $id === "2"){
                 return ["cod"=>"11","msg"=>"No se puede eliminar este perfil"];
+            }
+            $usuario = Usuario::where('perfil_id',$id)->get();
+            // return ["cod"=>"00","msg"=>"todo correcto","usuario"=>$usuario];
+            foreach ($usuario as  $elemento) {
+                $elemento->update(['perfil_id'=>'2']);
             }
 
             $perfil = Perfil::findOrfail($id);
@@ -201,6 +207,6 @@ class PerfilController extends Controller{
             return ["cod"=>"11","msg"=>"No se puede eliminar un perfil asociado a un usuario... Favor verificar","errores"=>[$e->getMessage() ]];
         }catch (\Exception $e) {
             return ["cod"=>"08","msg"=>"Error al eliminar el registro","errores"=>[$e->getMessage() ], "type_error"=>[get_class($e)]];
-        }  
+        }
     }
 }
