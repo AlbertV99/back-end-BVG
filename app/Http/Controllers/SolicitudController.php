@@ -34,8 +34,10 @@ class SolicitudController extends Controller{
         $salto = $pag*$this->c_reg_panel;
         $string = Str::upper($estado);
 
-        $pendiente = EstadoSolicitud::where("descripcion",$string)->get();
-        $id = ['estado'=>$pendiente[0]->id];
+        if($string != 'TODO'){
+            $pendiente = EstadoSolicitud::where("descripcion",$string)->get();
+            $id = ['estado'=>$pendiente[0]->id];
+        }
 
 
         $query=Solicitud::select("solicitud.id","cliente.documento","cliente.nombre","cliente.apellido","cliente.tipo_documento","solicitud.ingresos_actuales","solicitud.monto_credito","solicitud.interes","solicitud.tipo_plazo","solicitud.cant_cuotas","tipo_plazo.descripcion as descripcion_plazo")
@@ -230,6 +232,7 @@ class SolicitudController extends Controller{
                 if($b){
                     $refPersTemp = new ReferenciaPersonal($referencia);
                     $solicitud->referenciaPersonal()->save($refPersTemp);
+                    
                 }
 
             }
