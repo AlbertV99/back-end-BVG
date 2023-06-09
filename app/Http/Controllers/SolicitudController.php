@@ -95,8 +95,8 @@ class SolicitudController extends Controller{
 
             $usuarioLogueado = auth('sanctum')->user()->id;
             $campos['usuario_id'] = $usuarioLogueado;
-            $solicitud = Solicitud::create($campos);
             $refPersTemp=[];
+            $refComTemp=[];
             foreach ($request->input('ref_personales') as $key => $value) {
                 if($value['cliente_id']==$campos['cliente_id']){
                     throw  \Illuminate\Validation\ValidationException::withMessages(['Referencia Personal' => ['No se puede cargar una referencia personal igual al cliente de la solicitud']]);
@@ -106,17 +106,22 @@ class SolicitudController extends Controller{
 
             }
 
-            $solicitud->referenciaPersonal()->saveMany($refPersTemp);
+
 
             if(count($request->input('ref_comerciales'))>0 ){
                 foreach ($request->input('ref_comerciales') as $key => $value) {
                     $camposRef = ['entidad'=>$value['entidad'],'monto_cuota'=>$value['monto_cuota'],
                     'estado'=>$value['estado'],'cuotas_pendientes'=>$value['cuotas_pendientes'],
                     'cuotas_totales'=>$value['cuotas_totales']];
-                    $refPersTemp = new ReferenciaComercial($camposRef);
-                    $solicitud->referenciaComercial()->save($refPersTemp);
+                    $refComTemp[] = new ReferenciaComercial($camposRef);
+
                 }
             }
+
+            $solicitud = Solicitud::create($campos);
+            $solicitud->referenciaPersonal()->saveMany($refPersTemp);
+            $solicitud->referenciaComercial()->saveMany($refComTemp);
+
             $pendiente = EstadoSolicitud::where("descripcion","PENDIENTE")->get();
             $historial = new HistorialEstado(["estado_id"=>$pendiente[0]->id,"observacion_cambio"=>"Creacion de Solicitud"]);
 
