@@ -106,7 +106,7 @@ class SolicitudController extends Controller{
 
             }
 
-            $solicitud->referenciaPersonal()->save($refPersTemp);
+            $solicitud->referenciaPersonal()->saveMany($refPersTemp);
 
             if(count($request->input('ref_comerciales'))>0 ){
                 foreach ($request->input('ref_comerciales') as $key => $value) {
@@ -232,7 +232,7 @@ class SolicitudController extends Controller{
                 if($b){
                     $refPersTemp = new ReferenciaPersonal($referencia);
                     $solicitud->referenciaPersonal()->save($refPersTemp);
-                    
+
                 }
 
             }
