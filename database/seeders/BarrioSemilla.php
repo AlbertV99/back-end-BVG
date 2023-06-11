@@ -23,7 +23,7 @@ class BarrioSemilla extends Seeder
         foreach ($lista as $key => $value) {
             barrio::create([
                 'nombre' => $value,
-                'observacion' => 'Dato semilla',
+                'observacion' => 'Dato por defecto del sistema',
             ]);
         }
     }
