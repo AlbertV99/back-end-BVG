@@ -31,6 +31,7 @@ class Menu extends Seeder
                 ["descripcion"=>"Solicitud Agente","direccion"=>"solicitudAgente","dir_imagen"=>"imagenes/opcionMenu/solicitudAgente.png"],
                 ["descripcion"=>"Solicitud Analisis","direccion"=>"solicitudAnalista","dir_imagen"=>"imagenes/opcionMenu/solicitudAnalista.png"],
                 ["descripcion"=>"Solicitud Directorio","direccion"=>"solicitudDirectorio","dir_imagen"=>"imagenes/opcionMenu/solicitudDirectorio.png"],
+                ["descripcion"=>"Solicitud","direccion"=>"solicitudVisualizar","dir_imagen"=>"imagenes/opcionMenu/solicitudDirectorio.png"],
             ]], #
             ["agrupador"=>"Caja","icono"=>"CgCalendarDates","opciones"=>[
                 ["descripcion"=>"Conceptos","direccion"=>"conceptosCaja","dir_imagen"=>"imagenes/opcionMenu/conceptoCaja.png"],

@@ -33,14 +33,19 @@ class SolicitudController extends Controller{
         $c_paginas = ceil(Solicitud::count()/$this->c_reg_panel);
         $salto = $pag*$this->c_reg_panel;
         $string = Str::upper($estado);
-        $pendiente = EstadoSolicitud::where("descripcion",$string)->get();
-        $id = ['estado'=>$pendiente[0]->id];
+
+        if($string != 'TODO'){
+            $pendiente = EstadoSolicitud::where("descripcion",$string)->get();
+            $id = ['estado'=>$pendiente[0]->id];
+        }
 
 
         $query=Solicitud::select("solicitud.id","cliente.documento","cliente.nombre","cliente.apellido","cliente.tipo_documento","solicitud.ingresos_actuales","solicitud.monto_credito","solicitud.interes","solicitud.tipo_plazo","solicitud.cant_cuotas","tipo_plazo.descripcion as descripcion_plazo")
         ->join("cliente", "cliente.id", "solicitud.cliente_id","estado_solicitud.descripcion")
-        ->join("tipo_plazo", "tipo_plazo.id", "solicitud.tipo_plazo")
-        ->where("solicitud.estado","=",$id);
+        ->join("tipo_plazo", "tipo_plazo.id", "solicitud.tipo_plazo");
+        if($string != 'TODO'){
+            $query->where("solicitud.estado","=",$id);
+        }
         // ->leftJoin('historial_estado', function($query) {
         //     $query->on('solicitud.id','=','historial_estado.solicitud_id')
         //     ->whereRaw('historial_estado.id IN (select MAX(historial_estado.id) from historial_estado as he join solicitud as s on he.solicitud_id = s.id group by s.id)');
@@ -48,7 +53,7 @@ class SolicitudController extends Controller{
         // ->leftJoin("estado_solicitud","estado_solicitud.id","historial_estado.estado_id")
         ;
 
-        $query = $query->orderBy("cliente.documento");
+        $query = $query->orderByDesc("solicitud.id");
 
         return ["cod"=>"00","msg"=>"todo correcto","pagina_actual"=>$pag,"cantidad_paginas"=>$c_paginas,"datos"=>$query->get()];
     }
@@ -90,22 +95,33 @@ class SolicitudController extends Controller{
 
             $usuarioLogueado = auth('sanctum')->user()->id;
             $campos['usuario_id'] = $usuarioLogueado;
-            $solicitud = Solicitud::create($campos);
+            $refPersTemp=[];
+            $refComTemp=[];
             foreach ($request->input('ref_personales') as $key => $value) {
+                if($value['cliente_id']==$campos['cliente_id']){
+                    throw  \Illuminate\Validation\ValidationException::withMessages(['Referencia Personal' => ['No se puede cargar una referencia personal igual al cliente de la solicitud']]);
+                }
                 $camposRef = ['cliente_id'=>$value['cliente_id'], 'relacion_cliente'=>$value['relacion_cliente']];
-                $refPersTemp = new ReferenciaPersonal($camposRef);
-                $solicitud->referenciaPersonal()->save($refPersTemp);
+                $refPersTemp[] = new ReferenciaPersonal($camposRef);
+
             }
+
+
 
             if(count($request->input('ref_comerciales'))>0 ){
                 foreach ($request->input('ref_comerciales') as $key => $value) {
                     $camposRef = ['entidad'=>$value['entidad'],'monto_cuota'=>$value['monto_cuota'],
                     'estado'=>$value['estado'],'cuotas_pendientes'=>$value['cuotas_pendientes'],
                     'cuotas_totales'=>$value['cuotas_totales']];
-                    $refPersTemp = new ReferenciaComercial($camposRef);
-                    $solicitud->referenciaComercial()->save($refPersTemp);
+                    $refComTemp[] = new ReferenciaComercial($camposRef);
+
                 }
             }
+
+            $solicitud = Solicitud::create($campos);
+            $solicitud->referenciaPersonal()->saveMany($refPersTemp);
+            $solicitud->referenciaComercial()->saveMany($refComTemp);
+
             $pendiente = EstadoSolicitud::where("descripcion","PENDIENTE")->get();
             $historial = new HistorialEstado(["estado_id"=>$pendiente[0]->id,"observacion_cambio"=>"Creacion de Solicitud"]);
 
@@ -221,6 +237,7 @@ class SolicitudController extends Controller{
                 if($b){
                     $refPersTemp = new ReferenciaPersonal($referencia);
                     $solicitud->referenciaPersonal()->save($refPersTemp);
+
                 }
 
             }

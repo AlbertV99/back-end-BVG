@@ -132,13 +132,13 @@ class ConceptosCajaController extends Controller
     {
         try {
             if($id === "1" || $id === "2"){
-                return ["cod"=>"11","msg"=>"No se puede eliminar este perfil"];
+                return ["cod"=>"11","msg"=>"No se puede eliminar este concepto caja"];
             }
             
             $ConceptosCaja = ConceptosCaja::findOrfail($id);
             $ConceptosCaja->delete();
 
-            return ["cod"=>"00","msg"=>"todo correcto"];
+            return ["cod"=>"00","msg"=>"Eliminado correctamente"];
         } catch( ModelNotFoundException $e){
             return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
         }  catch (\Exception $e) {

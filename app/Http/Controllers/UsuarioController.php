@@ -175,14 +175,14 @@ class UsuarioController extends Controller{
     public function destroy($id){
         try {
             if($id === "1"){
-                return ["cod"=>"11","msg"=>"No se puede eliminar este perfil"];
+                return ["cod"=>"11","msg"=>"No se puede eliminar este usuario"];
             }
 
             $usuario = Usuario::findOrfail($id);
             //return ["cod"=>$usuario];
             $usuario->delete();
 
-            return ["cod"=>"00","msg"=>"todo correcto"];
+            return ["cod"=>"00","msg"=>"Eliminado correctamente"];
         } catch( ModelNotFoundException $e){
             return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
         } catch (\Exception $e) {
