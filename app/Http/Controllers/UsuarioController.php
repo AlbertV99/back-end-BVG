@@ -85,6 +85,7 @@ class UsuarioController extends Controller{
             $success['token'] =  $usuario->createToken($credentials['usuario'])->plainTextToken;
             $success['name'] =  $usuario->nombre_usuario;
             $success['perfil'] =  $usuario->perfil->descripcion;
+            $success['id'] =  $usuario->id;
             $success['menu'] = $this->obtenerDatosLogueo();
             return ["cod"=>"00","msg"=>"todo correcto","success"=>$success];
         }else{
@@ -165,6 +166,37 @@ class UsuarioController extends Controller{
             return ["cod"=>"99","msg"=>"Error al insertar los datos","error"=>$e->getMessage()];
         }
     }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \App\Http\Requests\UpdateUsuarioRequest  $request
+     * @param  \App\Models\Usuario  $usuario
+     * @return \Illuminate\Http\Response
+     */
+    public function cambiarContrasenha(UpdateUsuarioRequest $request){
+        try {
+            $usuarioLogueado = auth('sanctum')->user()->id;
+            $usuario = Usuario::findOrfail($usuarioLogueado);
+            $campos = $this->validate($request,[
+                "password"=>"required|string|confirmed|min:6|"
+            ]);
+            $campos['restablecer_password'] = false;
+            $encriptado = bcrypt($campos['password']);
+            $campos['password'] = $encriptado;
+            $usuario->update($campos);
+
+            return ["cod"=>"00","msg"=>"todo correcto"];
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return ["cod"=>"06","msg"=>"Error al insertar los datos","errores"=>[$e->errors() ]];
+
+        } catch(ModelNotFoundException $e){
+            return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
+        } catch (\Exception $e) {
+            return ["cod"=>"99","msg"=>"Error al insertar los datos","error"=>$e->getMessage()];
+        }
+    }
+
 
     /**
      * Remove the specified resource from storage.
