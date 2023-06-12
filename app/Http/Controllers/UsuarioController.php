@@ -167,6 +167,36 @@ class UsuarioController extends Controller{
     }
 
     /**
+     * Update the specified resource in storage.
+     *
+     * @param  \App\Http\Requests\UpdateUsuarioRequest  $request
+     * @param  \App\Models\Usuario  $usuario
+     * @return \Illuminate\Http\Response
+     */
+    public function cambiarContrasenha(UpdateUsuarioRequest $request, $id){
+        try {
+            $usuario = Usuario::findOrfail($id);
+            $campos = $this->validate($request,[
+                "password"=>"required|string|confirmed|min:6|"
+            ]);
+            $campos['restablecer_password'] = false;
+            $encriptado = bcrypt($campos['password']);
+            $campos['password'] = $encriptado;
+            $usuario->update($campos);
+
+            return ["cod"=>"00","msg"=>"todo correcto"];
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return ["cod"=>"06","msg"=>"Error al insertar los datos","errores"=>[$e->errors() ]];
+
+        } catch(ModelNotFoundException $e){
+            return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
+        } catch (\Exception $e) {
+            return ["cod"=>"99","msg"=>"Error al insertar los datos","error"=>$e->getMessage()];
+        }
+    }
+
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Usuario  $usuario

@@ -23,13 +23,13 @@ class Menu extends Seeder
             ]],
             ["agrupador"=>"Cliente","icono"=>"CgUserList", "opciones"=>[
                 ["descripcion"=>"Clientes","direccion"=>"cliente","dir_imagen"=>"imagenes/opcionMenu/cliente.png"],
-                ["descripcion"=>"PerfilCliente","direccion"=>"perfilCliente","dir_imagen"=>"imagenes/opcionMenu/perfilCliente.png"],
+                ["descripcion"=>"Perfil Cliente","direccion"=>"perfilCliente","dir_imagen"=>"imagenes/opcionMenu/perfilCliente.png"],
                 ["descripcion"=>"Barrio","direccion"=>"barrio","dir_imagen"=>"imagenes/opcionMenu/barrio.png"],
             ]], #
-            ["agrupador"=>"Credito","icono"=>"CgCreditCard","opciones"=>[
+            ["agrupador"=>"Crédito","icono"=>"CgCreditCard","opciones"=>[
                 ["descripcion"=>"Tipo Plazo","direccion"=>"tipoPlazo","dir_imagen"=>"imagenes/opcionMenu/tipoPlazo.png"],
                 ["descripcion"=>"Solicitud Agente","direccion"=>"solicitudAgente","dir_imagen"=>"imagenes/opcionMenu/solicitudAgente.png"],
-                ["descripcion"=>"Solicitud Analisis","direccion"=>"solicitudAnalista","dir_imagen"=>"imagenes/opcionMenu/solicitudAnalista.png"],
+                ["descripcion"=>"Solicitud Análisis","direccion"=>"solicitudAnalista","dir_imagen"=>"imagenes/opcionMenu/solicitudAnalista.png"],
                 ["descripcion"=>"Solicitud Directorio","direccion"=>"solicitudDirectorio","dir_imagen"=>"imagenes/opcionMenu/solicitudDirectorio.png"],
                 ["descripcion"=>"Solicitud","direccion"=>"solicitudVisualizar","dir_imagen"=>"imagenes/opcionMenu/solicitudDirectorio.png"],
             ]], #
@@ -47,7 +47,7 @@ class Menu extends Seeder
             ["agrupador"=>"Reportes","icono"=>"CgReadme","opciones"=>[
                 ["descripcion"=>"Reporte Usuario","direccion"=>"reporteUsuario","dir_imagen"=>"imagenes/opcionMenu/reporte.png"],
                 ["descripcion"=>"Reporte Cliente","direccion"=>"reporteCliente","dir_imagen"=>"imagenes/opcionMenu/reporte.png"],
-                ["descripcion"=>"Reporte Estadistica","direccion"=>"reporteEstadistica","dir_imagen"=>"imagenes/opcionMenu/estadistico.png"],
+                ["descripcion"=>"Reporte Estadística","direccion"=>"reporteEstadistica","dir_imagen"=>"imagenes/opcionMenu/estadistico.png"],
                 ["descripcion"=>"Reporte Balance","direccion"=>"reporteBalance","dir_imagen"=>"imagenes/opcionMenu/reporte.png"],
                 ]], #
         ];
