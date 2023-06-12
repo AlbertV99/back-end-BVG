@@ -117,7 +117,7 @@ Route::middleware(['cors','auth:sanctum'])->group(function () {
         Route::get('/usuario/u/{id}','show');
         Route::post('/usuario/','store');
         Route::put('/usuario/{id}','update');
-        Route::put('/usuario/pass/{id}','cambiarContrasenha');
+        Route::put('/pass/usuario','cambiarContrasenha');
         Route::delete('/usuario/{id}','destroy');
         // Route::post('/usuario/login', 'login');
         Route::post('/usuario/logout', 'logout');
