@@ -106,9 +106,27 @@ class ClienteController extends Controller{
     public function show($id){
         try {
             $cliente = Cliente::findOrfail($id);
-            $cliente->telefono;
+            $telefono = $cliente->telefono;
+            $documentos = $cliente->cedula->last();
 
-            return ["cod"=>"00","msg"=>"todo correcto","datos"=>[$cliente]];
+
+
+            return ["cod"=>"00","msg"=>"todo correcto","datos"=>[            
+                "id" => $cliente["id"],
+                "barrio" => $cliente["barrio"],
+                "documento" => $cliente["documento"],
+                "tipo_documento" => $cliente["tipo_documento"],
+                "nombre" => $cliente["nombre"],
+                "apellido" => $cliente["apellido"],
+                "f_nacimiento" => $cliente["f_nacimiento"],
+                "correo" => $cliente["correo"],
+                "direccion" => $cliente["direccion"],
+                "sexo" => $cliente["sexo"],
+                "observaciones" => $cliente["observaciones"],
+                "estado_civil" => $cliente["estado_civil"],
+                "telefono" => $telefono, 
+                "documentos" => $documentos]
+            ];
         } catch( ModelNotFoundException $e){
             return ["cod"=>"04","msg"=>"no existen datos","error"=>$e->getMessage()];
         } catch (\Exception $e) {
