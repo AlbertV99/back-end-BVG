@@ -10,15 +10,13 @@ class ReferenciaPersonal extends Model{
     protected $table = 'referencia_personal';
     protected $fillable = [
         'solicitud_id',
-        'cliente_id',
+        'nombres_apellido',
         'relacion_cliente',
+        'telefono'
 
     ];
 
     public function solicitud(): BelongsTo{
         return $this->belongsTo(Solicitud::class,"id","solicitud_id");
-    }
-    public function cliente(){
-        return $this->belongsTo(Cliente::class,"cliente_id");
     }
 }

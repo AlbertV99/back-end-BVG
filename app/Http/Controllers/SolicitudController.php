@@ -97,16 +97,15 @@ class SolicitudController extends Controller{
             $campos['usuario_id'] = $usuarioLogueado;
             $refPersTemp=[];
             $refComTemp=[];
-            foreach ($request->input('ref_personales') as $key => $value) {
-                if($value['cliente_id']==$campos['cliente_id']){
-                    throw  \Illuminate\Validation\ValidationException::withMessages(['Referencia Personal' => ['No se puede cargar una referencia personal igual al cliente de la solicitud']]);
+
+            if(count($request->input('ref_personales'))>0 ){
+                foreach ($request->input('ref_personales') as $key => $value) {
+                    $camposRef = ['nombres_apellido'=>$value['nombres_apellido'],'relacion_cliente'=>$value['relacion_cliente'],
+                    'telefono'=>$value['telefono']];
+                    $refPersTemp[] = new ReferenciaPersonal($camposRef);
+
                 }
-                $camposRef = ['cliente_id'=>$value['cliente_id'], 'relacion_cliente'=>$value['relacion_cliente']];
-                $refPersTemp[] = new ReferenciaPersonal($camposRef);
-
             }
-
-
 
             if(count($request->input('ref_comerciales'))>0 ){
                 foreach ($request->input('ref_comerciales') as $key => $value) {
@@ -161,9 +160,7 @@ class SolicitudController extends Controller{
             foreach ($solicitud->historialEstado as $historial) {
                 $historial->estadoSolicitud;
             }
-            foreach ($solicitud->referenciaPersonal as $refPersonal) {
-                $refPersonal->cliente;
-            }
+            
             $analisis = $this->calculosAnalisis($id);
             $cuotero = $this->calcularCuotero($solicitud->tipoPlazo->id,"12",$solicitud->monto_credito+$solicitud->gastos_administrativos,$fecha_venc);
             $reglas_estado = $solicitud->historialEstado->last()->estadoSolicitud->regla;
@@ -230,7 +227,7 @@ class SolicitudController extends Controller{
             foreach ($refPersonalPeticion as $referencia) {
                 $b= 1;
                 foreach ($refsPersBD as $refDB) {
-                    if($referencia['cliente_id'] == $refDB['cliente_id']){
+                    if(($referencia['nombres_apellido'] == $refDB['nombres_apellido']) && ($referencia['telefono'] == $refDB['telefono'])){
                         $b=0;
                     }
                 }
