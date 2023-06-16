@@ -85,6 +85,7 @@ class UsuarioController extends Controller{
             $success['token'] =  $usuario->createToken($credentials['usuario'])->plainTextToken;
             $success['name'] =  $usuario->nombre_usuario;
             $success['perfil'] =  $usuario->perfil->descripcion;
+            $success['id'] =  $usuario->id;
             $success['menu'] = $this->obtenerDatosLogueo();
             return ["cod"=>"00","msg"=>"todo correcto","success"=>$success];
         }else{
@@ -173,9 +174,10 @@ class UsuarioController extends Controller{
      * @param  \App\Models\Usuario  $usuario
      * @return \Illuminate\Http\Response
      */
-    public function cambiarContrasenha(UpdateUsuarioRequest $request, $id){
+    public function cambiarContrasenha(UpdateUsuarioRequest $request){
         try {
-            $usuario = Usuario::findOrfail($id);
+            $usuarioLogueado = auth('sanctum')->user()->id;
+            $usuario = Usuario::findOrfail($usuarioLogueado);
             $campos = $this->validate($request,[
                 "password"=>"required|string|confirmed|min:6|"
             ]);
