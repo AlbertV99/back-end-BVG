@@ -24,8 +24,8 @@
         <h1>Reporte estadistico</h1>
         <!-- <p>{{$datos}}</p> -->
 
-        <div width="500px" height="500px" style="display: block; box-sizing: border-box; height: 300px; width: 600px;">
-            <canvas id="myChart" height="100px" width="100px" style="display: block; box-sizing: border-box; height: 300px; width: 300px;"></canvas>
+        <div width="1000px" height="1000px" style="display: block; box-sizing: border-box; height: 1000px; width: 1000px;">
+            <canvas id="myChart" height="1000px" width="1000px" style="display: block; box-sizing: border-box; height: 1000px; width: 1000px;"></canvas>
         </div>
     </body>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
