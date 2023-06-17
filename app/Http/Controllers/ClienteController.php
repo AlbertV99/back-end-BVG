@@ -111,7 +111,7 @@ class ClienteController extends Controller{
 
 
 
-            return ["cod"=>"00","msg"=>"todo correcto","datos"=>[            
+            return ["cod"=>"00","msg"=>"todo correcto","datos"=>[
                 "id" => $cliente["id"],
                 "barrio" => $cliente["barrio"],
                 "documento" => $cliente["documento"],
@@ -124,7 +124,7 @@ class ClienteController extends Controller{
                 "sexo" => $cliente["sexo"],
                 "observaciones" => $cliente["observaciones"],
                 "estado_civil" => $cliente["estado_civil"],
-                "telefono" => $telefono, 
+                "telefono" => $telefono,
                 "documentos" => $documentos]
             ];
         } catch( ModelNotFoundException $e){
