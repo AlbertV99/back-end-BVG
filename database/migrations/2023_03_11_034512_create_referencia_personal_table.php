@@ -16,9 +16,8 @@ class CreateReferenciaPersonalTable extends Migration
         Schema::create('referencia_personal', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('solicitud_id');
-            // $table->foreign('solicitud_id')->references('id')->on('estado_civil'); referenciar a la solicitud
-            $table->unsignedBigInteger('cliente_id');
-            $table->foreign('cliente_id')->references('id')->on('cliente');
+            $table->string('nombres_apellido');
+            $table->string('telefono');
             $table->string('relacion_cliente');
             $table->timestamps();
         });

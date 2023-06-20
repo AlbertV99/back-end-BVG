@@ -75,7 +75,7 @@ class OperacionesController extends Controller{
             $caja = Caja::findOrfail($campos["caja"]);
             $monto = $caja->saldo_actual;
             if($caja->estadoCaja->count() < 1){
-                return ["cod"=>"11","msg"=>"No existe apertura de caja"]; 
+                return ["cod"=>"11","msg"=>"No existe apertura de caja"];
             }
             $aperturaCaja = $caja->estadoCaja->last()->estado;
             $usuario = $caja->estadoCaja->last()->usuario_id;
@@ -161,6 +161,9 @@ class OperacionesController extends Controller{
                 return ["cod"=>"11","msg"=>"Usuario no ha abierto la caja "];
             }
 
+            $cuotaTemp = Cuotas::findOrfail($request->input("cuotas")[0]['id']);
+            $solicitud = Solicitud::findOrfail($cuotaTemp->solicitud_id);
+
             //VALIDAR ESTADOS DE CUOTAS
             $indicesCuotas = [];
             foreach ($request->input("cuotas") as $value) {
@@ -174,7 +177,14 @@ class OperacionesController extends Controller{
                 // }
             }
 
-
+            $cuotasPendientes = ($solicitud->cuotas);
+            return ["cod"=>"11","msg"=>"solicitud ","test"=>$cuotasPendientes->sortBy('id')];
+            //VALIDACION POR PAGAR CUOTAS EN ORDEN
+            foreach ($indicesCuotas as $indice =>$cuota) {
+                if($cuota->id!= $cuotasPendientes[$indice]->id){
+                    throw  \Illuminate\Validation\ValidationException::withMessages(['Cuotas' => ['Ha intentado pagar una cuota cuyo vencimiento es superior a una anterior'.$cuota->id."-".$cuotasPendientes[$indice]->id]]);
+                }
+            }
             $saldo_anterior = $monto;
             $saldo_posterior = $monto + $campos["monto"];
             $campos["saldo_anterior"] = $saldo_anterior;
@@ -208,6 +218,7 @@ class OperacionesController extends Controller{
             // $historial = new HistorialEstado(["estado_id"=>5,"observacion_cambio"=>"Desmbolso de la solicitud"]);
             // $solicitud->historialEstado()->save($historial);
 
+            return ["cod"=>"00","msg"=>"todo correcto"];
         } catch (\Illuminate\Validation\ValidationException $e) {
             return ["cod"=>"06","msg"=>"Error al insertar los datos","errores"=>[$e->errors() ]];
 
@@ -215,7 +226,7 @@ class OperacionesController extends Controller{
             return ["cod"=>"05","msg"=>"Error al insertar los datos","error"=>$e->getMessage()];
         }
         //return["estado"=>$estado];
-        return ["cod"=>"00","msg"=>"todo correcto"];
+
     }
 
     public function movimientoGenerico(StoreOperacionesRequest $request){
